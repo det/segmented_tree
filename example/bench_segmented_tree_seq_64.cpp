@@ -10,4 +10,5 @@ int main(int argc, char** argv) {
 
   random_data_t<std::uint64_t> data{argv[1]};
   bench_container<boost::container::segmented_tree_seq<std::uint64_t>>(data);
+  test_compiles<boost::container::segmented_tree_seq<std::uint64_t>>(data);
 }

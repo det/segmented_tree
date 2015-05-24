@@ -1,6 +1,7 @@
 #include "adler64.hpp"
 #include "random_data.hpp"
 
+#include <cassert>
 #include <chrono>
 #include <iostream>
 #include <iomanip>
@@ -225,4 +226,76 @@ void bench_container(random_data_t<T> const &data) {
 
   bench("erase values", erase_values<Container>, container, data.get_indexes());
   verify(data.get_ordered()[0], container[0]);
+}
+
+template <typename Container, typename T>
+void test_compiles(random_data_t<T> const &data) {
+  auto &inserted = data.get_inserted();
+  Container{};
+  auto c1 = Container(1000);
+  auto c2 = Container{inserted.begin(), inserted.end()};
+  auto c3 = Container{c2};
+  auto c4 = std::move(c3);
+  auto c5 = Container{1, 2, 3, 4};
+  c1 = c4;
+  c1 = std::move(c5);
+  c4.assign(1000, 0);
+  c1.assign(c4.begin(), c4.end());
+  c4.assign({1, 2, 3, 4});
+  c4.get_allocator();
+  c4.at(2);
+  const_cast<Container const &>(c4).at(2);
+  c4[2];
+  const_cast<Container const &>(c4)[2];
+  c4.front();
+  const_cast<Container const &>(c4).front();
+  c4.back();
+  const_cast<Container const &>(c4).back();
+  c4.begin();
+  const_cast<Container const &>(c4).begin();
+  c4.cbegin();
+  c4.penultimate();
+  const_cast<Container const &>(c4).penultimate();
+  c4.cpenultimate();
+  c4.end();
+  const_cast<Container const &>(c4).end();
+  c4.cend();
+  c4.position(1000);
+  const_cast<Container const &>(c4).position(1000);
+  c4.cposition(1000);
+  c4.rbegin();
+  const_cast<Container const &>(c4).rbegin();
+  c4.crbegin();
+  c4.rend();
+  const_cast<Container const &>(c4).rend();
+  c4.crend();
+  c4.rposition(1000);
+  const_cast<Container const &>(c4).rposition(1000);
+  c4.crposition(1000);
+  c4.empty();
+  c4.size();
+  c4.max_size();
+  c4.clear();
+  c4.insert(c4.end(), 0);
+  T x = 0;
+  c4.insert(c4.end(), std::move(x));
+  c4.insert(c4.end(), 100, 0);
+  c4.insert(c4.end(), c1.begin(), c1.end());
+  c4.insert(c4.end(), {1, 2, 3, 4});
+  c4.emplace(c4.end(), 0);
+  c4.erase(c4.begin());
+  c4.erase(c4.begin(), c4.end());
+  c4.push_back(0);
+  T y = 0;
+  c4.push_back(std::move(y));
+  c4.emplace_back(0);
+  c4.pop_back();
+  c4.push_front(0);
+  T z = 0;
+  c4.push_front(std::move(z));
+  c4.emplace_front(0);
+  c4.pop_front();
+  c4.resize(10000);
+  c4.resize(0);
+  c4.swap(c1);
 }

@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <cassert>
 #include <cstring>
-#include <iostream>
 #include <limits>
 #include <memory>
 #include <string>
@@ -388,11 +387,11 @@ class segmented_tree_seq {
     it.pos = size - 1;
 
     if (height == 0) {
-      it.leaf.pointer = nullptr;
-      it.leaf.index = 0;
-      it.leaf.segment = find_last_segment(cast_segment(pointer), size);
+      it.entry.leaf.pointer = nullptr;
+      it.entry.leaf.index = 0;
+      it.entry.segment = find_last_segment(cast_segment(pointer), size);
     } else
-      it.leaf = find_last_node(cast_node(pointer), height);
+      it.entry = find_last_node(cast_node(pointer), height);
 
     return it;
   }
@@ -1671,7 +1670,9 @@ class segmented_tree_seq {
     insert(end(), count, value);
   }
 
-  explicit segmented_tree_seq(size_type count) : segmented_tree_seq{} {}
+  explicit segmented_tree_seq(size_type count) : segmented_tree_seq{} {
+    insert(end(), count, value_type{});
+  }
 
   template <class InputIt>
   segmented_tree_seq(InputIt first, InputIt last,
@@ -1762,23 +1763,25 @@ class segmented_tree_seq {
     }
   }
 
-  template <class InputIt>
-  void assign(InputIt first, InputIt last) {
-    auto first2 = begin();
-    auto last2 = end();
+  template <class InputIt, typename = typename std::enable_if<
+                               !std::is_integral<InputIt>::value, T>::type>
+  void assign(InputIt source_first, InputIt source_last) {
+    auto first = begin();
+    auto last = end();
     while (true) {
-      if (first == last) {
-        erase(first2, last2);
-        return;
-      }
-      if (first2 == last2) {
-        insert(last2, first, last);
+      if (source_first == source_last) {
+        erase(first, last);
         return;
       }
 
-      *first2 = *first;
-      ++first2;
+      if (first == last) {
+        insert(last, source_first, source_last);
+        return;
+      }
+
+      *first = *source_first;
       ++first;
+      ++source_first;
     }
   }
 
@@ -1905,7 +1908,7 @@ class segmented_tree_seq {
   }
 
   iterator insert(const_iterator pos, size_type count, T const &value) {
-    while (count != 0) {
+    for (std::size_t i = 0; i != count; ++i) {
       pos = insert(pos, value);
       ++pos;
     }
@@ -1913,7 +1916,8 @@ class segmented_tree_seq {
     return pos.it_;
   }
 
-  template <class InputIt>
+  template <class InputIt, typename = typename std::enable_if<
+                               !std::is_integral<InputIt>::value, T>::type>
   iterator insert(const_iterator pos, InputIt first, InputIt last) {
     size_type count = 0;
     while (first != last) {
@@ -1963,7 +1967,7 @@ class segmented_tree_seq {
 
   void push_back(T const &value) { emplace_back(value); }
 
-  void push_back(T &&value) { emplace_back(std::move<T>(value)); }
+  void push_back(T &&value) { emplace_back(std::move(value)); }
 
   template <class... Args>
   void emplace_back(Args &&... args) {
@@ -1974,7 +1978,7 @@ class segmented_tree_seq {
 
   void push_front(const T &value) { emplace_front(value); }
 
-  void push_front(T &&value) { emplace_front(std::move<T>(value)); }
+  void push_front(T &&value) { emplace_front(std::move(value)); }
 
   template <class... Args>
   void emplace_front(Args &&... args) {
