@@ -261,7 +261,7 @@ class segmented_tree_seq {
     iterator_data it;
     it.pos = pos;
 
-    if (ht == 0) {
+    if (ht < 2) {
       it.entry.leaf.pointer = nullptr;
       it.entry.leaf.index = 0;
       it.entry.segment = find_index_segment(cast_segment(pointer), size, pos);
@@ -273,7 +273,7 @@ class segmented_tree_seq {
 
   static iterator_entry find_index_node(node_pointer pointer, size_type ht,
                                         size_type pos) {
-    if (ht == 1) return find_index_leaf(pointer, pos);
+    if (ht == 2) return find_index_leaf(pointer, pos);
     return find_index_branch(pointer, ht, pos);
   }
 
@@ -290,7 +290,7 @@ class segmented_tree_seq {
 
       auto child = cast_node(pointer->pointers[index]);
       --ht;
-      if (ht == 1) return find_index_leaf(child, pos);
+      if (ht == 2) return find_index_leaf(child, pos);
 
       pointer = child;
     }
@@ -332,7 +332,7 @@ class segmented_tree_seq {
     iterator_data it;
     it.pos = 0;
 
-    if (ht == 0) {
+    if (ht < 2) {
       it.entry.leaf.pointer = nullptr;
       it.entry.leaf.index = 0;
       it.entry.segment = find_first_segment(cast_segment(pointer), size);
@@ -343,7 +343,7 @@ class segmented_tree_seq {
   }
 
   static iterator_entry find_first_node(node_pointer pointer, size_type ht) {
-    if (ht == 1) return find_first_leaf(pointer);
+    if (ht == 2) return find_first_leaf(pointer);
     return find_first_branch(pointer, ht);
   }
 
@@ -351,7 +351,7 @@ class segmented_tree_seq {
     while (true) {
       auto child = cast_node(pointer->pointers[0]);
       --ht;
-      if (ht == 1) return find_first_leaf(child);
+      if (ht == 2) return find_first_leaf(child);
 
       pointer = child;
     }
@@ -385,7 +385,7 @@ class segmented_tree_seq {
     iterator_data it;
     it.pos = size - 1;
 
-    if (ht == 0) {
+    if (ht < 2) {
       it.entry.leaf.pointer = nullptr;
       it.entry.leaf.index = 0;
       it.entry.segment = find_last_segment(cast_segment(pointer), size);
@@ -396,7 +396,7 @@ class segmented_tree_seq {
   }
 
   static iterator_entry find_last_node(node_pointer pointer, size_type ht) {
-    if (ht == 1) return find_last_leaf(pointer);
+    if (ht == 2) return find_last_leaf(pointer);
     return find_last_branch(pointer, ht);
   }
 
@@ -405,7 +405,7 @@ class segmented_tree_seq {
       size_type index = pointer->length - 1;
       auto child = cast_node(pointer->pointers[index]);
       --ht;
-      if (ht == 1) return find_last_leaf(child);
+      if (ht == 2) return find_last_leaf(child);
 
       pointer = child;
     }
@@ -440,7 +440,7 @@ class segmented_tree_seq {
     iterator_data it;
     it.pos = size;
 
-    if (ht == 0) {
+    if (ht < 2) {
       it.entry.leaf.pointer = nullptr;
       it.entry.leaf.index = 0;
       it.entry.segment = find_end_segment(cast_segment(pointer), size);
@@ -451,7 +451,7 @@ class segmented_tree_seq {
   }
 
   static iterator_entry find_end_node(node_pointer pointer, size_type ht) {
-    if (ht == 1) return find_end_leaf(pointer);
+    if (ht == 2) return find_end_leaf(pointer);
     return find_end_branch(pointer, ht);
   }
 
@@ -461,7 +461,7 @@ class segmented_tree_seq {
       auto child = cast_node(pointer->pointers[index]);
 
       --ht;
-      if (ht == 1) return find_end_leaf(child);
+      if (ht == 2) return find_end_leaf(child);
 
       pointer = child;
     }
@@ -525,7 +525,7 @@ class segmented_tree_seq {
 
   static void move_next_branch(iterator_entry &entry, node_pointer pointer,
                                size_type index) {
-    size_type ht = 2;
+    size_type child_ht = 2;
 
     while (true) {
       // Special case for end iterator.
@@ -536,13 +536,13 @@ class segmented_tree_seq {
 
       ++index;
       if (index != pointer->length) {
-        entry = find_first_node(cast_node(pointer->pointers[index]), ht - 1);
+        entry = find_first_node(cast_node(pointer->pointers[index]), child_ht);
         return;
       }
 
       index = pointer->parent_index;
       pointer = pointer->parent_pointer;
-      ++ht;
+      ++child_ht;
     }
   }
 
@@ -577,17 +577,18 @@ class segmented_tree_seq {
 
   static void move_prev_branch(iterator_entry &entry, node_pointer pointer,
                                size_type index) {
-    size_type ht = 2;
+    size_type child_ht = 2;
 
     while (true) {
       if (index != 0) {
-        entry = find_last_node(cast_node(pointer->pointers[index - 1]), ht - 1);
+        entry =
+            find_last_node(cast_node(pointer->pointers[index - 1]), child_ht);
         return;
       }
 
       index = pointer->parent_index;
       pointer = pointer->parent_pointer;
-      ++ht;
+      ++child_ht;
     }
   }
 
@@ -643,12 +644,12 @@ class segmented_tree_seq {
   static void move_next_branch_count(iterator_entry &entry, node_pointer base,
                                      node_pointer pointer, size_type index,
                                      size_type count) {
-    size_type ht = 2;
+    size_type child_ht = 2;
 
     while (true) {
       // Special case for end iterator.
       if (pointer == nullptr) {
-        entry = find_end_node(base, ht - 1);
+        entry = find_end_node(base, child_ht);
         return;
       }
 
@@ -658,7 +659,7 @@ class segmented_tree_seq {
 
         size_type size = pointer->sizes[index];
         if (size > count) {
-          entry = find_index_node(cast_node(pointer->pointers[index]), ht - 1,
+          entry = find_index_node(cast_node(pointer->pointers[index]), child_ht,
                                   count);
           return;
         }
@@ -668,7 +669,7 @@ class segmented_tree_seq {
       base = pointer;
       index = pointer->parent_index;
       pointer = pointer->parent_pointer;
-      ++ht;
+      ++child_ht;
     }
   }
 
@@ -708,7 +709,7 @@ class segmented_tree_seq {
   static void move_prev_branch_count(iterator_entry &entry,
                                      node_pointer pointer, size_type index,
                                      size_type count) {
-    size_type ht = 2;
+    size_type child_ht = 2;
 
     while (true) {
       while (true) {
@@ -717,7 +718,7 @@ class segmented_tree_seq {
 
         size_type size = pointer->sizes[index];
         if (size >= count) {
-          entry = find_index_node(cast_node(pointer->pointers[index]), ht - 1,
+          entry = find_index_node(cast_node(pointer->pointers[index]), child_ht,
                                   size - count);
           return;
         }
@@ -726,7 +727,7 @@ class segmented_tree_seq {
 
       index = pointer->parent_index;
       pointer = pointer->parent_pointer;
-      ++ht;
+      ++child_ht;
     }
   }
 
@@ -820,7 +821,7 @@ class segmented_tree_seq {
   }
 
   void purge_node(node_pointer pointer, size_type ht) {
-    if (ht == 1)
+    if (ht == 2)
       purge_leaf(pointer);
     else
       purge_branch(pointer, ht);
@@ -833,7 +834,7 @@ class segmented_tree_seq {
   }
 
   void purge_root(void_pointer pointer, size_type sz, size_type ht) {
-    if (ht == 0)
+    if (ht < 2)
       purge_segment(cast_segment(pointer), sz);
     else
       purge_node(cast_node(pointer), ht);
@@ -1172,6 +1173,7 @@ class segmented_tree_seq {
       auto alloc = allocate_segment();
       get_root() = alloc;
       get_size() = 1;
+      get_height() = 1;
       entry.segment.pointer = alloc;
       entry.segment.length = 1;
       return;
@@ -1222,7 +1224,7 @@ class segmented_tree_seq {
       copy_single_leaf(alloc, 0, base, get_size() - child_size + 1);
       copy_single_leaf(alloc, 1, child_pointer, child_size);
       get_root() = alloc;
-      ++get_height();
+      get_height() = 2;
       ++get_size();
       entry.leaf.pointer = alloc;
       return;
@@ -1354,6 +1356,7 @@ class segmented_tree_seq {
       deallocate_segment(pointer);
       get_root() = nullptr;
       get_size() = 0;
+      get_height() = 0;
       entry.segment.pointer = nullptr;
       entry.segment.index = 0;
       entry.segment.length = 0;
@@ -1440,7 +1443,7 @@ class segmented_tree_seq {
       deallocate_node(pointer);
       get_root() = other;
       --get_size();
-      --get_height();
+      get_height() = 1;
       entry.pointer = nullptr;
       entry.index = 0;
       return;
