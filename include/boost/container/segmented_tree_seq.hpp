@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <cassert>
 #include <cstring>
-#include <iostream>
 #include <limits>
 #include <memory>
 #include <string>
@@ -12,6 +11,10 @@
 #include <utility>
 #include <vector>
 #include <type_traits>
+
+#ifdef SEGMENTED_TREE_SEQ_DEBUG
+#include <iostream>
+#endif
 
 namespace boost {
 namespace container {
