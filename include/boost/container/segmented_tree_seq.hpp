@@ -21,13 +21,13 @@ template <typename T, typename Allocator = std::allocator<T>,
 class segmented_tree_seq {
   // forward declarations
  private:
+  struct node_base;
+  struct node_data;
+  struct node;
   struct segment_entry;
   struct leaf_entry;
   struct iterator_entry;
   struct iterator_data;
-  struct node_base;
-  struct node_data;
-  struct node;
   template <typename Reference, typename Pointer>
   class iterator_t;
 
@@ -1910,7 +1910,7 @@ class segmented_tree_seq {
       ++pos;
     }
     pos -= count;
-    return pos;
+    return pos.it_;
   }
 
   template <class InputIt>
