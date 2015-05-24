@@ -252,6 +252,10 @@ class segmented_tree_seq {
   }
 
   // find_index
+  iterator_data find_index(size_type pos) const {
+    return find_index_root(get_root(), get_size(), get_height(), pos);
+  }
+
   static iterator_data find_index_root(void_pointer pointer, size_type size,
                                        size_type height, size_type pos) {
     iterator_data it;
@@ -319,6 +323,10 @@ class segmented_tree_seq {
   }
 
   // find_first
+  iterator_data find_first() const {
+    return find_first_root(get_root(), get_size(), get_height());
+  }
+
   static iterator_data find_first_root(void_pointer pointer, size_type size,
                                        size_type height) {
     iterator_data it;
@@ -370,6 +378,10 @@ class segmented_tree_seq {
   }
 
   // find_last
+  iterator_data find_last() const {
+    return find_last_root(get_root(), get_size(), get_height());
+  }
+
   static iterator_data find_last_root(void_pointer pointer, size_type size,
                                       size_type height) {
     iterator_data it;
@@ -422,6 +434,10 @@ class segmented_tree_seq {
   }
 
   // find_end
+  iterator_data find_end() const {
+    return find_end_root(get_root(), get_size(), get_height());
+  }
+
   static iterator_data find_end_root(void_pointer pointer, size_type size,
                                      size_type height) {
     iterator_data it;
@@ -794,36 +810,39 @@ class segmented_tree_seq {
     node_traits::deallocate(get_node_allocator(), pointer, 1);
   }
 
-  // delete
-  void delete_segment(element_pointer pointer, size_type sz) {
+  // purge
+  void purge() { purge_root(get_root(), get_size(), get_height()); }
+
+  void purge_segment(element_pointer pointer, size_type sz) {
     if (!is_trivial_)
       for (size_type i = 0, e = sz; i != e; ++i) destroy_element(pointer, i);
     deallocate_segment(pointer);
   }
 
-  void delete_leaf(node_pointer pointer) {
+  void purge_leaf(node_pointer pointer) {
     for (size_type i = 0, e = pointer->length; i != e; ++i)
-      delete_segment(cast_segment(pointer->pointers[i]), pointer->sizes[i]);
-  }
-
-  void delete_node(node_pointer pointer, size_type height) {
-    if (height == 1)
-      delete_leaf(pointer);
-    else
-      delete_branch(pointer, height);
+      purge_segment(cast_segment(pointer->pointers[i]), pointer->sizes[i]);
     deallocate_node(pointer);
   }
 
-  void delete_branch(node_pointer pointer, size_type height) {
-    for (size_type i = 0, e = pointer->length; i != e; ++i)
-      delete_node(cast_node(pointer->pointers[i]), height - 1);
+  void purge_node(node_pointer pointer, size_type height) {
+    if (height == 1)
+      purge_leaf(pointer);
+    else
+      purge_branch(pointer, height);
   }
 
-  void delete_root(void_pointer pointer, size_type sz, size_type height) {
+  void purge_branch(node_pointer pointer, size_type height) {
+    for (size_type i = 0, e = pointer->length; i != e; ++i)
+      purge_node(cast_node(pointer->pointers[i]), height - 1);
+    deallocate_node(pointer);
+  }
+
+  void purge_root(void_pointer pointer, size_type sz, size_type height) {
     if (height == 0)
-      delete_segment(cast_segment(pointer), sz);
+      purge_segment(cast_segment(pointer), sz);
     else
-      delete_node(cast_node(pointer), height);
+      purge_node(cast_node(pointer), height);
   }
 
   // move_single
@@ -1050,11 +1069,11 @@ class segmented_tree_seq {
     return child_size;
   }
 
-  // delete_single
+  // purge_single
 
-  // delete_range
-  size_type delete_range_segment(element_pointer pointer, size_type index,
-                                 size_type count) {
+  // purge_range
+  size_type purge_range_segment(element_pointer pointer, size_type index,
+                                size_type count) {
     if (!is_trivial_) {
       size_type from = index;
       size_type last = index + count;
@@ -1067,15 +1086,15 @@ class segmented_tree_seq {
     return count;
   }
 
-  size_type delete_range_leaf(node_pointer pointer, size_type index,
-                              size_type count) {
+  size_type purge_range_leaf(node_pointer pointer, size_type index,
+                             size_type count) {
     size_type from = index;
     size_type last = index + count;
     size_type erase_size = 0;
 
     while (from != last) {
       auto sz = pointer->sizes[from];
-      delete (pointer->pointers[from], sz);
+      purge_segment(cast_segment(pointer->pointers[from]), sz);
       erase_size += sz;
       ++from;
     }
@@ -1083,15 +1102,15 @@ class segmented_tree_seq {
     return erase_size;
   }
 
-  size_type delete_range_branch(node_pointer pointer, size_type index,
-                                size_type count, size_type height) {
+  size_type purge_range_branch(node_pointer pointer, size_type index,
+                               size_type count, size_type height) {
     size_type from = index;
     size_type last = index + count;
     size_type erase_size = 0;
 
     while (from != last) {
       auto sz = pointer->sizes[from];
-      delete (pointer->pointers[from], sz, height - 1);
+      purge_node(cast_node(pointer->pointers[from]), sz, height - 1);
       erase_size += sz;
       ++from;
     }
@@ -1597,8 +1616,6 @@ class segmented_tree_seq {
   }
 
   // helpers
-  void deallocate() { delete_root(get_root(), get_size(), get_height()); }
-
   void steal(segmented_tree_seq &other) {
     get_root() = other.get_root();
     get_height() = other.get_height();
@@ -1695,7 +1712,7 @@ class segmented_tree_seq {
     insert(end(), init.begin(), init.end());
   }
 
-  ~segmented_tree_seq() { deallocate(); }
+  ~segmented_tree_seq() { purge(); }
 
   segmented_tree_seq &operator=(segmented_tree_seq const &other) {
     if (this != &other) {
@@ -1712,7 +1729,7 @@ class segmented_tree_seq {
   segmented_tree_seq &operator=(segmented_tree_seq &&other) {
     if (element_traits::propagate_on_container_move_assignment::value ||
         get_element_allocator() == other.get_element_allocator()) {
-      deallocate();
+      purge();
       if (element_traits::propagate_on_container_move_assignment::value) {
         get_element_allocator() = other.get_element_allocator();
         get_node_allocator() = other.get_node_allocator();
@@ -1784,12 +1801,12 @@ class segmented_tree_seq {
   }
 
   reference operator[](size_type pos) {
-    iterator it = find_index_root(get_root(), get_size(), get_height(), pos);
+    iterator it = find_index(pos);
     return *it;
   }
 
   const_reference operator[](size_type pos) const {
-    iterator it = find_index_root(get_root(), get_size(), get_height(), pos);
+    iterator it = find_index(pos);
     return *it;
   }
 
@@ -1801,67 +1818,68 @@ class segmented_tree_seq {
 
   const_reference back() const { return *penultimate(); }
 
-  iterator begin() {
-    return find_first_root(get_root(), get_size(), get_height());
-  }
+  iterator begin() { return find_first(); }
 
-  const_iterator begin() const {
-    return find_first_root(get_root(), get_size(), get_height());
-  }
+  const_iterator begin() const { return find_first(); }
 
-  const_iterator cbegin() const { return begin(); }
+  const_iterator cbegin() const { return find_first(); }
 
-  iterator penultimate() {
-    return find_last_root(get_root(), get_size(), get_height());
-  }
+  iterator penultimate() { return find_last(); }
 
-  const_iterator penultimate() const {
-    return find_last_root(get_root(), get_size(), get_height());
-  }
+  const_iterator penultimate() const { return find_last(); }
 
-  const_iterator cpenultimate() const { return penultimate(); }
+  const_iterator cpenultimate() const { return find_last(); }
 
-  iterator end() { return find_end_root(get_root(), get_size(), get_height()); }
+  iterator end() { return find_end(); }
 
-  const_iterator end() const {
-    return find_end_root(get_root(), get_size(), get_height());
-  }
+  const_iterator end() const { return find_end(); }
 
-  const_iterator cend() const { return end(); }
-
-  reverse_iterator rbegin() { return std::reverse_iterator<iterator>{end()}; }
-
-  const_reverse_iterator rbegin() const {
-    return std::reverse_iterator<iterator>{end()};
-  }
-
-  const_reverse_iterator crbegin() const { return rbegin(); }
-
-  reverse_iterator rend() { return std::reverse_iterator<iterator>{begin()}; }
-
-  const_reverse_iterator rend() const {
-    return std::reverse_iterator<iterator>{begin()};
-  }
-
-  const_reverse_iterator crend() const { return rend(); }
+  const_iterator cend() const { return find_end(); }
 
   iterator position(size_type pos) {
-    assert(pos <= size());
-    if (pos >= size()) return end();
-    return find_index_root(get_root(), get_size(), get_height(), pos);
+    if (pos >= size()) return find_end();
+    return find_index(pos);
+  }
+
+  const_iterator position(size_type pos) const {
+    if (pos >= size()) return find_end();
+    return find_index(pos);
   }
 
   const_iterator cposition(size_type pos) {
-    assert(pos <= size());
-    if (pos >= size()) return end();
-    return find_index_root(get_root(), get_size(), get_height(), pos);
+    if (pos >= size()) return find_end();
+    return find_index(pos);
+  }
+
+  reverse_iterator rbegin() { return reverse_iterator{end()}; }
+
+  const_reverse_iterator rbegin() const {
+    return const_reverse_iterator{end()};
+  }
+
+  const_reverse_iterator crbegin() const {
+    return const_reverse_iterator{end()};
+  }
+
+  reverse_iterator rend() { return reverse_iterator{begin()}; }
+
+  const_reverse_iterator rend() const {
+    return const_reverse_iterator{begin()};
+  }
+
+  const_reverse_iterator crend() const {
+    return const_reverse_iterator{begin()};
   }
 
   reverse_iterator rposition(size_type pos) {
     return reverse_iterator{position(size() - pos)};
   }
 
-  const_reverse_iterator crposition(size_type pos) {
+  const_reverse_iterator rposition(size_type pos) const {
+    return const_reverse_iterator{position(size() - pos)};
+  }
+
+  const_reverse_iterator crposition(size_type pos) const {
     return const_reverse_iterator{position(size() - pos)};
   }
 
@@ -1872,7 +1890,7 @@ class segmented_tree_seq {
   size_type max_size() const { return std::numeric_limits<size_type>::max(); }
 
   void clear() {
-    deallocate();
+    purge();
     get_root() = nullptr;
     get_height() = 0;
     get_size() = 0;
