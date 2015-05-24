@@ -7,7 +7,7 @@ fi
 
 for bits in 8 64; do
 	for size in 524288; do
-		for benchmark in btree_seq segment_tree; do
+		for benchmark in btree_seq segmented_tree_seq; do
 			echo "Rusults for ${benchmark}<std::uint${bits}_t> x ${size}"
 			for i in {0..20}; do $1/example/bench_${benchmark}_${bits} $2/data.${bits}.${size}; done | sort -k2 -k1,1n | uniq -f1
 			echo

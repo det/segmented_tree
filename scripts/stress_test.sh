@@ -12,7 +12,7 @@ while true; do
 			random=$RANDOM
 			let "random += 1"
 			$1/example/gen_random_data_${bits} $RANDOM ${data_dir}/data
-			for benchmark in segment_tree; do
+			for benchmark in segmented_tree_seq; do
 				$1/example/bench_${benchmark}_${bits} ${data_dir}/data > /dev/null
 			done
 		done

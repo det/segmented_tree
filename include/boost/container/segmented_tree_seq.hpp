@@ -1821,13 +1821,13 @@ class segmented_tree_seq {
 
   reference at(size_type pos) {
     if (pos > size())
-      throw std::out_of_range{"segment_tree at() out of bounds"};
+      throw std::out_of_range{"segmented_tree_seq at() out of bounds"};
     return (*this)[pos];
   }
 
   const_reference at(size_type pos) const {
     if (pos > size())
-      throw std::out_of_range{"segment_tree at() out of bounds"};
+      throw std::out_of_range{"segmented_tree_seq at() out of bounds"};
     return (*this)[pos];
   }
 
