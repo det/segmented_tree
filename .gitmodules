@@ -1,0 +1,9 @@
+[submodule "submodule/avl_array"]
+	path = submodule/avl_array
+	url = https://github.com/det/avl_array.git
+[submodule "submodule/stl_ext_adv_review"]
+	path = submodule/stl_ext_adv_review
+	url = https://github.com/vstadnik/stl_ext_adv_review.git
+[submodule "submodule/array"]
+	path = submodule/array
+	url = https://github.com/alexkupri/array.git
