@@ -1,5 +1,5 @@
 #include "adler64.hpp"
-#include "random_data.hpp"
+#include "random_data_single.hpp"
 
 #include <cassert>
 #include <chrono>

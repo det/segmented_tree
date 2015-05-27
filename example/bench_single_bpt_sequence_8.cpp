@@ -1,6 +1,6 @@
-#include "bench.hpp"
-#include "btree_seq.h"
-#include "random_data.hpp"
+#include "bench_single.hpp"
+#include "bpt_sequence.hpp"
+#include "random_data_single.hpp"
 
 int main(int argc, char** argv) {
   if (argc != 2) {
@@ -9,5 +9,5 @@ int main(int argc, char** argv) {
   }
 
   random_data_t<std::uint8_t> data{argv[1]};
-  bench_container<btree_seq<std::uint8_t>>(data);
+  bench_container<std_ext_adv::sequence<std::uint8_t>>(data);
 }

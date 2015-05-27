@@ -1,7 +1,6 @@
-#include "bench.hpp"
-#include "random_data.hpp"
-
-#include <deque>
+#include "bench_single.hpp"
+#include "random_data_single.hpp"
+#include "boost/container/segmented_tree_seq.hpp"
 
 int main(int argc, char** argv) {
   if (argc != 2) {
@@ -10,5 +9,5 @@ int main(int argc, char** argv) {
   }
 
   random_data_t<std::uint64_t> data{argv[1]};
-  bench_container<std::deque<std::uint64_t>>(data);
+  bench_container<boost::container::segmented_tree_seq<std::uint64_t>>(data);
 }

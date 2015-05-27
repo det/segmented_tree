@@ -1,6 +1,6 @@
-#include "bench.hpp"
-#include "bpt_sequence.hpp"
-#include "random_data.hpp"
+#include "avl_array.hpp"
+#include "bench_single.hpp"
+#include "random_data_single.hpp"
 
 int main(int argc, char** argv) {
   if (argc != 2) {
@@ -9,5 +9,5 @@ int main(int argc, char** argv) {
   }
 
   random_data_t<std::uint64_t> data{argv[1]};
-  bench_container<std_ext_adv::sequence<std::uint64_t>>(data);
+  bench_container<mkr::avl_array<std::uint64_t>>(data);
 }

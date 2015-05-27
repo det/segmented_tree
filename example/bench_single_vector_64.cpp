@@ -1,5 +1,5 @@
-#include "bench.hpp"
-#include "random_data.hpp"
+#include "bench_single.hpp"
+#include "random_data_single.hpp"
 
 #include <vector>
 
