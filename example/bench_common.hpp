@@ -54,26 +54,26 @@ typename std::enable_if<!has_reserve<T>::value, void>::type reserve(
     T &, typename T::size_type) {}
 
 template <typename T>
-struct nullable {
+struct voidable {
   T value;
   template <typename F, typename... Args>
-  nullable(F &&f, Args &&... args)
+  voidable(F &&f, Args &&... args)
       : value{f(std::forward<Args>(args)...)} {}
   T &get() { return value; }
   T const &get() const { return value; }
 };
 
 template <>
-struct nullable<void> {
+struct voidable<void> {
   template <typename F, typename... Args>
-  nullable(F &&f, Args &&... args) {
+  voidable(F &&f, Args &&... args) {
     f(std::forward<Args>(args)...);
   }
   void get() const {}
 };
 
 template <typename F, typename... Args>
-nullable<typename std::result_of<F&&(Args&&...)>::type> make_nullable(
+voidable<typename std::result_of<F&&(Args&&...)>::type> make_voidable(
     F &&f, Args &&... args) {
   return {std::forward<F>(f), std::forward<Args>(args)...};
 }
@@ -82,7 +82,7 @@ template <typename F, typename... Args>
 typename std::result_of<F&&(Args&&...)>::type bench(char const *description,
                                                 F functor, Args &&... args) {
   auto start = std::chrono::high_resolution_clock::now();
-  auto ret = make_nullable(functor, std::forward<Args>(args)...);
+  auto ret = make_voidable(functor, std::forward<Args>(args)...);
   auto stop = std::chrono::high_resolution_clock::now();
   auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
   double ms = ns.count() / 1000000.0;
