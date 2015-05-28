@@ -11,9 +11,9 @@ while true; do
 	for bits in 8 64; do
 			random=$RANDOM
 			let "random += 1"
-			$1/example/gen_random_data_${bits} $RANDOM ${data_dir}/data
+			$1/example/gen_random_data_single_${bits} $RANDOM ${data_dir}/data
 			for benchmark in segmented_tree_seq; do
-				$1/example/bench_${benchmark}_${bits} ${data_dir}/data > /dev/null
+				$1/example/bench_single_${benchmark}_${bits} ${data_dir}/data > /dev/null
 			done
 		done
 	done

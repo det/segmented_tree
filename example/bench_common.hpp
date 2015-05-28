@@ -53,28 +53,42 @@ template <typename T>
 typename std::enable_if<!has_reserve<T>::value, void>::type reserve(
     T &, typename T::size_type) {}
 
-template <typename Functor, typename... Args>
-void bench(char const *description, Functor functor, Args &&... args) {
-  auto start = std::chrono::high_resolution_clock::now();
-  functor(std::forward<Args>(args)...);
-  auto stop = std::chrono::high_resolution_clock::now();
-  auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
-  double ms = ns.count() / 1000000.0;
-  std::cout << std::setw(15) << std::setfill(' ') << std::setprecision(6) << ms
-            << "ms " << description << "\n";
+template <typename T>
+struct nullable {
+  T value;
+  template <typename F, typename... Args>
+  nullable(F &&f, Args &&... args)
+      : value{f(std::forward<Args>(args)...)} {}
+  T &get() { return value; }
+  T const &get() const { return value; }
+};
+
+template <>
+struct nullable<void> {
+  template <typename F, typename... Args>
+  nullable(F &&f, Args &&... args) {
+    f(std::forward<Args>(args)...);
+  }
+  void get() const {}
+};
+
+template <typename F, typename... Args>
+nullable<typename std::result_of<F&&(Args&&...)>::type> make_nullable(
+    F &&f, Args &&... args) {
+  return {std::forward<F>(f), std::forward<Args>(args)...};
 }
 
-template <typename Functor, typename... Args>
-auto bench_value(char const *description, Functor functor, Args &&... args)
-    -> decltype(functor(std::forward<Args>(args)...)) {
+template <typename F, typename... Args>
+typename std::result_of<F&&(Args&&...)>::type bench(char const *description,
+                                                F functor, Args &&... args) {
   auto start = std::chrono::high_resolution_clock::now();
-  auto ret = functor(std::forward<Args>(args)...);
+  auto ret = make_nullable(functor, std::forward<Args>(args)...);
   auto stop = std::chrono::high_resolution_clock::now();
   auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
   double ms = ns.count() / 1000000.0;
   std::cout << std::setw(15) << std::setfill(' ') << std::setprecision(6) << ms
             << "ms " << description << "\n";
-  return ret;
+  return ret.get();
 }
 
 template <typename T>
@@ -149,50 +163,49 @@ std::uint64_t accumulate_backward_by(T const &container, std::size_t distance) {
 template <typename Container, typename T>
 void bench_iterator(Container const &container, std::vector<T> const &data) {
   verify(accumulate_forward(data),
-         bench_value("accumulate forward", accumulate_forward<Container>,
-                     container));
+         bench("accumulate forward", accumulate_forward<Container>, container));
 
   verify(accumulate_forward_by(data, 1),
-         bench_value("accumulate forward by 1",
-                     accumulate_forward_by<Container>, container, 1));
+         bench("accumulate forward by 1", accumulate_forward_by<Container>,
+               container, 1));
 
   verify(accumulate_forward_by(data, 10),
-         bench_value("accumulate forward by 10",
-                     accumulate_forward_by<Container>, container, 10));
+         bench("accumulate forward by 10", accumulate_forward_by<Container>,
+               container, 10));
 
   verify(accumulate_forward_by(data, 100),
-         bench_value("accumulate forward by 100",
-                     accumulate_forward_by<Container>, container, 100));
+         bench("accumulate forward by 100", accumulate_forward_by<Container>,
+               container, 100));
 
   verify(accumulate_forward_by(data, 1000),
-         bench_value("accumulate forward by 1000",
-                     accumulate_forward_by<Container>, container, 1000));
+         bench("accumulate forward by 1000", accumulate_forward_by<Container>,
+               container, 1000));
 
   verify(accumulate_forward_by(data, 10000),
-         bench_value("accumulate forward by 10000",
-                     accumulate_forward_by<Container>, container, 10000));
+         bench("accumulate forward by 10000", accumulate_forward_by<Container>,
+               container, 10000));
 
-  verify(accumulate_backward(data),
-         bench_value("accumulate backward", accumulate_backward<Container>,
-                     container));
+  verify(
+      accumulate_backward(data),
+      bench("accumulate backward", accumulate_backward<Container>, container));
 
   verify(accumulate_backward_by(data, 1),
-         bench_value("accumulate backward by 1",
-                     accumulate_backward_by<Container>, container, 1));
+         bench("accumulate backward by 1", accumulate_backward_by<Container>,
+               container, 1));
 
   verify(accumulate_backward_by(data, 10),
-         bench_value("accumulate backward by 10",
-                     accumulate_backward_by<Container>, container, 10));
+         bench("accumulate backward by 10", accumulate_backward_by<Container>,
+               container, 10));
 
   verify(accumulate_backward_by(data, 100),
-         bench_value("accumulate backward by 100",
-                     accumulate_backward_by<Container>, container, 100));
+         bench("accumulate backward by 100", accumulate_backward_by<Container>,
+               container, 100));
 
   verify(accumulate_backward_by(data, 1000),
-         bench_value("accumulate backward by 1000",
-                     accumulate_backward_by<Container>, container, 1000));
+         bench("accumulate backward by 1000", accumulate_backward_by<Container>,
+               container, 1000));
 
   verify(accumulate_backward_by(data, 10000),
-         bench_value("accumulate backward by 10000",
-                     accumulate_backward_by<Container>, container, 10000));
+         bench("accumulate backward by 10000",
+               accumulate_backward_by<Container>, container, 10000));
 }
