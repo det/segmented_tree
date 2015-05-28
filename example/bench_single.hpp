@@ -33,5 +33,6 @@ void bench_single(random_data_single<T> const &data) {
   bench("insert values", insert_values_single<Container, T>, container, data);
   bench_iterator(container, data.get_inserted());
   bench("erase values", erase_values_single<Container, T>, container, data);
+  verify(std::size_t{1}, container.size());
   verify(data.get_ordered()[0], container[0]);
 }

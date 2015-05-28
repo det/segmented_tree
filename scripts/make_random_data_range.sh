@@ -5,15 +5,15 @@ if [ "$#" -ne 2 ]; then
 	exit 1
 fi
 
-for size in 256 7936 246016 7626496; do
-  x=7626496
-  let "x /= ${size}"
-  $1/example/gen_random_data_range_8 ${x} ${size} $2/range.8.${size}
+for count in 256 7936 246016 7626496; do
+  size=7626496
+  let "size /= ${count}"
+  $1/example/gen_random_data_range_8 ${size} ${count} $2/range.8.${count}
 done
 
-for size in 32 992 30752 953312; do
-  x=953312
-  let "x /= ${size}"
-  $1/example/gen_random_data_range_64 ${x} ${size} $2/range.64.${size}
+for count in 32 992 30752 953312; do
+  size=953312
+  let "size /= ${count}"
+  $1/example/gen_random_data_range_64 ${size} ${count} $2/range.64.${count}
 done
 

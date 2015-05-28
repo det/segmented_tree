@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project (segmented_tree_seq)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  set (standard "-std=c++14 -stdlib=libc++")
+  set (standard "-std=c++11 -stdlib=libc++")
   set (math "-msse2")
   set (warning "-pedantic -Wall -Wextra -Wglobal-constructors -Wnon-virtual-dtor -Wshadow -Wnewline-eof -Wno-unused-parameter -Wno-unknown-pragmas")
   set (debug "-ggdb -fsanitize=address -fsanitize=undefined")

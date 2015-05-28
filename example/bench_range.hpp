@@ -31,6 +31,7 @@ void erase_values_range(Container &container,
     auto last = first + size;
     container.erase(first, last);
   }
+  container.erase(container.begin() + 1, container.end());
 }
 
 template <typename Container, typename T>
@@ -41,6 +42,6 @@ void bench_range(random_data_range<T> const &data) {
   bench("insert values", insert_values_range<Container, T>, container, data);
   bench_iterator(container, data.get_inserted());
   bench("erase values", erase_values_range<Container, T>, container, data);
-  for (std::size_t i = 0; i != data.get_size(); ++i)
-    verify(data.get_ordered()[i], container[i]);
+  verify(std::size_t{1}, container.size());
+  verify(data.get_ordered()[0], container[0]);
 }
