@@ -1,29 +1,65 @@
-set (random_data_single_headers
-  random_data_single.hpp)
+add_custom_target(headers SOURCES adler64.hpp avl_array.hpp bench_common.hpp
+                  bench_range.hpp bench_single.hpp bpt_sequence.hpp
+                  btree_seq.hpp compile.hpp random_data_range.hpp
+                  random_data_single.hpp segmented_tree_seq.hpp)
 
-set (bench_single_headers
-  ${random_data_single_headers}
-  adler64.hpp
-  bench_single.hpp)
+add_executable (test_compile_segmented_tree_seq
+                test_compile_segmented_tree_seq.cpp)
 
-add_executable (test_compile_segmented_tree_seq ${compile_headers} test_compile_segmented_tree_seq.cpp)
+add_executable (gen_random_data_single_8 gen_random_data_single_8.cpp)
+add_executable (gen_random_data_single_64 gen_random_data_single_64.cpp)
 
-add_executable (gen_random_data_single_8 ${random_data_single_headers} gen_random_data_single_8.cpp)
-add_executable (gen_random_data_single_64 ${random_data_single_headers} gen_random_data_single_64.cpp)
+add_executable (bench_single_segmented_tree_seq_8
+                bench_single_segmented_tree_seq_8.cpp)
+add_executable (bench_single_btree_seq_8
+                bench_single_btree_seq_8.cpp)
+add_executable (bench_single_avl_array_8
+                bench_single_avl_array_8.cpp)
+add_executable (bench_single_bpt_sequence_8
+                bench_single_bpt_sequence_8.cpp)
+add_executable (bench_single_vector_8
+                bench_single_vector_8.cpp)
+add_executable (bench_single_deque_8
+                bench_single_deque_8.cpp)
 
-add_executable (bench_single_segmented_tree_seq_64 ${bench_single_headers} bench_single_segmented_tree_seq_64.cpp)
-add_executable (bench_single_btree_seq_64 ${bench_single_headers} bench_single_btree_seq_64.cpp)
-add_executable (bench_single_avl_array_64 ${bench_single_headers} bench_single_avl_array_64.cpp)
-add_executable (bench_single_bpt_sequence_64 ${bench_single_headers} bench_single_bpt_sequence_64.cpp)
-add_executable (bench_single_vector_64 ${bench_single_headers} bench_single_vector_64.cpp)
-add_executable (bench_single_deque_64 ${bench_single_headers} bench_single_deque_64.cpp)
+add_executable (bench_single_segmented_tree_seq_64
+                bench_single_segmented_tree_seq_64.cpp)
+add_executable (bench_single_btree_seq_64
+                bench_single_btree_seq_64.cpp)
+add_executable (bench_single_avl_array_64
+                bench_single_avl_array_64.cpp)
+add_executable (bench_single_bpt_sequence_64
+                bench_single_bpt_sequence_64.cpp)
+add_executable (bench_single_vector_64
+                bench_single_vector_64.cpp)
+add_executable (bench_single_deque_64
+                bench_single_deque_64.cpp)
 
+add_executable (gen_random_data_range_8 gen_random_data_range_8.cpp)
+add_executable (gen_random_data_range_64 gen_random_data_range_64.cpp)
 
-add_executable (bench_single_segmented_tree_seq_8 ${bench_single_headers}  bench_single_segmented_tree_seq_8.cpp)
-add_executable (bench_single_btree_seq_8 ${bench_single_headers} bench_single_btree_seq_8.cpp)
-add_executable (bench_single_avl_array_8 ${bench_single_headers} bench_single_avl_array_8.cpp)
-add_executable (bench_single_bpt_sequence_8 ${bench_single_headers} bench_single_bpt_sequence_8.cpp)
-add_executable (bench_single_vector_8 ${bench_single_headers} bench_single_vector_8.cpp)
-add_executable (bench_single_deque_8 ${bench_single_headers} bench_single_deque_8.cpp)
+add_executable (bench_range_segmented_tree_seq_8
+                bench_range_segmented_tree_seq_8.cpp)
+add_executable (bench_range_btree_seq_8
+                bench_range_btree_seq_8.cpp)
+add_executable (bench_range_avl_array_8
+                bench_range_avl_array_8.cpp)
+add_executable (bench_range_bpt_sequence_8
+                bench_range_bpt_sequence_8.cpp)
+add_executable (bench_range_vector_8
+                bench_range_vector_8.cpp)
+add_executable (bench_range_deque_8
+                bench_range_deque_8.cpp)
 
-
+add_executable (bench_range_segmented_tree_seq_64
+                bench_range_segmented_tree_seq_64.cpp)
+add_executable (bench_range_btree_seq_64
+                bench_range_btree_seq_64.cpp)
+add_executable (bench_range_avl_array_64
+                bench_range_avl_array_64.cpp)
+add_executable (bench_range_bpt_sequence_64
+                bench_range_bpt_sequence_64.cpp)
+add_executable (bench_range_vector_64
+                bench_range_vector_64.cpp)
+add_executable (bench_range_deque_64
+                bench_range_deque_64.cpp)

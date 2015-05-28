@@ -1,6 +1,6 @@
 #include "bench_single.hpp"
 #include "random_data_single.hpp"
-#include "boost/container/segmented_tree_seq.hpp"
+#include "segmented_tree_seq.hpp"
 
 int main(int argc, char** argv) {
   if (argc != 2) {
@@ -8,6 +8,6 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  random_data_t<std::uint64_t> data{argv[1]};
-  bench_container<boost::container::segmented_tree_seq<std::uint64_t>>(data);
+  random_data_single<std::uint64_t> data{argv[1]};
+  bench_single<boost::container::segmented_tree_seq<std::uint64_t>>(data);
 }

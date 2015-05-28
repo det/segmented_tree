@@ -1,5 +1,5 @@
-#include "bench_single.hpp"
-#include "random_data_single.hpp"
+#include "bench_range.hpp"
+#include "random_data_range.hpp"
 #include "segmented_tree_seq.hpp"
 
 int main(int argc, char** argv) {
@@ -8,6 +8,6 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  random_data_single<std::uint8_t> data{argv[1]};
-  bench_single<boost::container::segmented_tree_seq<std::uint8_t>>(data);
+  random_data_range<std::uint8_t> data{argv[1]};
+  bench_range<boost::container::segmented_tree_seq<std::uint8_t>>(data);
 }

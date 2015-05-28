@@ -1,6 +1,6 @@
-#include "bench_single.hpp"
+#include "bench_range.hpp"
 #include "btree_seq.hpp"
-#include "random_data_single.hpp"
+#include "random_data_range.hpp"
 
 int main(int argc, char** argv) {
   if (argc != 2) {
@@ -8,6 +8,6 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  random_data_single<std::uint8_t> data{argv[1]};
-  bench_single<btree_seq<std::uint8_t>>(data);
+  random_data_range<std::uint8_t> data{argv[1]};
+  bench_range<btree_seq<std::uint8_t>>(data);
 }
