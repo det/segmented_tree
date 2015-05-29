@@ -16,6 +16,7 @@ void test_compile() {
   auto const &c6 = c4;
   c1 = c4;
   c1 = std::move(c5);
+  c1 = {1, 2, 3, 4, 5};
   c4.assign(1000, 0);
   c1.assign(c4.begin(), c4.end());
   c4.assign({1, 2, 3, 4});

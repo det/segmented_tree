@@ -1662,8 +1662,10 @@ class segmented_tree_seq {
 
  public:
   // public interface
-  explicit segmented_tree_seq(Allocator const &alloc = Allocator())
+  explicit segmented_tree_seq(Allocator const &alloc)
       : data_{nullptr, 0, 0, alloc, alloc} {}
+
+  explicit segmented_tree_seq() : segmented_tree_seq{Allocator()} {}
 
   segmented_tree_seq(size_type count, T const &value,
                      Allocator const &alloc = Allocator())
@@ -1671,11 +1673,14 @@ class segmented_tree_seq {
     insert(end(), count, value);
   }
 
-  explicit segmented_tree_seq(size_type count) : segmented_tree_seq{} {
+  explicit segmented_tree_seq(size_type count,
+                              Allocator const &alloc = Allocator())
+      : segmented_tree_seq{alloc} {
     insert(end(), count, value_type{});
   }
 
-  template <class InputIt>
+  template <class InputIt,
+            typename = typename std::iterator_traits<InputIt>::pointer>
   segmented_tree_seq(InputIt first, InputIt last,
                      Allocator const &alloc = Allocator())
       : segmented_tree_seq{alloc} {
@@ -1744,6 +1749,11 @@ class segmented_tree_seq {
     return *this;
   }
 
+  segmented_tree_seq &operator=(std::initializer_list<T> ilist) {
+    assign(ilist.begin(), ilist.end());
+    return *this;
+  }
+
   void assign(size_type count, T const &value) {
     auto first = begin();
     auto last = end();
@@ -1764,8 +1774,8 @@ class segmented_tree_seq {
     }
   }
 
-  template <class InputIt, typename = typename std::enable_if<
-                               !std::is_integral<InputIt>::value, T>::type>
+  template <class InputIt,
+            typename = typename std::iterator_traits<InputIt>::pointer>
   void assign(InputIt source_first, InputIt source_last) {
     auto first = begin();
     auto last = end();
@@ -1907,7 +1917,7 @@ class segmented_tree_seq {
   }
 
   iterator insert(const_iterator pos, T &&value) {
-    return emplace(pos, std::forward<T>(value));
+    return emplace(pos, std::move(value));
   }
 
   iterator insert(const_iterator pos, size_type count, T const &value) {
@@ -1919,8 +1929,8 @@ class segmented_tree_seq {
     return pos.it_;
   }
 
-  template <class InputIt, typename = typename std::enable_if<
-                               !std::is_integral<InputIt>::value, T>::type>
+  template <class InputIt,
+            typename = typename std::iterator_traits<InputIt>::pointer>
   iterator insert(const_iterator pos, InputIt first, InputIt last) {
     size_type count = 0;
     while (first != last) {
