@@ -492,23 +492,26 @@ class segmented_tree_seq {
   // move_next
   static void move_next_iterator(iterator_data &it) {
     ++it.pos;
-    move_next_segment(it.entry, it.entry.segment.index,
-                      it.entry.segment.length);
+    move_next_segment(it.entry);
   }
 
-  static void move_next_segment(iterator_entry &entry, size_type index,
-                                size_type length) {
+  static void move_next_segment(iterator_entry &entry) {
+    auto index = entry.segment.index;
+    auto length = entry.segment.length;
+
     ++index;
     if (index != length) {
       entry.segment.index = index;
       return;
     }
 
-    move_next_leaf(entry, entry.leaf.pointer, entry.leaf.index);
+    move_next_leaf(entry);
   }
 
-  static void move_next_leaf(iterator_entry &entry, node_pointer pointer,
-                             size_type index) {
+  static void move_next_leaf(iterator_entry &entry) {
+    auto pointer = entry.leaf.pointer;
+    auto index = entry.leaf.index;
+
     // Special case for end iterator.
     if (pointer == nullptr) {
       entry.segment.index = entry.segment.length;
@@ -552,21 +555,25 @@ class segmented_tree_seq {
   // move_prev
   static void move_prev_iterator(iterator_data &it) {
     --it.pos;
-    move_prev_segment(it.entry, it.entry.segment.index);
+    move_prev_segment(it.entry);
   }
 
-  static void move_prev_segment(iterator_entry &entry, size_type index) {
+  static void move_prev_segment(iterator_entry &entry) {
+    auto index = entry.segment.index;
+
     if (index != 0) {
       --index;
       entry.segment.index = index;
       return;
     }
 
-    move_prev_leaf(entry, entry.leaf.pointer, entry.leaf.index);
+    move_prev_leaf(entry);
   }
 
-  static void move_prev_leaf(iterator_entry &entry, node_pointer pointer,
-                             size_type index) {
+  static void move_prev_leaf(iterator_entry &entry) {
+    auto pointer = entry.leaf.pointer;
+    auto index = entry.leaf.index;
+
     if (index != 0) {
       --index;
       entry.leaf.index = index;
@@ -599,27 +606,29 @@ class segmented_tree_seq {
   static void move_iterator_count(iterator_data &it, difference_type diff) {
     it.pos += diff;
     if (diff > 0)
-      move_next_segment_count(it.entry, it.entry.segment.index,
-                              it.entry.segment.length, diff);
+      move_next_segment_count(it.entry, diff);
     else if (diff < 0)
-      move_prev_segment_count(it.entry, it.entry.segment.index, -diff);
+      move_prev_segment_count(it.entry, -diff);
   }
 
   // move_next_count
-  static void move_next_segment_count(iterator_entry &entry, size_type index,
-                                      size_type length, size_type count) {
+  static void move_next_segment_count(iterator_entry &entry, size_type count) {
+    auto index = entry.segment.index;
+    auto length = entry.segment.length;
+
     index += count;
     if (index < length) {
       entry.segment.index = index;
       return;
     }
 
-    move_next_leaf_count(entry, entry.leaf.pointer, entry.leaf.index,
-                         index - length);
+    move_next_leaf_count(entry, index - length);
   }
 
-  static void move_next_leaf_count(iterator_entry &entry, node_pointer pointer,
-                                   size_type index, size_type count) {
+  static void move_next_leaf_count(iterator_entry &entry, size_type count) {
+    auto pointer = entry.leaf.pointer;
+    auto index = entry.leaf.index;
+
     // Special case for end iterator.
     if (pointer == nullptr) {
       entry.segment.index = entry.segment.length;
@@ -677,20 +686,22 @@ class segmented_tree_seq {
   }
 
   // move_prev_count
-  static void move_prev_segment_count(iterator_entry &entry, size_type index,
-                                      size_type count) {
+  static void move_prev_segment_count(iterator_entry &entry, size_type count) {
+    auto index = entry.segment.index;
+
     if (index >= count) {
       index -= count;
       entry.segment.index = index;
       return;
     }
 
-    move_prev_leaf_count(entry, entry.leaf.pointer, entry.leaf.index,
-                         count - index);
+    move_prev_leaf_count(entry, count - index);
   }
 
-  static void move_prev_leaf_count(iterator_entry &entry, node_pointer pointer,
-                                   size_type index, size_type count) {
+  static void move_prev_leaf_count(iterator_entry &entry, size_type count) {
+    auto pointer = entry.leaf.pointer;
+    auto index = entry.leaf.index;
+
     while (true) {
       if (index == 0) break;
       --index;
@@ -1161,17 +1172,19 @@ class segmented_tree_seq {
   }
 
   // reserve_single
-  iterator_data reserve_single_iterator(iterator_data it) {
-    reserve_single_segment(it.entry, it.entry.segment.pointer,
-                           it.entry.segment.index, it.entry.segment.length,
-                           it.entry.leaf.pointer, it.entry.leaf.index);
-    return it;
+  iterator_data reserve_single_iterator(iterator_data const &it) {
+    auto res = it;
+    reserve_single_segment(res.entry);
+    return res;
   }
 
-  void reserve_single_segment(iterator_entry &entry, element_pointer pointer,
-                              size_type index, size_type length,
-                              node_pointer parent_pointer,
-                              size_type parent_index) {
+  void reserve_single_segment(iterator_entry &entry) {
+    auto pointer = entry.segment.pointer;
+    auto index = entry.segment.index;
+    auto length = entry.segment.length;
+    auto parent_pointer = entry.leaf.pointer;
+    auto parent_index = entry.leaf.index;
+
     if (pointer == nullptr) {
       auto alloc = allocate_segment();
       get_root() = alloc;
@@ -1341,20 +1354,22 @@ class segmented_tree_seq {
   }
 
   // erase_single
-  iterator_data erase_single_iterator(iterator_data it) {
-    destroy_element(it.entry.segment.pointer, it.entry.segment.index);
-    erase_single_segment(it.entry, it.entry.segment.pointer,
-                         it.entry.segment.index, it.entry.segment.length,
-                         it.entry.leaf.pointer, it.entry.leaf.index);
-    if (it.entry.segment.index == it.entry.segment.length)
-      move_next_leaf(it.entry, it.entry.leaf.pointer, it.entry.leaf.index);
-    return it;
+  iterator_data erase_single_iterator(iterator_data const &it) {
+    auto res = it;
+    destroy_element(res.entry.segment.pointer, res.entry.segment.index);
+    erase_single_segment(res.entry);
+    if (res.entry.segment.index == res.entry.segment.length)
+      move_next_leaf(res.entry);
+    return res;
   }
 
-  void erase_single_segment(iterator_entry &entry, element_pointer pointer,
-                            size_type index, size_type length,
-                            node_pointer parent_pointer,
-                            size_type parent_index) {
+  void erase_single_segment(iterator_entry &entry) {
+    auto pointer = entry.segment.pointer;
+    auto index = entry.segment.index;
+    auto length = entry.segment.length;
+    auto parent_pointer = entry.leaf.pointer;
+    auto parent_index = entry.leaf.index;
+
     if (length == 1) {
       deallocate_segment(pointer);
       get_root() = nullptr;
@@ -1954,9 +1969,7 @@ class segmented_tree_seq {
       copy_single_segment(it.entry.segment.pointer, it.entry.segment.index,
                           std::forward<Args>(args)...);
     } catch (...) {
-      erase_single_segment(it.entry, it.entry.segment.pointer,
-                           it.entry.segment.index, it.entry.segment.length,
-                           it.entry.leaf.pointer, it.entry.leaf.index);
+      erase_single_segment(it.entry);
       throw;
     }
 
