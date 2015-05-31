@@ -1,3 +1,4 @@
+#include <functional>
 #include <numeric>
 #include <memory>
 
@@ -76,4 +77,12 @@ void test_compile() {
   c4.resize(10000);
   c4.resize(0);
   c4.swap(c1);
+  c4.remove(0);
+  c4.remove_if([](T const &t) { return t == 0; });
+  c4.reverse();
+  c4.sort();
+  c4.unique();
+  c4.unique(std::equal_to<T>{});
+  c4.sort();
+  c4.sort(std::less<T>{});
 }

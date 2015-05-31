@@ -2056,7 +2056,7 @@ class segmented_tree_seq {
 
   void reverse() { std::reverse(begin(), end()); }
 
-  void unique() { unique(std::less<value_type>{}); }
+  void unique() { unique(std::equal_to<value_type>{}); }
 
   template <class BinaryPredicate>
   void unique(BinaryPredicate p) {
@@ -2067,7 +2067,7 @@ class segmented_tree_seq {
 
   template <class Compare>
   void sort(Compare comp) {
-    std::stable_sort(begin(), end());
+    std::stable_sort(begin(), end(), comp);
   }
 };
 
