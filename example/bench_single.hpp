@@ -9,7 +9,7 @@ void insert_values_single(Container &container,
   auto &ordered = data.get_ordered();
   reserve(container, count);
   for (std::size_t i = 0; i != count; ++i) {
-    container.insert(position(container, indexes[i]), ordered[i]);
+    container.insert(nth(container, indexes[i]), ordered[i]);
   }
 }
 
@@ -21,7 +21,7 @@ void erase_values_single(Container &container,
   reserve(container, count);
   while (count != 1) {
     --count;
-    container.erase(position(container, indexes[count]));
+    container.erase(nth(container, indexes[count]));
   }
 }
 

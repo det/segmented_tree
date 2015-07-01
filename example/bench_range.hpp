@@ -13,7 +13,7 @@ void insert_values_range(Container &container,
   auto last = first;
   for (std::size_t i = 0; i != count; ++i) {
     last += size;
-    container.insert(position(container, indexes[i]), first, last);
+    container.insert(nth(container, indexes[i]), first, last);
     first += size;
   }
 }
@@ -27,7 +27,7 @@ void erase_values_range(Container &container,
 
   while (count != 1) {
     --count;
-    auto first = position(container, indexes[count]);
+    auto first = nth(container, indexes[count]);
     auto last = first + size;
     container.erase(first, last);
   }

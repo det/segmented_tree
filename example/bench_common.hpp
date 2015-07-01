@@ -8,10 +8,10 @@
 #include <vector>
 
 template <typename T>
-struct has_position {
+struct has_nth {
  private:
   template <typename U>
-  static auto test(U *t) -> decltype(t->position(0), std::true_type{});
+  static auto test(U *t) -> decltype(t->nth(0), std::true_type{});
   template <typename>
   static std::false_type test(...);
 
@@ -20,14 +20,14 @@ struct has_position {
 };
 
 template <typename T>
-typename std::enable_if<has_position<T>::value, typename T::iterator>::type
-position(T &object, typename T::size_type pos) {
-  return object.position(pos);
+typename std::enable_if<has_nth<T>::value, typename T::iterator>::type
+nth(T &object, typename T::size_type pos) {
+  return object.nth(pos);
 }
 
 template <typename T>
-typename std::enable_if<!has_position<T>::value, typename T::iterator>::type
-position(T &object, typename T::size_type pos) {
+typename std::enable_if<!has_nth<T>::value, typename T::iterator>::type
+nth(T &object, typename T::size_type pos) {
   return object.begin() + pos;
 }
 

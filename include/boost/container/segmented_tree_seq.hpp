@@ -1381,8 +1381,7 @@ class segmented_tree_seq {
       return;
     }
 
-    if (length != segment_min || parent_pointer == nullptr) {
-      --length;
+    if (length-- != segment_min || parent_pointer == nullptr) {
       move_backward_segment(pointer, length, index, 1);
       entry.segment.length = length;
       update_sizes(parent_pointer, parent_index, -1);
@@ -1392,7 +1391,6 @@ class segmented_tree_seq {
     constexpr size_type merge_size = segment_max - 1;
     auto pointers = &parent_pointer->pointers[0];
     auto sizes = &parent_pointer->sizes[0];
-    --length;
 
     size_type erase_index;
     if (parent_index != 0) {
@@ -1467,8 +1465,7 @@ class segmented_tree_seq {
       return;
     }
 
-    if (length != base_min || parent_pointer == nullptr) {
-      --length;
+    if (length-- != base_min || parent_pointer == nullptr) {
       move_backward_leaf(pointer, length, index, 1);
       pointer->length = length;
       update_sizes(parent_pointer, parent_index, -1);
@@ -1477,7 +1474,6 @@ class segmented_tree_seq {
 
     auto pointers = &parent_pointer->pointers[0];
     auto sizes = &parent_pointer->sizes[0];
-    --length;
 
     size_type erase_index;
     if (parent_index != 0) {
@@ -1558,15 +1554,13 @@ class segmented_tree_seq {
         return;
       }
 
-      if (length != base_min || parent_pointer == nullptr) {
-        --length;
+      if (length-- != base_min || parent_pointer == nullptr) {
         move_backward_branch(pointer, length, index, 1);
         pointer->length = length;
         update_sizes(parent_pointer, parent_index, -1);
         return;
       }
 
-      --length;
       auto pointers = &parent_pointer->pointers[0];
       auto sizes = &parent_pointer->sizes[0];
 
@@ -1643,7 +1637,7 @@ class segmented_tree_seq {
   // debug functions
   void verify_iterator(iterator_data a, size_type pos) {
 #ifdef SEGMENTED_TREE_SEQ_DEBUG
-    auto b = position(pos).it_;
+    auto b = nth(pos).it_;
     if (a.entry.segment.pointer != b.entry.segment.pointer) {
       std::cerr << "segment pointer mismatch: " << a.entry.segment.pointer
                 << " " << b.entry.segment.pointer << std::endl;
@@ -1865,20 +1859,19 @@ class segmented_tree_seq {
 
   const_iterator cend() const { return find_end(); }
 
-  iterator position(size_type pos) {
+  iterator nth(size_type pos) {
     if (pos >= size()) return find_end();
     return find_index(pos);
   }
 
-  const_iterator position(size_type pos) const {
+  const_iterator nth(size_type pos) const {
     if (pos >= size()) return find_end();
     return find_index(pos);
   }
 
-  const_iterator cposition(size_type pos) {
-    if (pos >= size()) return find_end();
-    return find_index(pos);
-  }
+  size_type index_of(iterator pos) { return pos.it_.pos; }
+
+  size_type index_of(const_iterator pos) const { return pos.it_.pos; }
 
   reverse_iterator rbegin() { return reverse_iterator{end()}; }
 
@@ -1898,18 +1891,6 @@ class segmented_tree_seq {
 
   const_reverse_iterator crend() const {
     return const_reverse_iterator{begin()};
-  }
-
-  reverse_iterator rposition(size_type pos) {
-    return reverse_iterator{position(size() - pos)};
-  }
-
-  const_reverse_iterator rposition(size_type pos) const {
-    return const_reverse_iterator{position(size() - pos)};
-  }
-
-  const_reverse_iterator crposition(size_type pos) const {
-    return const_reverse_iterator{position(size() - pos)};
   }
 
   bool empty() const { return get_size() == 0; }
@@ -2021,7 +2002,7 @@ class segmented_tree_seq {
 
     auto last = end();
     if (count < sz)
-      erase(position(count), last);
+      erase(nth(count), last);
     else
       insert(last, count, value);
   }
