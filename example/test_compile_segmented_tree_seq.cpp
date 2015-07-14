@@ -1,5 +1,5 @@
 #include "compile.hpp"
-#include "segmented_tree_seq.hpp"
+#include "boost/container/segmented_tree_seq.hpp"
 
 int main() {
   test_compile<boost::container::segmented_tree_seq<std::uint64_t>,

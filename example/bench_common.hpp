@@ -28,7 +28,7 @@ nth(T &object, typename T::size_type pos) {
 template <typename T>
 typename std::enable_if<!has_nth<T>::value, typename T::iterator>::type
 nth(T &object, typename T::size_type pos) {
-  return object.begin() + pos;
+  return object.begin() + static_cast<std::ptrdiff_t>(pos);
 }
 
 template <typename T>
@@ -125,7 +125,7 @@ std::uint64_t accumulate_forward_by(T const &container, std::size_t distance) {
 
   while (left >= distance) {
     adler.update(*first);
-    first += distance;
+    first += static_cast<std::ptrdiff_t>(distance);
     left -= distance;
   }
 
@@ -152,7 +152,7 @@ std::uint64_t accumulate_backward_by(T const &container, std::size_t distance) {
   auto it = container.end();
 
   while (left >= distance) {
-    it -= distance;
+    it -= static_cast<std::ptrdiff_t>(distance);
     left -= distance;
     adler.update(*it);
   }
@@ -165,47 +165,47 @@ void bench_iterator(Container const &container, std::vector<T> const &data) {
   verify(accumulate_forward(data),
          bench("accumulate forward", accumulate_forward<Container>, container));
 
-  verify(accumulate_forward_by(data, 1),
+  verify(accumulate_forward_by(data, 1U),
          bench("accumulate forward by 1", accumulate_forward_by<Container>,
-               container, 1));
+               container, 1U));
 
-  verify(accumulate_forward_by(data, 10),
+  verify(accumulate_forward_by(data, 10U),
          bench("accumulate forward by 10", accumulate_forward_by<Container>,
-               container, 10));
+               container, 10U));
 
-  verify(accumulate_forward_by(data, 100),
+  verify(accumulate_forward_by(data, 100U),
          bench("accumulate forward by 100", accumulate_forward_by<Container>,
-               container, 100));
+               container, 100U));
 
-  verify(accumulate_forward_by(data, 1000),
+  verify(accumulate_forward_by(data, 1000U),
          bench("accumulate forward by 1000", accumulate_forward_by<Container>,
-               container, 1000));
+               container, 1000U));
 
-  verify(accumulate_forward_by(data, 10000),
+  verify(accumulate_forward_by(data, 10000U),
          bench("accumulate forward by 10000", accumulate_forward_by<Container>,
-               container, 10000));
+               container, 10000U));
 
   verify(
       accumulate_backward(data),
       bench("accumulate backward", accumulate_backward<Container>, container));
 
-  verify(accumulate_backward_by(data, 1),
+  verify(accumulate_backward_by(data, 1U),
          bench("accumulate backward by 1", accumulate_backward_by<Container>,
-               container, 1));
+               container, 1U));
 
-  verify(accumulate_backward_by(data, 10),
+  verify(accumulate_backward_by(data, 10U),
          bench("accumulate backward by 10", accumulate_backward_by<Container>,
-               container, 10));
+               container, 10U));
 
-  verify(accumulate_backward_by(data, 100),
+  verify(accumulate_backward_by(data, 100U),
          bench("accumulate backward by 100", accumulate_backward_by<Container>,
-               container, 100));
+               container, 100U));
 
-  verify(accumulate_backward_by(data, 1000),
+  verify(accumulate_backward_by(data, 1000U),
          bench("accumulate backward by 1000", accumulate_backward_by<Container>,
-               container, 1000));
+               container, 1000U));
 
-  verify(accumulate_backward_by(data, 10000),
+  verify(accumulate_backward_by(data, 10000U),
          bench("accumulate backward by 10000",
-               accumulate_backward_by<Container>, container, 10000));
+               accumulate_backward_by<Container>, container, 10000U));
 }

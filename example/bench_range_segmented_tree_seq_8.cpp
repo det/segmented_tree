@@ -1,6 +1,6 @@
 #include "bench_range.hpp"
 #include "random_data_range.hpp"
-#include "segmented_tree_seq.hpp"
+#include "boost/container/segmented_tree_seq.hpp"
 
 int main(int argc, char** argv) {
   if (argc != 2) {

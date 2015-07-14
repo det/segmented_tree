@@ -12,9 +12,9 @@ void insert_values_range(Container &container,
   auto first = ordered.begin();
   auto last = first;
   for (std::size_t i = 0; i != count; ++i) {
-    last += size;
+    last += static_cast<std::ptrdiff_t>(size);
     container.insert(nth(container, indexes[i]), first, last);
-    first += size;
+    first += static_cast<std::ptrdiff_t>(size);
   }
 }
 
@@ -28,7 +28,7 @@ void erase_values_range(Container &container,
   while (count != 1) {
     --count;
     auto first = nth(container, indexes[count]);
-    auto last = first + size;
+    auto last = first + static_cast<std::ptrdiff_t>(size);
     container.erase(first, last);
   }
   container.erase(container.begin() + 1, container.end());

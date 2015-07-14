@@ -2,7 +2,6 @@
 
 #include <array>
 #include <algorithm>
-#include <cassert>
 #include <cstring>
 #include <limits>
 #include <memory>
@@ -31,7 +30,9 @@ class segmented_tree_seq {
   struct leaf_entry;
   struct iterator_entry;
   struct iterator_data;
-  template <typename Reference, typename Pointer>
+  class iterator_base;
+  class const_iterator_base;
+  template <typename Trait>
   class iterator_t;
 
   using element_traits = typename std::allocator_traits<Allocator>;
@@ -50,8 +51,8 @@ class segmented_tree_seq {
   using const_reference = value_type const &;
   using pointer = typename element_traits::pointer;
   using const_pointer = typename element_traits::const_pointer;
-  using iterator = iterator_t<reference, value_type *>;
-  using const_iterator = iterator_t<const_reference, value_type const *>;
+  using iterator = iterator_t<iterator_base>;
+  using const_iterator = iterator_t<const_iterator_base>;
   using reverse_iterator = std::reverse_iterator<iterator>;
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
@@ -82,10 +83,22 @@ class segmented_tree_seq {
   // private types
   struct node {
     node_pointer parent_pointer;
-    std::uint16_t parent_index;
-    std::uint16_t length;
+    std::uint16_t parent_index_;
+    std::uint16_t length_;
     std::array<size_type, base_max> sizes;
     std::array<void_pointer, base_max> pointers;
+
+    size_type length() { return length_; }
+
+    void length(size_type length) {
+      length_ = static_cast<std::uint16_t>(length);
+    }
+
+    size_type parent_index() { return parent_index_; }
+
+    void parent_index(size_type index) {
+      parent_index_ = static_cast<std::uint16_t>(index);
+    }
   };
 
   struct segment_entry {
@@ -109,26 +122,48 @@ class segmented_tree_seq {
     size_type pos;
   };
 
-  template <typename Reference, typename Pointer>
-  class iterator_t {
+  class iterator_base {
+   protected:
+    iterator_data it_;
+    iterator_base() = default;
+    iterator_base(iterator_data const &it) : it_(it) {}
+
+   public:
+    using reference = T &;
+    using pointer = typename element_traits::pointer;
+    operator const_iterator() { return {it_}; }
+  };
+
+  class const_iterator_base {
+   protected:
+    iterator_data it_;
+    const_iterator_base() = default;
+    const_iterator_base(iterator_data const &it) : it_(it) {}
+
+   public:
+    using reference = T const &;
+    using pointer = typename element_traits::const_pointer;
+  };
+
+  template <typename Base>
+  class iterator_t : public Base {
     friend segmented_tree_seq;
 
    private:
-    iterator_data it_;
-    iterator_t(iterator_data it) : it_(it) {}
+    using Base::it_;
+    iterator_t(iterator_data const &it) : Base{it} {}
 
    public:
     using iterator_category = std::random_access_iterator_tag;
     using value_type = T;
-    using difference_type = std::ptrdiff_t;
-    using reference = Reference;
-    using pointer = Pointer;
+    using difference_type = typename element_traits::difference_type;
 
     iterator_t() = default;
-    iterator_t(iterator const &other) : it_(other.it_) {}
+    iterator_t(iterator_t const &) = default;
+    iterator_t &operator=(iterator_t const &) = default;
 
-    std::size_t index() const { return it_.entry.segment.index; }
-    pointer begin() const { return std::addressof(*it_.entry.segment.pointer); }
+    size_type index() const { return it_.entry.segment.index; }
+    pointer begin() const { return it_.entry.segment.pointer; }
     pointer end() const { return begin() + it_.entry.segment.length; }
     pointer operator->() const { return begin() + index(); }
     reference operator*() const { return begin()[index()]; }
@@ -144,13 +179,13 @@ class segmented_tree_seq {
     }
 
     iterator_t operator++(int) {
-      iterator_data copy = it_;
+      auto copy = it_;
       move_next_iterator(it_);
       return copy;
     }
 
     iterator_t operator--(int) {
-      iterator_data copy = it_;
+      auto copy = it_;
       move_prev_iterator(it_);
       return copy;
     }
@@ -178,7 +213,9 @@ class segmented_tree_seq {
     }
 
     difference_type operator-(iterator_t const &other) const {
-      return it_.pos - other.it_.pos;
+      return it_.pos > other.it_.pos
+                 ? static_cast<difference_type>(it_.pos - other.it_.pos)
+                 : -static_cast<difference_type>(other.it_.pos - it_.pos);
     }
 
     iterator_t &move_before_segment() {
@@ -405,7 +442,7 @@ class segmented_tree_seq {
 
   static iterator_entry find_last_branch(node_pointer pointer, size_type ht) {
     while (true) {
-      size_type index = pointer->length - 1;
+      auto index = pointer->length() - 1;
       auto child = cast_node(pointer->pointers[index]);
       --ht;
       if (ht == 2) return find_last_leaf(child);
@@ -417,7 +454,7 @@ class segmented_tree_seq {
   static iterator_entry find_last_leaf(node_pointer pointer) {
     iterator_entry entry;
     entry.leaf.pointer = pointer;
-    entry.leaf.index = pointer->length - 1;
+    entry.leaf.index = pointer->length() - 1;
     entry.segment =
         find_last_segment(cast_segment(pointer->pointers[entry.leaf.index]),
                           pointer->sizes[entry.leaf.index]);
@@ -460,7 +497,7 @@ class segmented_tree_seq {
 
   static iterator_entry find_end_branch(node_pointer pointer, size_type ht) {
     while (true) {
-      size_type index = pointer->length - 1;
+      auto index = pointer->length() - 1;
       auto child = cast_node(pointer->pointers[index]);
 
       --ht;
@@ -472,7 +509,7 @@ class segmented_tree_seq {
 
   static iterator_entry find_end_leaf(node_pointer pointer) {
     iterator_entry entry;
-    auto index = pointer->length - 1;
+    auto index = pointer->length() - 1;
     entry.leaf.pointer = pointer;
     entry.leaf.index = index;
     entry.segment = find_end_segment(cast_segment(pointer->pointers[index]),
@@ -519,14 +556,14 @@ class segmented_tree_seq {
     }
 
     ++index;
-    if (index != pointer->length) {
+    if (index != pointer->length()) {
       entry.leaf.index = index;
       entry.segment = find_first_segment(cast_segment(pointer->pointers[index]),
                                          pointer->sizes[index]);
       return;
     }
 
-    move_next_branch(entry, pointer->parent_pointer, pointer->parent_index);
+    move_next_branch(entry, pointer->parent_pointer, pointer->parent_index());
   }
 
   static void move_next_branch(iterator_entry &entry, node_pointer pointer,
@@ -541,12 +578,12 @@ class segmented_tree_seq {
       }
 
       ++index;
-      if (index != pointer->length) {
+      if (index != pointer->length()) {
         entry = find_first_node(cast_node(pointer->pointers[index]), child_ht);
         return;
       }
 
-      index = pointer->parent_index;
+      index = pointer->parent_index();
       pointer = pointer->parent_pointer;
       ++child_ht;
     }
@@ -582,7 +619,7 @@ class segmented_tree_seq {
       return;
     }
 
-    move_prev_branch(entry, pointer->parent_pointer, pointer->parent_index);
+    move_prev_branch(entry, pointer->parent_pointer, pointer->parent_index());
   }
 
   static void move_prev_branch(iterator_entry &entry, node_pointer pointer,
@@ -596,7 +633,7 @@ class segmented_tree_seq {
         return;
       }
 
-      index = pointer->parent_index;
+      index = pointer->parent_index();
       pointer = pointer->parent_pointer;
       ++child_ht;
     }
@@ -604,11 +641,12 @@ class segmented_tree_seq {
 
   // move_count
   static void move_iterator_count(iterator_data &it, difference_type diff) {
-    it.pos += diff;
+    auto size = static_cast<size_type>(diff);
+    it.pos += size;
     if (diff > 0)
-      move_next_segment_count(it.entry, diff);
+      move_next_segment_count(it.entry, size);
     else if (diff < 0)
-      move_prev_segment_count(it.entry, -diff);
+      move_prev_segment_count(it.entry, -size);
   }
 
   // move_next_count
@@ -637,9 +675,9 @@ class segmented_tree_seq {
 
     while (true) {
       ++index;
-      if (index == pointer->length) break;
+      if (index == pointer->length()) break;
 
-      size_type size = pointer->sizes[index];
+      auto size = pointer->sizes[index];
       if (size > count) {
         entry.leaf.index = index;
         entry.segment = find_index_segment(
@@ -650,7 +688,7 @@ class segmented_tree_seq {
     }
 
     move_next_branch_count(entry, pointer, pointer->parent_pointer,
-                           pointer->parent_index, count);
+                           pointer->parent_index(), count);
   }
 
   static void move_next_branch_count(iterator_entry &entry, node_pointer base,
@@ -667,9 +705,9 @@ class segmented_tree_seq {
 
       while (true) {
         ++index;
-        if (index == pointer->length) break;
+        if (index == pointer->length()) break;
 
-        size_type size = pointer->sizes[index];
+        auto size = pointer->sizes[index];
         if (size > count) {
           entry = find_index_node(cast_node(pointer->pointers[index]), child_ht,
                                   count);
@@ -679,7 +717,7 @@ class segmented_tree_seq {
       }
 
       base = pointer;
-      index = pointer->parent_index;
+      index = pointer->parent_index();
       pointer = pointer->parent_pointer;
       ++child_ht;
     }
@@ -706,7 +744,7 @@ class segmented_tree_seq {
       if (index == 0) break;
       --index;
 
-      size_type size = pointer->sizes[index];
+      auto size = pointer->sizes[index];
       if (size >= count) {
         entry.leaf.index = index;
         entry.segment = find_index_segment(
@@ -717,7 +755,7 @@ class segmented_tree_seq {
     }
 
     move_prev_branch_count(entry, pointer->parent_pointer,
-                           pointer->parent_index, count);
+                           pointer->parent_index(), count);
   }
 
   static void move_prev_branch_count(iterator_entry &entry,
@@ -730,7 +768,7 @@ class segmented_tree_seq {
         if (index == 0) break;
         --index;
 
-        size_type size = pointer->sizes[index];
+        auto size = pointer->sizes[index];
         if (size >= count) {
           entry = find_index_node(cast_node(pointer->pointers[index]), child_ht,
                                   size - count);
@@ -739,7 +777,7 @@ class segmented_tree_seq {
         count -= size;
       }
 
-      index = pointer->parent_index;
+      index = pointer->parent_index();
       pointer = pointer->parent_pointer;
       ++child_ht;
     }
@@ -829,7 +867,7 @@ class segmented_tree_seq {
   }
 
   void purge_leaf(node_pointer pointer) {
-    for (size_type i = 0, e = pointer->length; i != e; ++i)
+    for (size_type i = 0, e = pointer->length(); i != e; ++i)
       purge_segment(cast_segment(pointer->pointers[i]), pointer->sizes[i]);
     deallocate_node(pointer);
   }
@@ -842,7 +880,7 @@ class segmented_tree_seq {
   }
 
   void purge_branch(node_pointer pointer, size_type ht) {
-    for (size_type i = 0, e = pointer->length; i != e; ++i)
+    for (size_type i = 0, e = pointer->length(); i != e; ++i)
       purge_node(cast_node(pointer->pointers[i]), ht - 1);
     deallocate_node(pointer);
   }
@@ -868,7 +906,7 @@ class segmented_tree_seq {
 
   size_type move_single_leaf(node_pointer source, size_type source_index,
                              node_pointer dest, size_type dest_index) {
-    size_type sz = source->sizes[source_index];
+    auto sz = source->sizes[source_index];
     dest->sizes[dest_index] = sz;
     dest->pointers[dest_index] = source->pointers[source_index];
     return sz;
@@ -876,11 +914,11 @@ class segmented_tree_seq {
 
   size_type move_single_branch(node_pointer source, size_type source_index,
                                node_pointer dest, size_type dest_index) {
-    size_type sz = source->sizes[source_index];
+    auto sz = source->sizes[source_index];
     dest->sizes[dest_index] = sz;
     auto child = cast_node(source->pointers[source_index]);
     child->parent_pointer = dest;
-    child->parent_index = dest_index;
+    child->parent_index(dest_index);
     dest->pointers[dest_index] = child;
     return sz;
   }
@@ -893,9 +931,9 @@ class segmented_tree_seq {
       std::memcpy(std::addressof(dest[dest_index]),
                   std::addressof(source[source_index]), count * sizeof(T));
     else {
-      size_type from = source_index;
-      size_type last = source_index + count;
-      size_type to = dest_index;
+      auto from = source_index;
+      auto last = source_index + count;
+      auto to = dest_index;
 
       while (from != last) {
         construct_element(dest, to, std::move(source[from]));
@@ -911,12 +949,12 @@ class segmented_tree_seq {
                             node_pointer dest, size_type dest_index,
                             size_type count) {
     size_type copy_size = 0;
-    size_type from = source_index;
-    size_type last = source_index + count;
-    size_type to = dest_index;
+    auto from = source_index;
+    auto last = source_index + count;
+    auto to = dest_index;
 
     while (from != last) {
-      size_type sz = source->sizes[from];
+      auto sz = source->sizes[from];
       dest->sizes[to] = sz;
       dest->pointers[to] = source->pointers[from];
       copy_size += sz;
@@ -931,16 +969,16 @@ class segmented_tree_seq {
                               node_pointer dest, size_type dest_index,
                               size_type count) {
     size_type copy_size = 0;
-    size_type from = source_index;
-    size_type last = source_index + count;
-    size_type to = dest_index;
+    auto from = source_index;
+    auto last = source_index + count;
+    auto to = dest_index;
 
     while (from != last) {
-      size_type sz = source->sizes[from];
+      auto sz = source->sizes[from];
       dest->sizes[to] = sz;
       auto child = cast_node(source->pointers[from]);
       child->parent_pointer = dest;
-      child->parent_index = to;
+      child->parent_index(to);
       dest->pointers[to] = child;
       copy_size += sz;
       ++from;
@@ -958,9 +996,9 @@ class segmented_tree_seq {
                    std::addressof(pointer[index]),
                    (length - index) * sizeof(T));
     else {
-      size_type first = index;
-      size_type from = length;
-      size_type to = length + distance;
+      auto first = index;
+      auto from = length;
+      auto to = length + distance;
 
       while (first != from) {
         --from;
@@ -973,9 +1011,9 @@ class segmented_tree_seq {
 
   void move_forward_leaf(node_pointer pointer, size_type length,
                          size_type index, size_type distance) {
-    size_type first = index;
-    size_type from = length;
-    size_type to = length + distance;
+    auto first = index;
+    auto from = length;
+    auto to = length + distance;
 
     while (first != from) {
       --from;
@@ -987,16 +1025,16 @@ class segmented_tree_seq {
 
   void move_forward_branch(node_pointer pointer, size_type length,
                            size_type index, size_type distance) {
-    size_type first = index;
-    size_type from = length;
-    size_type to = length + distance;
+    auto first = index;
+    auto from = length;
+    auto to = length + distance;
 
     while (first != from) {
       --from;
       --to;
       pointer->sizes[to] = pointer->sizes[from];
       auto child = cast_node(pointer->pointers[from]);
-      child->parent_index = to;
+      child->parent_index(to);
       pointer->pointers[to] = child;
     }
   }
@@ -1009,9 +1047,9 @@ class segmented_tree_seq {
                    std::addressof(pointer[index + distance]),
                    (length - index) * sizeof(T));
     else {
-      size_type from = index + distance;
-      size_type to = index;
-      size_type last = length;
+      auto from = index + distance;
+      auto to = index;
+      auto last = length;
 
       while (to != last) {
         destroy_element(pointer, to);
@@ -1024,9 +1062,9 @@ class segmented_tree_seq {
 
   void move_backward_leaf(node_pointer pointer, size_type length,
                           size_type index, size_type distance) {
-    size_type from = index + distance;
-    size_type to = index;
-    size_type last = length;
+    auto from = index + distance;
+    auto to = index;
+    auto last = length;
 
     while (to != last) {
       pointer->sizes[to] = pointer->sizes[from];
@@ -1038,14 +1076,14 @@ class segmented_tree_seq {
 
   void move_backward_branch(node_pointer pointer, size_type length,
                             size_type index, size_type distance) {
-    size_type from = index + distance;
-    size_type to = index;
-    size_type last = length;
+    auto from = index + distance;
+    auto to = index;
+    auto last = length;
 
     while (to != last) {
       pointer->sizes[to] = pointer->sizes[from];
       auto child = cast_node(pointer->pointers[from]);
-      child->parent_index = to;
+      child->parent_index(to);
       pointer->pointers[to] = child;
       ++from;
       ++to;
@@ -1072,7 +1110,7 @@ class segmented_tree_seq {
                                node_pointer child_pointer,
                                size_type child_size) {
     child_pointer->parent_pointer = pointer;
-    child_pointer->parent_index = index;
+    child_pointer->parent_index(index);
     pointer->sizes[index] = child_size;
     pointer->pointers[index] = child_pointer;
     return child_size;
@@ -1084,8 +1122,8 @@ class segmented_tree_seq {
   size_type purge_range_segment(element_pointer pointer, size_type index,
                                 size_type count) {
     if (!is_trivial_) {
-      size_type from = index;
-      size_type last = index + count;
+      auto from = index;
+      auto last = index + count;
 
       while (from != last) {
         destroy_element(pointer, from);
@@ -1097,8 +1135,8 @@ class segmented_tree_seq {
 
   size_type purge_range_leaf(node_pointer pointer, size_type index,
                              size_type count) {
-    size_type from = index;
-    size_type last = index + count;
+    auto from = index;
+    auto last = index + count;
     size_type erase_size = 0;
 
     while (from != last) {
@@ -1113,8 +1151,8 @@ class segmented_tree_seq {
 
   size_type purge_range_branch(node_pointer pointer, size_type index,
                                size_type count, size_type ht) {
-    size_type from = index;
-    size_type last = index + count;
+    auto from = index;
+    auto last = index + count;
     size_type erase_size = 0;
 
     while (from != last) {
@@ -1131,11 +1169,19 @@ class segmented_tree_seq {
   void update_sizes(node_pointer pointer, size_type index, size_type sz) {
     while (pointer != nullptr) {
       pointer->sizes[index] += sz;
-      index = pointer->parent_index;
+      index = pointer->parent_index();
       pointer = pointer->parent_pointer;
     }
 
     get_size() += sz;
+  }
+
+  void increment_sizes(node_pointer pointer, size_type index) {
+    update_sizes(pointer, index, 1);
+  }
+
+  void decrement_sizes(node_pointer pointer, size_type index) {
+    update_sizes(pointer, index, -static_cast<size_type>(1));
   }
 
   // alloc_nodes_single
@@ -1151,7 +1197,7 @@ class segmented_tree_seq {
           return alloc;
         }
 
-        if (pointer->length != base_max) return alloc;
+        if (pointer->length() != base_max) return alloc;
 
         auto temp = allocate_node();
         temp->parent_pointer = alloc;
@@ -1198,25 +1244,25 @@ class segmented_tree_seq {
     if (length != segment_max) {
       move_forward_segment(pointer, length, index, 1);
       ++entry.segment.length;
-      update_sizes(parent_pointer, parent_index, 1);
+      increment_sizes(parent_pointer, parent_index);
       return;
     }
 
-    element_pointer alloc = allocate_segment();
+    auto alloc = allocate_segment();
     auto leaf_alloc = alloc_nodes_single(parent_pointer, alloc);
 
-    constexpr size_type sum = segment_max + 1;
-    constexpr size_type pointer_length = sum / 2;
-    constexpr size_type alloc_length = sum - pointer_length;
+    constexpr auto sum = segment_max + 1;
+    constexpr auto pointer_length = sum / 2;
+    constexpr auto alloc_length = sum - pointer_length;
 
     if (index < pointer_length) {
-      size_type left_index = pointer_length - 1;
+      auto left_index = pointer_length - 1;
       move_range_segment(pointer, left_index, alloc, 0, alloc_length);
       move_forward_segment(pointer, left_index, index, 1);
       entry.segment.length = pointer_length;
     } else {
-      size_type new_index = index - pointer_length;
-      size_type move_length = length - index;
+      auto new_index = index - pointer_length;
+      auto move_length = length - index;
       move_range_segment(pointer, pointer_length, alloc, 0, new_index);
       move_range_segment(pointer, index, alloc, new_index + 1, move_length);
       entry.segment.length = alloc_length;
@@ -1235,8 +1281,8 @@ class segmented_tree_seq {
                            size_type child_size) {
     if (pointer == nullptr) {
       alloc->parent_pointer = nullptr;
-      alloc->parent_index = 0;
-      alloc->length = 2;
+      alloc->parent_index(0);
+      alloc->length(2);
       copy_single_leaf(alloc, 0, base, get_size() - child_size + 1);
       copy_single_leaf(alloc, 1, child_pointer, child_size);
       get_root() = alloc;
@@ -1248,29 +1294,30 @@ class segmented_tree_seq {
 
     pointer->sizes[index - 1] -= child_size - 1;
 
-    if (pointer->length != base_max) {
-      move_forward_leaf(pointer, pointer->length, index, 1);
+    auto length = pointer->length();
+    if (length != base_max) {
+      move_forward_leaf(pointer, length, index, 1);
       copy_single_leaf(pointer, index, child_pointer, child_size);
-      ++pointer->length;
-      update_sizes(pointer->parent_pointer, pointer->parent_index, 1);
+      pointer->length(length + 1);
+      increment_sizes(pointer->parent_pointer, pointer->parent_index());
       return;
     }
 
     auto next_alloc = alloc->parent_pointer;
-    constexpr size_type sum = base_max + 1;
-    constexpr size_type pointer_length = sum / 2;
-    constexpr size_type alloc_length = sum - pointer_length;
+    constexpr auto sum = base_max + 1;
+    constexpr auto pointer_length = sum / 2;
+    constexpr auto alloc_length = sum - pointer_length;
 
     size_type alloc_size = 0;
     if (index < pointer_length) {
-      size_type left_index = pointer_length - 1;
+      auto left_index = pointer_length - 1;
       alloc_size +=
           move_range_leaf(pointer, left_index, alloc, 0, alloc_length);
       move_forward_leaf(pointer, left_index, index, 1);
       copy_single_leaf(pointer, index, child_pointer, child_size);
     } else {
-      size_type new_index = index - pointer_length;
-      size_type move_length = pointer->length - index;
+      auto new_index = index - pointer_length;
+      auto move_length = length - index;
       alloc_size +=
           move_range_leaf(pointer, pointer_length, alloc, 0, new_index);
       alloc_size +=
@@ -1279,8 +1326,8 @@ class segmented_tree_seq {
           copy_single_leaf(alloc, new_index, child_pointer, child_size);
     }
 
-    pointer->length = pointer_length;
-    alloc->length = alloc_length;
+    pointer->length(pointer_length);
+    alloc->length(alloc_length);
 
     if (entry.leaf.index >= pointer_length) {
       entry.leaf.pointer = alloc;
@@ -1288,7 +1335,7 @@ class segmented_tree_seq {
     }
 
     reserve_single_branch(pointer, pointer->parent_pointer,
-                          pointer->parent_index + 1, next_alloc, alloc,
+                          pointer->parent_index() + 1, next_alloc, alloc,
                           alloc_size);
   }
 
@@ -1298,8 +1345,8 @@ class segmented_tree_seq {
     while (true) {
       if (pointer == nullptr) {
         alloc->parent_pointer = nullptr;
-        alloc->parent_index = 0;
-        alloc->length = 2;
+        alloc->parent_index(0);
+        alloc->length(2);
         copy_single_branch(alloc, 0, base, get_size() - child_size + 1);
         copy_single_branch(alloc, 1, child_pointer, child_size);
         get_root() = alloc;
@@ -1310,29 +1357,30 @@ class segmented_tree_seq {
 
       pointer->sizes[index - 1] -= child_size - 1;
 
-      if (pointer->length != base_max) {
-        move_forward_branch(pointer, pointer->length, index, 1);
+      auto length = pointer->length();
+      if (length != base_max) {
+        move_forward_branch(pointer, length, index, 1);
         copy_single_branch(pointer, index, child_pointer, child_size);
-        ++pointer->length;
-        update_sizes(pointer->parent_pointer, pointer->parent_index, 1);
+        pointer->length(length + 1);
+        increment_sizes(pointer->parent_pointer, pointer->parent_index());
         return;
       }
 
       auto next_alloc = alloc->parent_pointer;
-      constexpr size_type sum = base_max + 1;
-      constexpr size_type pointer_length = sum / 2;
-      constexpr size_type alloc_length = sum - pointer_length;
+      constexpr auto sum = base_max + 1;
+      constexpr auto pointer_length = sum / 2;
+      constexpr auto alloc_length = sum - pointer_length;
 
       size_type alloc_size = 0;
       if (index < pointer_length) {
-        size_type left_index = pointer_length - 1;
+        auto left_index = pointer_length - 1;
         alloc_size +=
             move_range_branch(pointer, left_index, alloc, 0, alloc_length);
         move_forward_branch(pointer, left_index, index, 1);
         copy_single_branch(pointer, index, child_pointer, child_size);
       } else {
-        size_type new_index = index - pointer_length;
-        size_type move_length = pointer->length - index;
+        auto new_index = index - pointer_length;
+        auto move_length = length - index;
         alloc_size +=
             move_range_branch(pointer, pointer_length, alloc, 0, new_index);
         alloc_size += move_range_branch(pointer, index, alloc, new_index + 1,
@@ -1341,13 +1389,13 @@ class segmented_tree_seq {
             copy_single_branch(alloc, new_index, child_pointer, child_size);
       }
 
-      pointer->length = pointer_length;
-      alloc->length = alloc_length;
+      pointer->length(pointer_length);
+      alloc->length(alloc_length);
 
       child_pointer = alloc;
       child_size = alloc_size;
       base = pointer;
-      index = pointer->parent_index + 1;
+      index = pointer->parent_index() + 1;
       pointer = pointer->parent_pointer;
       alloc = next_alloc;
     }
@@ -1384,11 +1432,11 @@ class segmented_tree_seq {
     if (length-- != segment_min || parent_pointer == nullptr) {
       move_backward_segment(pointer, length, index, 1);
       entry.segment.length = length;
-      update_sizes(parent_pointer, parent_index, -1);
+      decrement_sizes(parent_pointer, parent_index);
       return;
     }
 
-    constexpr size_type merge_size = segment_max - 1;
+    constexpr auto merge_size = segment_max - 1;
     auto pointers = &parent_pointer->pointers[0];
     auto sizes = &parent_pointer->sizes[0];
 
@@ -1404,8 +1452,8 @@ class segmented_tree_seq {
         move_single_segment(prev_pointer, prev_length, pointer, 0);
         sizes[prev_index] = prev_length;
         ++entry.segment.index;
-        update_sizes(parent_pointer->parent_pointer,
-                     parent_pointer->parent_index, -1);
+        decrement_sizes(parent_pointer->parent_pointer,
+                        parent_pointer->parent_index());
         return;
       }
 
@@ -1431,8 +1479,8 @@ class segmented_tree_seq {
         move_single_segment(next_pointer, 0, pointer, length);
         move_backward_segment(next_pointer, next_length, 0, 1);
         sizes[next_index] = next_length;
-        update_sizes(parent_pointer->parent_pointer,
-                     parent_pointer->parent_index, -1);
+        decrement_sizes(parent_pointer->parent_pointer,
+                        parent_pointer->parent_index());
         return;
       }
 
@@ -1451,10 +1499,10 @@ class segmented_tree_seq {
     deallocate_segment(cast_segment(pointer->pointers[index]));
 
     auto parent_pointer = pointer->parent_pointer;
-    auto parent_index = pointer->parent_index;
-    auto length = pointer->length;
+    auto parent_index = pointer->parent_index();
+    auto length = pointer->length();
 
-    if (pointer->length == 2) {
+    if (length == 2) {
       auto other = pointer->pointers[index ^ 1];
       deallocate_node(pointer);
       get_root() = other;
@@ -1467,8 +1515,8 @@ class segmented_tree_seq {
 
     if (length-- != base_min || parent_pointer == nullptr) {
       move_backward_leaf(pointer, length, index, 1);
-      pointer->length = length;
-      update_sizes(parent_pointer, parent_index, -1);
+      pointer->length(length);
+      decrement_sizes(parent_pointer, parent_index);
       return;
     }
 
@@ -1479,7 +1527,7 @@ class segmented_tree_seq {
     if (parent_index != 0) {
       auto prev_index = parent_index - 1;
       auto prev_pointer = cast_node(pointers[prev_index]);
-      auto prev_length = prev_pointer->length;
+      auto prev_length = prev_pointer->length();
 
       if (prev_length != base_min) {
         --prev_length;
@@ -1487,10 +1535,10 @@ class segmented_tree_seq {
         auto sz = move_single_leaf(prev_pointer, prev_length, pointer, 0);
         sizes[prev_index] -= sz;
         sizes[parent_index] += sz - 1;
-        prev_pointer->length = prev_length;
+        prev_pointer->length(prev_length);
         ++entry.index;
-        update_sizes(parent_pointer->parent_pointer,
-                     parent_pointer->parent_index, -1);
+        decrement_sizes(parent_pointer->parent_pointer,
+                        parent_pointer->parent_index());
 
         return;
       }
@@ -1498,7 +1546,7 @@ class segmented_tree_seq {
       auto sz = move_range_leaf(pointer, 0, prev_pointer, prev_length, index);
       sz += move_range_leaf(pointer, index + 1, prev_pointer,
                             prev_length + index, length - index);
-      prev_pointer->length += length;
+      prev_pointer->length(prev_length + length);
       sizes[prev_index] += sz;
       erase_index = parent_index;
       entry.pointer = prev_pointer;
@@ -1508,7 +1556,7 @@ class segmented_tree_seq {
     else {
       auto next_index = parent_index + 1;
       auto next_pointer = cast_node(pointers[next_index]);
-      auto next_length = next_pointer->length;
+      auto next_length = next_pointer->length();
 
       if (next_length != base_min) {
         --next_length;
@@ -1517,16 +1565,16 @@ class segmented_tree_seq {
         move_backward_leaf(next_pointer, next_length, 0, 1);
         sizes[next_index] -= sz;
         sizes[parent_index] += sz - 1;
-        next_pointer->length = next_length;
-        update_sizes(parent_pointer->parent_pointer,
-                     parent_pointer->parent_index, -1);
+        next_pointer->length(next_length);
+        decrement_sizes(parent_pointer->parent_pointer,
+                        parent_pointer->parent_index());
 
         return;
       }
 
       move_backward_leaf(pointer, length, index, 1);
       auto sz = move_range_leaf(next_pointer, 0, pointer, length, next_length);
-      pointer->length += next_length - 1;
+      pointer->length(length + next_length);
       sizes[parent_index] += sz - 1;
       erase_index = next_index;
     }
@@ -1539,15 +1587,15 @@ class segmented_tree_seq {
       deallocate_node(cast_node(pointer->pointers[index]));
 
       auto parent_pointer = pointer->parent_pointer;
-      auto parent_index = pointer->parent_index;
-      auto length = pointer->length;
+      auto parent_index = pointer->parent_index();
+      auto length = pointer->length();
 
       if (length == 2) {
         auto other = cast_node(pointer->pointers[index ^ 1]);
         deallocate_node(pointer);
         get_root() = other;
         other->parent_pointer = nullptr;
-        other->parent_index = 0;
+        other->parent_index(0);
         --get_size();
         --get_height();
 
@@ -1556,8 +1604,8 @@ class segmented_tree_seq {
 
       if (length-- != base_min || parent_pointer == nullptr) {
         move_backward_branch(pointer, length, index, 1);
-        pointer->length = length;
-        update_sizes(parent_pointer, parent_index, -1);
+        pointer->length(length);
+        decrement_sizes(parent_pointer, parent_index);
         return;
       }
 
@@ -1568,7 +1616,7 @@ class segmented_tree_seq {
       if (parent_index != 0) {
         auto prev_index = parent_index - 1;
         auto prev_pointer = cast_node(pointers[prev_index]);
-        auto prev_length = prev_pointer->length;
+        auto prev_length = prev_pointer->length();
 
         if (prev_length != base_min) {
           --prev_length;
@@ -1576,9 +1624,9 @@ class segmented_tree_seq {
           auto sz = move_single_branch(prev_pointer, prev_length, pointer, 0);
           sizes[prev_index] -= sz;
           sizes[parent_index] += sz - 1;
-          prev_pointer->length = prev_length;
-          update_sizes(parent_pointer->parent_pointer,
-                       parent_pointer->parent_index, -1);
+          prev_pointer->length(prev_length);
+          decrement_sizes(parent_pointer->parent_pointer,
+                          parent_pointer->parent_index());
 
           return;
         }
@@ -1587,7 +1635,7 @@ class segmented_tree_seq {
             move_range_branch(pointer, 0, prev_pointer, prev_length, index);
         sz += move_range_branch(pointer, index + 1, prev_pointer,
                                 prev_length + index, length - index);
-        prev_pointer->length += length;
+        prev_pointer->length(prev_length + length);
         sizes[prev_index] += sz;
         erase_index = parent_index;
       }
@@ -1595,7 +1643,7 @@ class segmented_tree_seq {
       else {
         auto next_index = parent_index + 1;
         auto next_pointer = cast_node(pointers[next_index]);
-        auto next_length = next_pointer->length;
+        auto next_length = next_pointer->length();
 
         if (next_length != base_min) {
           --next_length;
@@ -1604,9 +1652,9 @@ class segmented_tree_seq {
           move_backward_branch(next_pointer, next_length, 0, 1);
           sizes[next_index] -= sz;
           sizes[parent_index] += sz - 1;
-          next_pointer->length = next_length;
-          update_sizes(parent_pointer->parent_pointer,
-                       parent_pointer->parent_index, -1);
+          next_pointer->length(next_length);
+          decrement_sizes(parent_pointer->parent_pointer,
+                          parent_pointer->parent_index());
 
           return;
         }
@@ -1614,7 +1662,7 @@ class segmented_tree_seq {
         move_backward_branch(pointer, length, index, 1);
         auto sz =
             move_range_branch(next_pointer, 0, pointer, length, next_length);
-        pointer->length += next_length - 1;
+        pointer->length(length + next_length);
         sizes[parent_index] += sz - 1;
         erase_index = next_index;
       }
@@ -1634,9 +1682,9 @@ class segmented_tree_seq {
     other.get_size() = 0;
   }
 
-  // debug functions
-  void verify_iterator(iterator_data a, size_type pos) {
+// debug functions
 #ifdef SEGMENTED_TREE_SEQ_DEBUG
+  void verify_iterator(iterator_data a, size_type pos) {
     auto b = nth(pos).it_;
     if (a.entry.segment.pointer != b.entry.segment.pointer) {
       std::cerr << "segment pointer mismatch: " << a.entry.segment.pointer
@@ -1666,8 +1714,11 @@ class segmented_tree_seq {
     if (a.pos != b.pos) {
       std::cerr << "pos mismatch: " << +a.pos << " " << +b.pos << std::endl;
     }
-#endif
   }
+#else
+  template <typename... Args>
+  void verify_iterator(Args &&...) {}
+#endif
 
  public:
   // public interface
@@ -1917,11 +1968,11 @@ class segmented_tree_seq {
   }
 
   iterator insert(const_iterator pos, size_type count, T const &value) {
-    for (std::size_t i = 0; i != count; ++i) {
+    for (size_type i = 0; i != count; ++i) {
       pos = insert(pos, value);
       ++pos;
     }
-    pos -= count;
+    move_prev_segment_count(pos.it_.entry, count);
     return pos.it_;
   }
 
@@ -1935,7 +1986,7 @@ class segmented_tree_seq {
       ++pos;
       ++count;
     }
-    pos -= count;
+    move_prev_segment_count(pos.it_.entry, count);
     return pos.it_;
   }
 

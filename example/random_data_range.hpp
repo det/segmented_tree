@@ -1,5 +1,7 @@
 #pragma once
 
+#include "random_data_common.hpp"
+
 #include <array>
 #include <cstdint>
 #include <cstring>
@@ -36,10 +38,10 @@ class random_data_range {
       std::uniform_int_distribution<std::size_t> index_dist{0, i * size};
       std::size_t index = index_dist(engine);
       indexes_.push_back(index);
-      auto pos = inserted_.begin() + index;
-      last += size;
+      auto pos = inserted_.begin() + static_cast<std::ptrdiff_t>(index);
+      last += static_cast<std::ptrdiff_t>(size);
       inserted_.insert(pos, first, last);
-      first += size;
+      first += static_cast<std::ptrdiff_t>(size);
     }
   }
 
@@ -49,15 +51,9 @@ class random_data_range {
     std::size_t size;
     in.read(reinterpret_cast<char *>(&count), sizeof(std::size_t));
     in.read(reinterpret_cast<char *>(&size), sizeof(std::size_t));
-    indexes_.resize(count);
-    ordered_.resize(count * size);
-    inserted_.resize(count * size);
-    in.read(reinterpret_cast<char *>(indexes_.data()),
-            count * sizeof(std::size_t));
-    in.read(reinterpret_cast<char *>(ordered_.data()),
-            count * size * sizeof(T));
-    in.read(reinterpret_cast<char *>(inserted_.data()),
-            count * size * sizeof(T));
+    Read(in, indexes_, count);
+    Read(in, ordered_, count * size);
+    Read(in, inserted_, count * size);
   }
 
   void save(std::string const &path) {
@@ -66,12 +62,9 @@ class random_data_range {
     std::size_t size = get_size();
     out.write(reinterpret_cast<char *>(&count), sizeof(std::size_t));
     out.write(reinterpret_cast<char *>(&size), sizeof(std::size_t));
-    out.write(reinterpret_cast<char *>(indexes_.data()),
-              count * sizeof(std::size_t));
-    out.write(reinterpret_cast<char *>(ordered_.data()),
-              count * size * sizeof(T));
-    out.write(reinterpret_cast<char *>(inserted_.data()),
-              count * size * sizeof(T));
+    Write(out, indexes_);
+    Write(out, ordered_);
+    Write(out, inserted_);
   }
 
   std::size_t get_count() const { return indexes_.size(); }

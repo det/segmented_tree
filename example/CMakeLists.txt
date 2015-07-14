@@ -1,7 +1,6 @@
-add_custom_target(headers SOURCES adler64.hpp avl_array.hpp bench_common.hpp
-                  bench_range.hpp bench_single.hpp bpt_sequence.hpp
-                  btree_seq.hpp compile.hpp random_data_range.hpp
-                  random_data_single.hpp segmented_tree_seq.hpp)
+add_custom_target(headers SOURCES adler64.hpp  bench_common.hpp bench_range.hpp
+                  bench_single.hpp compile.hpp random_data_common.hpp
+                  random_data_range.hpp random_data_single.hpp)
 
 add_executable (test_compile_segmented_tree_seq
                 test_compile_segmented_tree_seq.cpp)

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "random_data_common.hpp"
+
 #include <array>
 #include <cstdint>
 #include <cstring>
@@ -35,7 +37,8 @@ class random_data_single {
       T data = dist(engine);
       indexes_.push_back(index);
       ordered_.push_back(data);
-      inserted_.insert(inserted_.begin() + index, data);
+      inserted_.insert(inserted_.begin() + static_cast<std::ptrdiff_t>(index),
+                       data);
     }
   }
 
@@ -43,23 +46,18 @@ class random_data_single {
     std::ifstream in{path};
     std::size_t count;
     in.read(reinterpret_cast<char *>(&count), sizeof(std::size_t));
-    indexes_.resize(count);
-    ordered_.resize(count);
-    inserted_.resize(count);
-    in.read(reinterpret_cast<char *>(indexes_.data()),
-            count * sizeof(std::size_t));
-    in.read(reinterpret_cast<char *>(ordered_.data()), count * sizeof(T));
-    in.read(reinterpret_cast<char *>(inserted_.data()), count * sizeof(T));
+    Read(in, indexes_, count);
+    Read(in, ordered_, count);
+    Read(in, inserted_, count);
   }
 
   void save(std::string const &path) {
     std::ofstream out{path};
     std::size_t size = indexes_.size();
     out.write(reinterpret_cast<char *>(&size), sizeof(std::size_t));
-    out.write(reinterpret_cast<char *>(indexes_.data()),
-              size * sizeof(std::size_t));
-    out.write(reinterpret_cast<char *>(ordered_.data()), size * sizeof(T));
-    out.write(reinterpret_cast<char *>(inserted_.data()), size * sizeof(T));
+    Write(out, indexes_);
+    Write(out, ordered_);
+    Write(out, inserted_);
   }
 
   std::size_t get_count() const { return indexes_.size(); }

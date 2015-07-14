@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  std::size_t size = std::stoll(argv[1]);
+  std::size_t size = std::stoull(argv[1]);
   random_data_single<std::uint64_t> data{size};
   data.save(argv[2]);
 }

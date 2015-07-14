@@ -1,5 +1,5 @@
 #include "bench_single.hpp"
-#include "btree_seq.hpp"
+#include "array/trunk/btree_seq.h"
 #include "random_data_single.hpp"
 
 int main(int argc, char** argv) {
