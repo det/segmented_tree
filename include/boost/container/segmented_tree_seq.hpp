@@ -32,7 +32,7 @@ class segmented_tree_seq {
   struct iterator_data;
   class iterator_base;
   class const_iterator_base;
-  template <typename Trait>
+  template <typename, typename>
   class iterator_t;
 
   using element_traits = typename std::allocator_traits<Allocator>;
@@ -51,8 +51,8 @@ class segmented_tree_seq {
   using const_reference = value_type const &;
   using pointer = typename element_traits::pointer;
   using const_pointer = typename element_traits::const_pointer;
-  using iterator = iterator_t<iterator_base>;
-  using const_iterator = iterator_t<const_iterator_base>;
+  using iterator = iterator_t<pointer, T &>;
+  using const_iterator = iterator_t<const_pointer, T const &>;
   using reverse_iterator = std::reverse_iterator<iterator>;
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
@@ -122,45 +122,29 @@ class segmented_tree_seq {
     size_type pos;
   };
 
-  class iterator_base {
-   protected:
-    iterator_data it_;
-    iterator_base() = default;
-    iterator_base(iterator_data const &it) : it_(it) {}
-
-   public:
-    using reference = T &;
-    using pointer = typename element_traits::pointer;
-    operator const_iterator() { return {it_}; }
-  };
-
-  class const_iterator_base {
-   protected:
-    iterator_data it_;
-    const_iterator_base() = default;
-    const_iterator_base(iterator_data const &it) : it_(it) {}
-
-   public:
-    using reference = T const &;
-    using pointer = typename element_traits::const_pointer;
-  };
-
-  template <typename Base>
-  class iterator_t : public Base {
+  template <typename Pointer, typename Reference>
+  class iterator_t {
     friend segmented_tree_seq;
 
    private:
-    using Base::it_;
-    iterator_t(iterator_data const &it) : Base{it} {}
+    iterator_data it_;
+    iterator_t(iterator_data it) : it_(it) {}
 
    public:
     using iterator_category = std::random_access_iterator_tag;
     using value_type = T;
     using difference_type = typename element_traits::difference_type;
-
+    using pointer = Pointer;
+    using reference = Reference;
     iterator_t() = default;
     iterator_t(iterator_t const &) = default;
     iterator_t &operator=(iterator_t const &) = default;
+
+    template <typename P, typename R,
+              typename = typename std::enable_if<
+                  std::is_convertible<P, pointer>::value>::type>
+    iterator_t(iterator_t<P, R> const &other)
+        : it_(other.it_) {}
 
     size_type index() const { return it_.entry.segment.index; }
     pointer begin() const { return it_.entry.segment.pointer; }
