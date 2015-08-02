@@ -3,7 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#pragma once
+#ifndef BOOST_CONTAINER_SEGMENTED_TREE_SEQ
+#define BOOST_CONTAINER_SEGMENTED_TREE_SEQ
 
 #include <array>
 #include <algorithm>
@@ -2168,3 +2169,5 @@ std::ostream &operator<<(std::basic_ostream<T, Traits> &out,
 }
 }
 }
+
+#endif  // #ifndef BOOST_CONTAINER_SEGMENTED_TREE_SEQ
