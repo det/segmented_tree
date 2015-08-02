@@ -27,7 +27,7 @@ class random_data_range {
   random_data_range(std::size_t count, std::size_t size) {
     std::random_device device;
     std::default_random_engine engine{device()};
-    std::uniform_int_distribution<std::size_t> dist{
+    std::uniform_int_distribution<std::uintmax_t> dist{
         0, std::numeric_limits<T>::max()};
     indexes_.reserve(count);
     ordered_.reserve(count * size);
