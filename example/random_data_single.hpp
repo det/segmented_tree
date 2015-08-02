@@ -44,7 +44,7 @@ class random_data_single {
   }
 
   random_data_single(std::string const &path) {
-    std::ifstream in{path};
+    std::ifstream in{path, std::ios::binary};
     std::size_t count;
     in.read(reinterpret_cast<char *>(&count), sizeof(std::size_t));
     Read(in, indexes_, count);
@@ -53,7 +53,7 @@ class random_data_single {
   }
 
   void save(std::string const &path) {
-    std::ofstream out{path};
+    std::ofstream out{path, std::ios::binary};
     std::size_t size = indexes_.size();
     out.write(reinterpret_cast<char *>(&size), sizeof(std::size_t));
     Write(out, indexes_);

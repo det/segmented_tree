@@ -49,7 +49,7 @@ class random_data_range {
   }
 
   random_data_range(std::string const &path) {
-    std::ifstream in{path};
+    std::ifstream in{path, std::ios::binary};
     std::size_t count;
     std::size_t size;
     in.read(reinterpret_cast<char *>(&count), sizeof(std::size_t));
@@ -60,7 +60,7 @@ class random_data_range {
   }
 
   void save(std::string const &path) {
-    std::ofstream out{path};
+    std::ofstream out{path, std::ios::binary};
     std::size_t count = get_count();
     std::size_t size = get_size();
     out.write(reinterpret_cast<char *>(&count), sizeof(std::size_t));
