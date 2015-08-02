@@ -26,7 +26,8 @@ class random_data_single {
   random_data_single(std::size_t count) {
     std::random_device device;
     std::default_random_engine engine{device()};
-    std::uniform_int_distribution<T> dist;
+    std::uniform_int_distribution<std::size_t> dist{
+        0, std::numeric_limits<T>::max()};
     indexes_.reserve(count);
     ordered_.reserve(count);
     inserted_.reserve(count);
@@ -34,7 +35,7 @@ class random_data_single {
     for (std::size_t i = 0; i != count; ++i) {
       std::uniform_int_distribution<std::size_t> index_dist{0, i};
       std::size_t index = index_dist(engine);
-      T data = dist(engine);
+      T data = static_cast<T>(dist(engine));
       indexes_.push_back(index);
       ordered_.push_back(data);
       inserted_.insert(inserted_.begin() + static_cast<std::ptrdiff_t>(index),

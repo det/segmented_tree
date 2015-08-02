@@ -7,6 +7,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <vector>
 #include <random>
 #include <type_traits>
@@ -26,7 +27,8 @@ class random_data_range {
   random_data_range(std::size_t count, std::size_t size) {
     std::random_device device;
     std::default_random_engine engine{device()};
-    std::uniform_int_distribution<T> dist;
+    std::uniform_int_distribution<std::size_t> dist{
+        0, std::numeric_limits<T>::max()};
     indexes_.reserve(count);
     ordered_.reserve(count * size);
     inserted_.reserve(count * size);
@@ -34,7 +36,8 @@ class random_data_range {
     auto first = ordered_.end();
     auto last = first;
     for (std::size_t i = 0; i != count; ++i) {
-      for (std::size_t j = 0; j != size; ++j) ordered_.push_back(dist(engine));
+      for (std::size_t j = 0; j != size; ++j)
+        ordered_.push_back(static_cast<T>(dist(engine)));
       std::uniform_int_distribution<std::size_t> index_dist{0, i * size};
       std::size_t index = index_dist(engine);
       indexes_.push_back(index);
