@@ -3,6 +3,7 @@
 #include <chrono>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <type_traits>
 #include <utility>
@@ -95,12 +96,9 @@ auto bench(char const *description, F functor, Args &&... args) ->
 template <typename T>
 void verify(T got, T expected) {
   if (got != expected) {
-    std::string str;
-    str += "expected: ";
-    str += std::to_string(got);
-    str += ", calculated: ";
-    str += std::to_string(expected);
-    throw std::runtime_error{str};
+    std::ostringstream stream;
+    stream << "expected: " << got << ", calculated: " << expected;
+    throw std::runtime_error{stream.str()};
   }
 }
 
