@@ -8,8 +8,8 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  std::size_t count = std::stoull(argv[1]);
-  std::size_t size = std::stoull(argv[2]);
+  std::size_t count = std::strtoul(argv[1], nullptr, 10);
+  std::size_t size = std::strtoul(argv[2], nullptr, 10);
   random_data_range<std::uint8_t> data{count, size};
   data.save(argv[3]);
 }
