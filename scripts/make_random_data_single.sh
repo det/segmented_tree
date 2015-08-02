@@ -6,10 +6,10 @@ if [ "$#" -ne 2 ]; then
 fi
 
 for count in 256 7936 246016 7626496; do
-	$1/example/gen_random_data_single_8 ${count} $2/single.8.${count}
+	$1/gen_random_data_single_8 ${count} $2/single.8.${count}
 done
 
 for count in 32 992 30752 953312; do
-	$1/example/gen_random_data_single_64 ${count} $2/single.64.${count}
+	$1/gen_random_data_single_64 ${count} $2/single.64.${count}
 done
 

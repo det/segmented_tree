@@ -8,12 +8,12 @@ fi
 for size in 256 7936 246016 7626496; do
   count=7626496
   let "count /= size"
-  $1/example/gen_random_data_range_8 ${count} ${size} $2/range.8.${size}
+  $1/gen_random_data_range_8 ${count} ${size} $2/range.8.${size}
 done
 
 for size in 32 992 30752 953312; do
   count=953312
   let "count /= ${size}"
-  $1/example/gen_random_data_range_64 ${count} ${size} $2/range.64.${size}
+  $1/gen_random_data_range_64 ${count} ${size} $2/range.64.${size}
 done
 

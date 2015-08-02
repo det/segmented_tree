@@ -10,7 +10,7 @@ for size in 256 7936 246016 7626496; do
     count=7626496
     let "count /= ${size}"
 		echo "Rusults for ${benchmark}<std::uint8_t>, count: ${count}, size: ${size}"
-		for i in {0..20}; do $1/example/bench_range_${benchmark}_8 $2/range.8.${size}; done | sort -k2 -k1,1n | uniq -f1
+		for i in {0..20}; do $1/bench_range_${benchmark}_8 $2/range.8.${size}; done | sort -k2 -k1,1n | uniq -f1
 		echo
 	done
 done
@@ -20,7 +20,7 @@ for size in 32 992 30752 953312; do
     count=953312
     let "count /= ${size}"
 		echo "Rusults for ${benchmark}<std::uint64_t>, count: ${count}, size: ${size}"
-		for i in {0..20}; do $1/example/bench_range_${benchmark}_64 $2/range.64.${size}; done | sort -k2 -k1,1n | uniq -f1
+		for i in {0..20}; do $1/bench_range_${benchmark}_64 $2/range.64.${size}; done | sort -k2 -k1,1n | uniq -f1
 		echo
 	done
 done
