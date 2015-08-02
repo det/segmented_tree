@@ -28,7 +28,7 @@ class random_data_range {
     std::random_device device;
     std::default_random_engine engine{device()};
     std::uniform_int_distribution<std::uintmax_t> dist{
-        0, std::numeric_limits<T>::max()};
+        0, (std::numeric_limits<T>::max)()};
     indexes_.reserve(count);
     ordered_.reserve(count * size);
     inserted_.reserve(count * size);

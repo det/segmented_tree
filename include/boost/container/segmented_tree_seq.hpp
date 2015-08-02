@@ -1940,7 +1940,7 @@ class segmented_tree_seq {
 
   size_type height() const { return get_height(); }
 
-  size_type max_size() const { return std::numeric_limits<size_type>::max(); }
+  size_type max_size() const { return (std::numeric_limits<size_type>::max)(); }
 
   void clear() {
     purge();
