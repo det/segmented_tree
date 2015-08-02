@@ -17,7 +17,7 @@
 #include <vector>
 #include <type_traits>
 
-#ifdef SEGMENTED_TREE_SEQ_DEBUG
+#ifdef BOOST_SEGMENTED_TREE_SEQ_DEBUG
 #include <iostream>
 #endif
 
@@ -1673,7 +1673,7 @@ class segmented_tree_seq {
   }
 
 // debug functions
-#ifdef SEGMENTED_TREE_SEQ_DEBUG
+#ifdef BOOST_SEGMENTED_TREE_SEQ_DEBUG
   void verify_iterator(iterator_data a, size_type pos) {
     auto b = nth(pos).it_;
     if (a.entry.segment.pointer != b.entry.segment.pointer) {
