@@ -83,9 +83,9 @@ auto make_voidable(F &&f, Args &&... args)
 template <typename F, typename... Args>
 auto bench(char const *description, F functor, Args &&... args) ->
     typename std::result_of<F && (Args && ...)>::type {
-  auto start = std::chrono::high_resolution_clock::now();
+  auto start = std::chrono::steady_clock::now();
   auto ret = make_voidable(functor, std::forward<Args>(args)...);
-  auto stop = std::chrono::high_resolution_clock::now();
+  auto stop = std::chrono::steady_clock::now();
   auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
   double ms = ns.count() / 1000000.0;
   std::cout << std::setw(15) << std::setfill(' ') << std::setprecision(6) << ms
