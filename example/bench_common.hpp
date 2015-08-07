@@ -1,5 +1,3 @@
-#include "adler64.hpp"
-
 #include <chrono>
 #include <iomanip>
 #include <iostream>
@@ -104,63 +102,65 @@ void verify(T got, T expected) {
 
 template <typename T>
 std::uint64_t accumulate_forward(T const &container) {
-  adler64 adler;
+  std::uint64_t accu = 0;
   auto first = container.begin();
   auto last = container.end();
 
   while (first != last) {
-    adler.update(*first);
+    accu += *first;
     ++first;
   }
 
-  return adler.final();
+  return accu;
 }
 
 template <typename T>
 std::uint64_t accumulate_forward_by(T const &container, std::size_t distance) {
-  adler64 adler;
+  std::uint64_t accu = 0;
   auto left = container.size();
   auto first = container.begin();
 
   while (left >= distance) {
-    adler.update(*first);
+    accu += *first;
     first += static_cast<std::ptrdiff_t>(distance);
     left -= distance;
   }
 
-  return adler.final();
+  return accu;
 }
 
 template <typename T>
 std::uint64_t accumulate_backward(T const &container) {
-  adler64 adler;
+  std::uint64_t accu = 0;
   auto first = container.begin();
   auto last = container.end();
 
   while (first != last) {
     --last;
-    adler.update(*last);
+    accu += *last;
   }
-  return adler.final();
+  return accu;
 }
 
 template <typename T>
 std::uint64_t accumulate_backward_by(T const &container, std::size_t distance) {
-  adler64 adler;
+  std::uint64_t accu = 0;
   auto left = container.size();
   auto it = container.end();
 
   while (left >= distance) {
     it -= static_cast<std::ptrdiff_t>(distance);
     left -= distance;
-    adler.update(*it);
+    accu += *it;
   }
 
-  return adler.final();
+  return accu;
 }
 
 template <typename Container, typename T>
 void bench_iterator(Container const &container, std::vector<T> const &data) {
+  verify(std::equal(container.begin(), container.end(), data.begin()), true);
+
   verify(accumulate_forward(data), bench("accumulate forward", [&] {
     return accumulate_forward(container);
   }));

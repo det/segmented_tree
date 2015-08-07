@@ -1,4 +1,4 @@
-add_custom_target(headers SOURCES adler64.hpp  bench_common.hpp bench_range.hpp
+add_custom_target(headers SOURCES bench_common.hpp bench_range.hpp
                   bench_single.hpp compile.hpp random_data_common.hpp
                   random_data_range.hpp random_data_single.hpp)
 
