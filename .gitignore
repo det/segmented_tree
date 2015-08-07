@@ -1,5 +1,6 @@
 build/
 data/
+doc/
 CMakeLists.txt.user*
 *.kdev4
 *.kate-swp

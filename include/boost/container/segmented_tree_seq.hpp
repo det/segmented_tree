@@ -24,6 +24,13 @@
 namespace boost {
 namespace container {
 
+/// A segmented_tree_seq is a SequenceContainer that provides efficient random
+/// access insert and erase.
+///
+/// \tparam T The type of object to be stored
+/// \tparam Allocator The type of the allocator used for all memory management
+/// \tparam segment_target Size in bytes to try to use for object nodes
+/// \tparam base_target Size in bytes to try to use for index nodes
 template <typename T, typename Allocator = std::allocator<T>,
           std::size_t segment_target = 512, std::size_t base_target = 512>
 class segmented_tree_seq {
@@ -158,115 +165,201 @@ class segmented_tree_seq {
     pointer operator->() const { return begin() + index(); }
     reference operator*() const { return begin()[index()]; }
 
+    /// Move the iterator forward 1 element.
+    ///
+    /// Complexity: amortized O(1)
     iterator_t &operator++() {
       move_next_iterator(it_);
       return *this;
     }
 
+    /// Move the iterator backward 1 element.
+    ///
+    /// Complexity: amortized O(1)
     iterator_t &operator--() {
       move_prev_iterator(it_);
       return *this;
     }
 
+    /// Return a copy of the iterator moved forward 1 element.
+    ///
+    /// Complexity: amortized O(1)
     iterator_t operator++(int) {
       auto copy = it_;
       move_next_iterator(it_);
       return copy;
     }
 
+    /// Return a copy of the iterator moved backward 1 element.
+    ///
+    /// Complexity: amortized O(1)
     iterator_t operator--(int) {
       auto copy = it_;
       move_prev_iterator(it_);
       return copy;
     }
 
+    /// Move the iterator forward diff elements.
+    ///
+    /// Complexity: amortized O(log(abs(diff)))
     iterator_t &operator+=(difference_type diff) {
       move_iterator_count(it_, diff);
       return *this;
     }
 
+    /// Move the iterator backward diff elements.
+    ///
+    /// Complexity: amortized O(log(abs(diff)))
     iterator_t &operator-=(difference_type diff) {
       move_iterator_count(it_, -diff);
       return *this;
     }
 
+    /// Return a copy of the iterator moved forward diff elements.
+    ///
+    /// Complexity: amortized O(log(abs(diff)))
     iterator_t operator+(difference_type diff) const {
       auto copy = it_;
       move_iterator_count(copy, diff);
       return copy;
     }
 
+    /// Return a copy of the iterator moved backward diff elements.
+    ///
+    /// Complexity: amortized O(log(abs(diff)))
     iterator_t operator-(difference_type diff) const {
       auto copy = it_;
       move_iterator_count(copy, -diff);
       return copy;
     }
 
+    /// Return a distance between the specified iterator.
+    ///
+    /// Complexity: O(1)
     difference_type operator-(iterator_t const &other) const {
       return it_.pos > other.it_.pos
                  ? static_cast<difference_type>(it_.pos - other.it_.pos)
                  : -static_cast<difference_type>(other.it_.pos - it_.pos);
     }
 
+    /// Move the iterator to the last element of the previous segment.
+    ///
+    /// Complexity: amortized O(1)
     iterator_t &move_before_segment() {
       move_before_segment(it_);
       return *this;
     }
 
+    /// Move the iterator to the last element of the previous segment and then
+    /// move backward count elements.
+    ///
+    /// Complexity: amortized O(log(count))
     iterator_t &move_before_segment(size_type count) {
       move_before_segment_count(it_, count);
       return *this;
     }
 
+    /// Move the iterator to the first element of the next segment.
+    ///
+    /// Complexity: amortized O(1)
     iterator_t &move_after_segment() {
       move_after_segment(it_);
       return *this;
     }
 
+    /// Move the iterator to the first element of the next segment and then
+    /// move forward count elements.
+    ///
+    /// Complexity: amortized O(log(count))
     iterator_t &move_after_segment(size_type count) {
       move_after_segment_count(it_, count);
       return *this;
     }
 
+    /// Return a copy of the iterator moved to the last element of the previous
+    /// segment.
+    ///
+    /// Complexity: amortized O(1)
     iterator_t before_segment() const {
       auto copy = it_;
       move_before_segment(copy);
       return copy;
     }
 
+    /// Return a copy of the iterator moved to the last element of the previous
+    /// segment and then move backward count elements.
+    ///
+    /// Complexity: amortized O(log(count))
     iterator_t after_segment() const {
       auto copy = it_;
       move_after_segment(copy);
       return copy;
     }
 
+    /// Return a copy of the iterator moved to the last element of the previous
+    /// segment.
+    ///
+    /// Complexity: amortized O(1)
     iterator_t before_segment(size_type count) const {
       auto copy = it_;
       move_before_segment_count(copy, count);
       return copy;
     }
 
+    /// Return a copy of the iterator to the first element of the next segment
+    /// and then move forward count elements.
+    ///
+    /// Complexity: amortized O(log(count))
     iterator_t after_segment(size_type count) const {
       auto copy = it_;
       move_after_segment_count(copy, count);
       return copy;
     }
 
+    /// Return false if both iterators point to the same element. Return true
+    /// otherwise.
+    ///
+    /// Complexity: O(1)
     bool operator!=(iterator_t const &other) const {
       return it_.pos != other.it_.pos;
     }
+
+    /// Return true if both iterators point to the same element. Return false
+    /// otherwise.
+    ///
+    /// Complexity: O(1)
     bool operator==(iterator_t const &other) const {
       return it_.pos == other.it_.pos;
     }
+
+    /// Return true if *this points to an element before other. Return false
+    /// otherwise.
+    ///
+    /// Complexity: O(1)
     bool operator<(iterator_t const &other) const {
       return it_.pos < other.it_.pos;
     }
+
+    /// Return true if *this points to an element after other. Return false
+    /// otherwise.
+    ///
+    /// Complexity: O(1)
     bool operator>(iterator_t const &other) const {
       return it_.pos > other.it_.pos;
     }
+
+    /// Return true if *this points to the same element or before other. Return
+    /// false otherwise.
+    ///
+    /// Complexity: O(1)
     bool operator<=(iterator_t const &other) const {
       return it_.pos <= other.it_.pos;
     }
+
+    /// Return true if *this points to the same element or after other. Return
+    /// false otherwise.
+    ///
+    /// Complexity: O(1)
     bool operator>=(iterator_t const &other) const {
       return it_.pos >= other.it_.pos;
     }
@@ -1712,9 +1805,15 @@ class segmented_tree_seq {
 
  public:
   // public interface
+  /// Construct an empty sequence using the specified allocator.
+  ///
+  /// Complexity: O(1)
   explicit segmented_tree_seq(Allocator const &alloc)
       : data_{nullptr, 0, 0, alloc, alloc} {}
 
+  /// Default construct an empty sequence.
+  ///
+  /// Complexity: O(1)
   explicit segmented_tree_seq() : segmented_tree_seq{Allocator()} {}
 
   segmented_tree_seq(size_type count, T const &value,
@@ -1723,12 +1822,20 @@ class segmented_tree_seq {
     insert(end(), count, value);
   }
 
+  /// Construct a count size sequence using the specified allocator, each
+  /// element default constructed.
+  ///
+  /// Complexity: O(count * log(count))
   explicit segmented_tree_seq(size_type count,
                               Allocator const &alloc = Allocator())
       : segmented_tree_seq{alloc} {
     insert(end(), count, value_type{});
   }
 
+  /// Construct an empty sequence using the specified allocator, and insert
+  /// elements from the range [first, last).
+  ///
+  /// Complexity: O(n * log(n)), where n = std::distance(first, last)
   template <class InputIt,
             typename = typename std::iterator_traits<InputIt>::pointer>
   segmented_tree_seq(InputIt first, InputIt last,
@@ -1737,6 +1844,9 @@ class segmented_tree_seq {
     insert(end(), first, last);
   }
 
+  /// Copy construct a sequence.
+  ///
+  /// Complexity: O(n * log(n)), where n = other.size()
   segmented_tree_seq(segmented_tree_seq const &other)
       : segmented_tree_seq{
             element_traits::select_on_container_copy_construction(
@@ -1744,16 +1854,26 @@ class segmented_tree_seq {
     insert(end(), other.begin(), other.end());
   }
 
+  /// Copy construct a sequence using the specified allocator.
+  ///
+  /// Complexity: O(n * log(n)), where n = other.size()
   segmented_tree_seq(segmented_tree_seq const &other, Allocator const &alloc)
       : segmented_tree_seq{alloc} {
     insert(end(), other.begin(), other.end());
   }
 
+  /// Move construct a sequence.
+  ///
+  /// Complexity: O(1)
   segmented_tree_seq(segmented_tree_seq &&other)
       : segmented_tree_seq{std::move(other.get_element_allocator())} {
     steal(other);
   }
 
+  /// Move construct a sequence using the specified allocator.
+  ///
+  /// Complexity: O(1) if alloc compares equal to the allocator of *this, O(n *
+  /// log(n)) otherwise, where n = other.size()
   segmented_tree_seq(segmented_tree_seq &&other, Allocator const &alloc)
       : segmented_tree_seq{alloc} {
     if (get_element_allocator() == other.get_element_allocator())
@@ -1763,14 +1883,24 @@ class segmented_tree_seq {
              std::make_move_iterator(other.end()));
   }
 
+  /// Construct an empty sequence using the specified allocator, and insert
+  /// elements from init.
+  ///
+  /// Complexity: O(n * log(n)), where n = init.size()
   segmented_tree_seq(std::initializer_list<T> init,
                      Allocator const &alloc = Allocator())
       : segmented_tree_seq{alloc} {
     insert(end(), init.begin(), init.end());
   }
 
+  /// Destruct the sequence releasing all memory.
+  ///
+  /// Complexity: O(n), where n = size()
   ~segmented_tree_seq() { purge(); }
 
+  /// Copy assign a sequence.
+  ///
+  /// Complexity: O(n * log(n)), where n = other.size()
   segmented_tree_seq &operator=(segmented_tree_seq const &other) {
     if (this != &other) {
       if (element_traits::propagate_on_container_copy_assignment::value) {
@@ -1783,6 +1913,10 @@ class segmented_tree_seq {
     return *this;
   }
 
+  /// Move assign a sequence.
+  ///
+  /// Complexity: O(1) if the allocator propegates on move assignment, O(n *
+  /// log(n)) otherwise, where n = other.size()
   segmented_tree_seq &operator=(segmented_tree_seq &&other) {
     if (element_traits::propagate_on_container_move_assignment::value ||
         get_element_allocator() == other.get_element_allocator()) {
@@ -1799,11 +1933,19 @@ class segmented_tree_seq {
     return *this;
   }
 
+  /// Assign the Sequence to the elements of the specified initializer_list.
+  ///
+  /// Complexity: O(count) if n >= count, O(count) + O(diff * log(n)) otherwise,
+  /// where n = size(), where count = ilist.size(), where diff = count - n
   segmented_tree_seq &operator=(std::initializer_list<T> ilist) {
     assign(ilist.begin(), ilist.end());
     return *this;
   }
 
+  /// Assign the Sequence to count elements copy constructed from value.
+  ///
+  /// Complexity: O(count) if n >= count, O(count) + O(diff * log(n)) otherwise,
+  /// where n = size(), where diff = count - n
   void assign(size_type count, T const &value) {
     auto first = begin();
     auto last = end();
@@ -1824,6 +1966,12 @@ class segmented_tree_seq {
     }
   }
 
+  /// Assign the Sequence to the elements copy constructed from the range
+  /// [first, last).
+  ///
+  /// Complexity: O(count) if n >= count, O(count) + O(diff * log(n)) otherwise,
+  /// where n = size(), where count = std::distance(first, last), where diff =
+  /// count - n
   template <class InputIt,
             typename = typename std::iterator_traits<InputIt>::pointer>
   void assign(InputIt source_first, InputIt source_last) {
@@ -1846,46 +1994,88 @@ class segmented_tree_seq {
     }
   }
 
+  /// Assign the Sequence to the elements of the specified initializer_list.
+  ///
+  /// Complexity: O(count) if n >= count, O(count) + O(diff * log(n)) otherwise,
+  /// where n = size(), where count = ilist.size(), where diff = count - n
   void assign(std::initializer_list<T> ilist) {
     assign(ilist.begin(), ilist.end());
   }
 
+  /// Return a copy of the allocator for the sequence.
+  ///
+  /// Complexity: O(1)
   allocator_type get_allocator() const { return get_element_allocator(); }
 
+  /// Return a reference for the object located at the index pos.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   reference at(size_type pos) {
     if (pos > size())
       throw std::out_of_range{"segmented_tree_seq at() out of bounds"};
     return (*this)[pos];
   }
 
+  /// Return a const_reference for the object located at the specified index
+  /// pos.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   const_reference at(size_type pos) const {
     if (pos > size())
       throw std::out_of_range{"segmented_tree_seq at() out of bounds"};
     return (*this)[pos];
   }
 
+  /// Return a reference for the object located at the specified index pos.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   reference operator[](size_type pos) {
     iterator it = find_index(pos);
     return *it;
   }
 
+  /// Return a const_reference for the object located at the specified index
+  /// pos.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   const_reference operator[](size_type pos) const {
     iterator it = find_index(pos);
     return *it;
   }
 
+  /// Return a reference for the object located at the index 0.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   reference front() { return *begin(); }
 
+  /// Return a const_reference for the object located at the index 0.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   const_reference front() const { return *begin(); }
 
+  /// Return a reference for the object located at the index size() - 1.
+  ///
+  /// Complexity: O(log(n)), , where n = size()
   reference back() { return *penultimate(); }
 
+  /// Return a const_reference for the object located at the index size() - 1.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   const_reference back() const { return *penultimate(); }
 
+  /// Return an iterator for the index 0.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   iterator begin() { return find_first(); }
 
+  /// Return a const_iterator for the index 0.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   const_iterator begin() const { return find_first(); }
 
+  /// Return a const_iterator for the index 0.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   const_iterator cbegin() const { return find_first(); }
 
   iterator penultimate() { return find_last(); }
@@ -1894,24 +2084,45 @@ class segmented_tree_seq {
 
   const_iterator cpenultimate() const { return find_last(); }
 
+  /// Return an iterator for the index size().
+  ///
+  /// Complexity: O(log(n)), where n = size()
   iterator end() { return find_end(); }
 
+  /// Return a const_iterator for the index size().
+  ///
+  /// Complexity: O(log(n)), where n = size()
   const_iterator end() const { return find_end(); }
 
+  /// Return a const_iterator for the index size().
+  ///
+  /// Complexity: O(log(n)), where n = size()
   const_iterator cend() const { return find_end(); }
 
+  /// Return an iterator for the index pos.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   iterator nth(size_type pos) {
     if (pos >= size()) return find_end();
     return find_index(pos);
   }
 
+  /// Return a const_iterator for the index pos.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   const_iterator nth(size_type pos) const {
     if (pos >= size()) return find_end();
     return find_index(pos);
   }
 
+  /// Return the index of the specified iterator
+  ///
+  /// Complexity: O(1)
   size_type index_of(iterator pos) { return pos.it_.pos; }
 
+  /// Return the index of the specified const_iterator
+  ///
+  /// Complexity: O(1)
   size_type index_of(const_iterator pos) const { return pos.it_.pos; }
 
   reverse_iterator rbegin() { return reverse_iterator{end()}; }
@@ -1934,14 +2145,29 @@ class segmented_tree_seq {
     return const_reverse_iterator{begin()};
   }
 
+  /// Return true if the sequence is empty, false otherwise.
+  ///
+  /// Complexity: O(1)
   bool empty() const { return get_size() == 0; }
 
+  /// Return the count of elements stored in the sequence.
+  ///
+  /// Complexity: O(1)
   size_type size() const { return get_size(); }
 
+  /// Return the height of the tree.
+  ///
+  /// Complexity: O(1)
   size_type height() const { return get_height(); }
 
+  /// Return the maximum count of elements able to be stored in the sequence.
+  ///
+  /// Complexity: O(1)
   size_type max_size() const { return (std::numeric_limits<size_type>::max)(); }
 
+  /// Remove all elements from the sequence.
+  ///
+  /// Complexity: O(n), where n = size()
   void clear() {
     purge();
     get_root() = nullptr;
@@ -1949,14 +2175,23 @@ class segmented_tree_seq {
     get_size() = 0;
   }
 
+  /// Copy construct an object at the specified position.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   iterator insert(const_iterator pos, T const &value) {
     return emplace(pos, value);
   }
 
+  /// Move construct an object at the specified position.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   iterator insert(const_iterator pos, T &&value) {
     return emplace(pos, std::move(value));
   }
 
+  /// Copy construct count elements at the specified position.
+  ///
+  /// Complexity: O(count * log(n)), n = count + size();
   iterator insert(const_iterator pos, size_type count, T const &value) {
     for (size_type i = 0; i != count; ++i) {
       pos = insert(pos, value);
@@ -1966,6 +2201,11 @@ class segmented_tree_seq {
     return pos.it_;
   }
 
+  /// Copy construct all elements in the range [first, last) at the specified
+  /// position.
+  ///
+  /// Complexity: O(count * log(n)), where count = std::distance(first, last),
+  /// where n = count + size()
   template <class InputIt,
             typename = typename std::iterator_traits<InputIt>::pointer>
   iterator insert(const_iterator pos, InputIt first, InputIt last) {
@@ -1980,10 +2220,18 @@ class segmented_tree_seq {
     return pos.it_;
   }
 
+  /// Copy construct all elements in the specified initializer_list at the
+  /// specified position.
+  ///
+  /// Complexity: O(count * log(n)), where count = ilist.size(), where n = count
+  /// + size();
   iterator insert(const_iterator pos, std::initializer_list<T> ilist) {
     return insert(pos, ilist.begin(), ilist.end());
   }
 
+  /// Forward construct an object at the specified position.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   template <class... Args>
   iterator emplace(const_iterator pos, Args &&... args) {
     auto it = reserve_single_iterator(pos.it_);
@@ -1999,12 +2247,19 @@ class segmented_tree_seq {
     return it;
   }
 
+  /// Remove the object at the specified position from the sequence.
+  ///
+  /// Complexity: O(log(n)), where n = size()
   iterator erase(const_iterator pos) {
     auto it = erase_single_iterator(pos.it_);
     verify_iterator(it, pos.it_.pos);
     return it;
   }
 
+  /// Remove all elements in the range [first, last) from the sequence.
+  ///
+  /// Complexity: O(count * log(n)), where count = std::distance(first,
+  /// last), where n = size()
   iterator erase(const_iterator first, const_iterator last) {
     while (first != last) {
       --last;
@@ -2013,30 +2268,64 @@ class segmented_tree_seq {
     return last.it_;
   }
 
+  /// Copy construct an object at end().
+  ///
+  /// Complexity: O(log(n)), where  n = size()
   void push_back(T const &value) { emplace_back(value); }
 
+  /// Move construct an object at end().
+  ///
+  /// Complexity: O(log(n)), where  n = size()
   void push_back(T &&value) { emplace_back(std::move(value)); }
 
+  /// Forward construct an object at end().
+  ///
+  /// Complexity: O(log(n)), where  n = size()
   template <class... Args>
   void emplace_back(Args &&... args) {
     emplace(end(), std::forward<Args>(args)...);
   }
 
+  /// Remove the object at end() - 1.
+  ///
+  /// Complexity: O(log(n)), where  n = size()
   void pop_back() { erase(penultimate()); }
 
+  /// Copy construct an object at begin().
+  ///
+  /// Complexity: O(log(n)), where  n = size()
   void push_front(const T &value) { emplace_front(value); }
 
+  /// Move construct an object at begin().
+  ///
+  /// Complexity: O(log(n)), where  n = size()
   void push_front(T &&value) { emplace_front(std::move(value)); }
 
+  /// Forward construct an object at begin().
+  ///
+  /// Complexity: O(log(n)), where  n = size()
   template <class... Args>
   void emplace_front(Args &&... args) {
     emplace(begin(), std::forward<Args>(args)...);
   }
 
+  /// Remove the object at begin().
+  ///
+  /// Complexity: O(log(n)), where  n = size()
   void pop_front() { erase(begin()); }
 
+  /// Resize the seqeuence to the specified size, default construct any elements
+  /// above the current size.
+  ///
+  /// Complexity: O(n - count * log(n)) if n > count, O(count - n * log(n))
+  /// otherwise, where  n = size(), where diff = n - count
   void resize(size_type count) { resize(count, {}); }
 
+  /// Resize the seqeuence to the specified size, copy construct any elements
+  /// from value above the current size.
+  ///
+  /// Complexity: O(n - count * log(n)) if n > count, O(count - n * log(n))
+  /// otherwise, where n = size(), where diff = n - count
   void resize(size_type count, value_type const &value) {
     auto sz = size();
     if (sz == count) return;
@@ -2048,6 +2337,9 @@ class segmented_tree_seq {
       insert(last, count, value);
   }
 
+  /// Swap the contents *this with the specified sequence.
+  ///
+  /// Complexity: O(1)
   void swap(segmented_tree_seq &other) {
     using std::swap;
     swap(get_root(), other.get_root());
@@ -2080,26 +2372,48 @@ class segmented_tree_seq {
   //  first,
   //              const_iterator last);
 
+  /// Remove all elements matching the specified value.
+  ///
+  /// Complexity: O(n), where n = size()
   void remove(const T &value) {
     erase(std::remove(begin(), end(), value), end());
   }
 
+  /// Remove all elements matching the specified predicate.
+  ///
+  /// Complexity: O(n), where n = size()
   template <class UnaryPredicate>
   void remove_if(UnaryPredicate p) {
     erase(std::remove_if(begin(), end(), p), end());
   }
 
+  /// Reverse the sequence.
+  ///
+  /// Complexity: O(n), where n = size()
   void reverse() { std::reverse(begin(), end()); }
 
+  /// Remove all consecutive duplicate elements from the sequence.
+  ///
+  /// Complexity: O(n), where n = size()
   void unique() { unique(std::equal_to<value_type>{}); }
 
+  /// Remove all consecutive duplicate elements from the sequence using the
+  /// specified predicate.
+  ///
+  /// Complexity: O(n), where n = size()
   template <class BinaryPredicate>
   void unique(BinaryPredicate p) {
     erase(std::unique(begin(), end(), p), end());
   }
 
+  /// Stable sort the sequence.
+  ///
+  /// Complexity: O(n * log(n)), where n = size()
   void sort() { sort(std::less<value_type>{}); }
 
+  /// Stable sort the sequence using the specified predicate.
+  ///
+  /// Complexity: O(n * log(n)), where n = size()
   template <class Compare>
   void sort(Compare comp) {
     std::stable_sort(begin(), end(), comp);
@@ -2107,6 +2421,11 @@ class segmented_tree_seq {
 };
 
 // free functions
+
+/// Return true if both sequences are of the same length and have each element
+/// in both sequences are equal. Return false otherwise.
+///
+/// Complexity: O(n), where n = size()
 template <typename T, typename Alloc, size_t... Args>
 bool operator==(segmented_tree_seq<T, Alloc, Args...> &lhs,
                 segmented_tree_seq<T, Alloc, Args...> &rhs) {
@@ -2114,12 +2433,20 @@ bool operator==(segmented_tree_seq<T, Alloc, Args...> &lhs,
          std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 
+/// Return false if both sequences are of the same length and have each element
+/// in both sequences are equal. Return true otherwise.
+///
+/// Complexity: O(n), where n = size()
 template <typename T, typename Alloc, size_t... Args>
 bool operator!=(segmented_tree_seq<T, Alloc, Args...> &lhs,
                 segmented_tree_seq<T, Alloc, Args...> &rhs) {
   return !(lhs == rhs);
 }
 
+/// Return true if the first sequence is lexicographically less than the second.
+/// Return false otherwise.
+///
+/// Complexity: O(n), where n = size()
 template <typename T, typename Alloc, size_t... Args>
 bool operator<(segmented_tree_seq<T, Alloc, Args...> &lhs,
                segmented_tree_seq<T, Alloc, Args...> &rhs) {
@@ -2127,30 +2454,48 @@ bool operator<(segmented_tree_seq<T, Alloc, Args...> &lhs,
                                       rhs.end());
 }
 
+/// Return true if the first sequence is equal or lexicographically less than
+/// the second. Return false otherwise.
+///
+/// Complexity: O(n), where n = size()
 template <typename T, typename Alloc, size_t... Args>
 bool operator<=(segmented_tree_seq<T, Alloc, Args...> &lhs,
                 segmented_tree_seq<T, Alloc, Args...> &rhs) {
   return !(rhs < lhs);
 }
 
+/// Return true if the first sequence is lexicographically greater than the
+/// second. Return false otherwise.
+///
+/// Complexity: O(n), where n = size()
 template <typename T, typename Alloc, size_t... Args>
 bool operator>(segmented_tree_seq<T, Alloc, Args...> &lhs,
                segmented_tree_seq<T, Alloc, Args...> &rhs) {
   return rhs < lhs;
 }
 
+/// Return true if the first sequence is lexicographically greater or equal to
+/// the second. Return false otherwise.
+///
+/// Complexity: O(n), where n = size()
 template <typename T, typename Alloc, size_t... Args>
 bool operator>=(segmented_tree_seq<T, Alloc> &lhs,
                 segmented_tree_seq<T, Alloc> &rhs) {
   return !(lhs < rhs);
 }
 
+/// Swap the contents of the sequences.
+///
+/// Complexity: O(1)
 template <typename T, typename Traits, typename Alloc, size_t... Args>
 void swap(segmented_tree_seq<T, Alloc, Args...> &a,
           segmented_tree_seq<T, Alloc, Args...> &b) {
   a.swap(b);
 }
 
+/// Output the sequence to the specified ostream.
+///
+/// Complexity: O(n), where n = size()
 template <typename T, typename Traits, typename Alloc, size_t... Args>
 std::ostream &operator<<(std::basic_ostream<T, Traits> &out,
                          segmented_tree_seq<T, Alloc, Args...> &tree) {
