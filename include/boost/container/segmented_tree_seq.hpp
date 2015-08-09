@@ -23,6 +23,15 @@
 
 namespace boost {
 namespace container {
+namespace detail {
+
+using std::swap;
+
+template <typename T>
+struct is_nothrow_swappable
+    : std::integral_constant<bool, noexcept(swap(std::declval<T &>(),
+                                                 std::declval<T &>()))> {};
+}
 
 /// A segmented_tree_seq is a SequenceContainer that provides efficient random
 /// access insert and erase.
@@ -1818,7 +1827,9 @@ class segmented_tree_seq {
   /// Default construct an empty sequence.
   ///
   /// Complexity: O(1)
-  explicit segmented_tree_seq() : segmented_tree_seq{Allocator()} {}
+  explicit segmented_tree_seq() noexcept(
+      std::is_nothrow_default_constructible<allocator_type>::value)
+      : segmented_tree_seq{Allocator()} {}
 
   segmented_tree_seq(size_type count, T const &value,
                      Allocator const &alloc = Allocator())
@@ -1869,7 +1880,8 @@ class segmented_tree_seq {
   /// Move construct a sequence.
   ///
   /// Complexity: O(1)
-  segmented_tree_seq(segmented_tree_seq &&other)
+  segmented_tree_seq(segmented_tree_seq &&other) noexcept(
+      std::is_nothrow_move_constructible<allocator_type>::value)
       : segmented_tree_seq{std::move(other.get_element_allocator())} {
     steal(other);
   }
@@ -1921,7 +1933,9 @@ class segmented_tree_seq {
   ///
   /// Complexity: O(1) if the allocator propegates on move assignment, O(n *
   /// log(n)) otherwise, where n = other.size()
-  segmented_tree_seq &operator=(segmented_tree_seq &&other) {
+  segmented_tree_seq &operator=(segmented_tree_seq &&other) noexcept(
+      allocator_type::propagate_on_container_move_assignment::value &&
+          std::is_nothrow_move_assignable<allocator_type>::value) {
     if (element_traits::propagate_on_container_move_assignment::value ||
         get_element_allocator() == other.get_element_allocator()) {
       purge();
@@ -2008,7 +2022,9 @@ class segmented_tree_seq {
   /// Return a copy of the allocator for the sequence.
   ///
   /// Complexity: O(1)
-  allocator_type get_allocator() const { return get_element_allocator(); }
+  allocator_type get_allocator() const noexcept {
+    return get_element_allocator();
+  }
 
   /// Return a reference for the object located at the index pos.
   ///
@@ -2069,96 +2085,96 @@ class segmented_tree_seq {
   /// Return an iterator for the index 0.
   ///
   /// Complexity: O(log(n)), where n = size()
-  iterator begin() { return find_first(); }
+  iterator begin() noexcept { return find_first(); }
 
   /// Return a const_iterator for the index 0.
   ///
   /// Complexity: O(log(n)), where n = size()
-  const_iterator begin() const { return find_first(); }
+  const_iterator begin() const noexcept { return find_first(); }
 
   /// Return a const_iterator for the index 0.
   ///
   /// Complexity: O(log(n)), where n = size()
-  const_iterator cbegin() const { return find_first(); }
+  const_iterator cbegin() const noexcept { return find_first(); }
 
   /// Return an iterator to the index size() - 1
   ///
   /// Complexity: O(log(n))
   ///
-  /// Note: Non-standard function
-  iterator penultimate() { return find_last(); }
+  /// Note: Non-standard extension
+  iterator penultimate() noexcept { return find_last(); }
 
   /// Return a const_iterator to the index size() - 1
   ///
   /// Complexity: O(log(n))
   ///
-  /// Note: Non-standard function
-  const_iterator penultimate() const { return find_last(); }
+  /// Note: Non-standard extension
+  const_iterator penultimate() const noexcept { return find_last(); }
 
   /// Return a const_iterator to the index size() - 1
   ///
   /// Complexity: O(log(n))
   ///
-  /// Note: Non-standard function
-  const_iterator cpenultimate() const { return find_last(); }
+  /// Note: Non-standard extension
+  const_iterator cpenultimate() const noexcept { return find_last(); }
 
   /// Return an iterator for the index size().
   ///
   /// Complexity: O(log(n)), where n = size()
-  iterator end() { return find_end(); }
+  iterator end() noexcept { return find_end(); }
 
   /// Return a const_iterator for the index size().
   ///
   /// Complexity: O(log(n)), where n = size()
-  const_iterator end() const { return find_end(); }
+  const_iterator end() const noexcept { return find_end(); }
 
   /// Return a const_iterator for the index size().
   ///
   /// Complexity: O(log(n)), where n = size()
-  const_iterator cend() const { return find_end(); }
+  const_iterator cend() const noexcept { return find_end(); }
 
   /// Return a reverse_iterator for the index size().
   ///
   /// Complexity: O(log(n)), where n = size()
-  reverse_iterator rbegin() { return reverse_iterator{end()}; }
+  reverse_iterator rbegin() noexcept { return reverse_iterator{end()}; }
 
   /// Return a const_reverse_iterator for the index size().
   ///
   /// Complexity: O(log(n)), where n = size()
-  const_reverse_iterator rbegin() const {
+  const_reverse_iterator rbegin() const noexcept {
     return const_reverse_iterator{end()};
   }
 
   /// Return a const_reverse_iterator for the index size().
   ///
   /// Complexity: O(log(n)), where n = size()
-  const_reverse_iterator crbegin() const {
+  const_reverse_iterator crbegin() const noexcept {
     return const_reverse_iterator{end()};
   }
 
   /// Return a reverse_iterator for the index 0.
   ///
   /// Complexity: O(log(n)), where n = size()
-  reverse_iterator rend() { return reverse_iterator{begin()}; }
+  reverse_iterator rend() noexcept { return reverse_iterator{begin()}; }
 
   /// Return a const_reverse_iterator for the index 0.
   ///
   /// Complexity: O(log(n)), where n = size()
-  const_reverse_iterator rend() const {
+  const_reverse_iterator rend() const noexcept {
     return const_reverse_iterator{begin()};
   }
 
   /// Return a const_reverse_iterator for the index 0.
   ///
   /// Complexity: O(log(n)), where n = size()
-  const_reverse_iterator crend() const {
+  const_reverse_iterator crend() const noexcept {
     return const_reverse_iterator{begin()};
   }
 
   /// Return an iterator for the index pos.
   ///
   /// Complexity: O(log(n)), where n = size()
-  iterator nth(size_type pos) {
+  iterator nth(size_type pos) noexcept {
     if (pos >= size()) return find_end();
     return find_index(pos);
   }
@@ -2167,8 +2183,8 @@ class segmented_tree_seq {
   ///
   /// Complexity: O(log(n)), where n = size()
   ///
-  /// Note: Non-standard function
-  const_iterator nth(size_type pos) const {
+  /// Note: Non-standard extension
+  const_iterator nth(size_type pos) const noexcept {
     if (pos >= size()) return find_end();
     return find_index(pos);
   }
@@ -2177,15 +2193,15 @@ class segmented_tree_seq {
   ///
   /// Complexity: O(1)
   ///
-  /// Note: Non-standard function
-  size_type index_of(iterator pos) { return pos.it_.pos; }
+  /// Note: Non-standard extension
+  size_type index_of(iterator pos) noexcept { return pos.it_.pos; }
 
   /// Return the index of the specified const_iterator
   ///
   /// Complexity: O(1)
   ///
-  /// Note: Non-standard function
-  size_type index_of(const_iterator pos) const { return pos.it_.pos; }
+  /// Note: Non-standard extension
+  size_type index_of(const_iterator pos) const noexcept { return pos.it_.pos; }
 
   /// Return true if the sequence is empty, false otherwise.
   ///
@@ -2195,22 +2211,24 @@ class segmented_tree_seq {
   /// Return the count of elements stored in the sequence.
   ///
   /// Complexity: O(1)
-  size_type size() const { return get_size(); }
+  size_type size() const noexcept { return get_size(); }
 
   /// Return the height of the tree.
   ///
   /// Complexity: O(1)
-  size_type height() const { return get_height(); }
+  size_type height() const noexcept { return get_height(); }
 
   /// Return the maximum count of elements able to be stored in the sequence.
   ///
   /// Complexity: O(1)
-  size_type max_size() const { return (std::numeric_limits<size_type>::max)(); }
+  size_type max_size() const noexcept {
+    return (std::numeric_limits<size_type>::max)();
+  }
 
   /// Remove all elements from the sequence.
   ///
   /// Complexity: O(n), where n = size()
-  void clear() {
+  void clear() noexcept {
     purge();
     get_root() = nullptr;
     get_height() = 0;
@@ -2382,7 +2400,9 @@ class segmented_tree_seq {
   /// Swap the contents *this with the specified sequence.
   ///
   /// Complexity: O(1)
-  void swap(segmented_tree_seq &other) {
+  void swap(segmented_tree_seq &other) noexcept(
+      !element_traits::propagate_on_container_swap::value ||
+      detail::is_nothrow_swappable<allocator_type>::value) {
     using std::swap;
     swap(get_root(), other.get_root());
     swap(get_height(), other.get_height());
@@ -2530,8 +2550,9 @@ bool operator>=(segmented_tree_seq<T, Alloc> &lhs,
 ///
 /// Complexity: O(1)
 template <typename T, typename Traits, typename Alloc, size_t... Args>
-void swap(segmented_tree_seq<T, Alloc, Args...> &a,
-          segmented_tree_seq<T, Alloc, Args...> &b) {
+void swap(
+    segmented_tree_seq<T, Alloc, Args...> &a,
+    segmented_tree_seq<T, Alloc, Args...> &b) noexcept(noexcept(a.swap(b))) {
   a.swap(b);
 }
 
