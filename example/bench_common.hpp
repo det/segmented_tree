@@ -53,42 +53,30 @@ template <typename T>
 typename std::enable_if<!has_reserve<T>::value, void>::type reserve(
     T &, typename T::size_type) {}
 
-template <typename T>
-struct voidable {
-  T value;
-  template <typename F, typename... Args>
-  voidable(F &&f, Args &&... args)
-      : value{f(std::forward<Args>(args)...)} {}
-  T &get() { return value; }
-  T const &get() const { return value; }
-};
+class scoped_timer {
+ private:
+  using Clock = std::chrono::steady_clock;
+  using Ns = std::chrono::nanoseconds;
+  char const *description_;
+  Clock::time_point start_;
 
-template <>
-struct voidable<void> {
-  template <typename F, typename... Args>
-  voidable(F &&f, Args &&... args) {
-    f(std::forward<Args>(args)...);
+ public:
+  scoped_timer(char const *description)
+      : description_{description}, start_{Clock::now()} {}
+  ~scoped_timer() {
+    auto stop = Clock::now();
+    auto ns = std::chrono::duration_cast<Ns>(stop - start_);
+    double ms = ns.count() / 1000000.0;
+    std::cout << std::setw(15) << std::setfill(' ') << std::setprecision(6)
+              << ms << "ms " << description_ << "\n";
   }
-  void get() const {}
 };
-
-template <typename F, typename... Args>
-auto make_voidable(F &&f, Args &&... args)
-    -> voidable<typename std::result_of<F && (Args && ...)>::type> {
-  return {std::forward<F>(f), std::forward<Args>(args)...};
-}
 
 template <typename F, typename... Args>
 auto bench(char const *description, F functor, Args &&... args) ->
     typename std::result_of<F && (Args && ...)>::type {
-  auto start = std::chrono::steady_clock::now();
-  auto ret = make_voidable(functor, std::forward<Args>(args)...);
-  auto stop = std::chrono::steady_clock::now();
-  auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
-  double ms = ns.count() / 1000000.0;
-  std::cout << std::setw(15) << std::setfill(' ') << std::setprecision(6) << ms
-            << "ms " << description << "\n";
-  return ret.get();
+  scoped_timer timer{description};
+  return functor(std::forward<Args>(args)...);
 }
 
 template <typename T>
