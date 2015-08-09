@@ -1,13 +1,9 @@
 #include "bench_single.hpp"
 #include "stl_ext_adv_review/container/bpt_sequence.hpp"
-#include "random_data_single.hpp"
+
+template <typename T>
+using Container = std_ext_adv::sequence<T>;
 
 int main(int argc, char** argv) {
-  if (argc != 2) {
-    std::cerr << "Usage: " << argv[0] << " <8 bit generated random data>\n";
-    return 1;
-  }
-
-  random_data_single<std::uint8_t> data{argv[1]};
-  bench_single<std_ext_adv::sequence<std::uint8_t>>(data);
+  return bench_single<Container, std::uint8_t>(argc, argv);
 }

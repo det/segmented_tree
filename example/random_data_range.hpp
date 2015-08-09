@@ -76,3 +76,17 @@ class random_data_range {
   std::vector<T> const &get_inserted() const { return inserted_; }
   std::vector<T> const &get_ordered() const { return ordered_; }
 };
+
+template <typename T>
+int generate_range(int argc, char **argv) {
+  if (argc != 4) {
+    std::cerr << "Usage: " << argv[0] << " <count> <size> <output path>\n";
+    return EXIT_FAILURE;
+  }
+
+  std::size_t count = std::strtoul(argv[1], nullptr, 10);
+  std::size_t size = std::strtoul(argv[2], nullptr, 10);
+  random_data_range<T> data{count, size};
+  data.save(argv[3]);
+  return EXIT_SUCCESS;
+}

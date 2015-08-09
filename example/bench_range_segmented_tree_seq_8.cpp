@@ -1,13 +1,9 @@
 #include "bench_range.hpp"
-#include "random_data_range.hpp"
 #include "boost/container/segmented_tree_seq.hpp"
 
-int main(int argc, char** argv) {
-  if (argc != 2) {
-    std::cerr << "Usage: " << argv[0] << " <8 bit generated random data>\n";
-    return 1;
-  }
+template <typename T>
+using Container = boost::container::segmented_tree_seq<T>;
 
-  random_data_range<std::uint8_t> data{argv[1]};
-  bench_range<boost::container::segmented_tree_seq<std::uint8_t>>(data);
+int main(int argc, char** argv) {
+  return bench_range<Container, std::uint8_t>(argc, argv);
 }

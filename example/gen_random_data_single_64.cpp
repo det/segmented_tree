@@ -1,14 +1,5 @@
 #include "random_data_single.hpp"
 
-#include <string>
-
 int main(int argc, char** argv) {
-  if (argc != 3) {
-    std::cerr << "Usage: " << argv[0] << " <count> <output path>\n";
-    return 1;
-  }
-
-  std::size_t size = std::strtoul(argv[1], nullptr, 10);
-  random_data_single<std::uint64_t> data{size};
-  data.save(argv[2]);
+  return generate_single<std::uint64_t>(argc, argv);
 }

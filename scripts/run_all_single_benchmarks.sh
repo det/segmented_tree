@@ -7,8 +7,8 @@ fi
 
 script=`dirname $0`/run_single_benchmarks.sh
 $script "$1" "$2" \
-        "vector deque avl_array btree_seq segmented_tree_seq" \
-        "avl_array btree_seq segmented_tree_seq" \
-        "vector deque avl_array btree_seq segmented_tree_seq" \
-        "avl_array btree_seq segmented_tree_seq"
+        "vector deque avl_array bpt_sequence btree_seq segmented_tree_seq" \
+        "avl_array bpt_sequence btree_seq segmented_tree_seq" \
+        "vector deque avl_array bpt_sequence btree_seq segmented_tree_seq" \
+        "avl_array bpt_sequence btree_seq segmented_tree_seq"
 

@@ -66,7 +66,7 @@ class scoped_timer {
   ~scoped_timer() {
     auto stop = Clock::now();
     auto ns = std::chrono::duration_cast<Ns>(stop - start_);
-    double ms = ns.count() / 1000000.0;
+    auto ms = ns.count() / 1000000.0;
     std::cout << std::setw(15) << std::setfill(' ') << std::setprecision(6)
               << ms << "ms " << description_ << "\n";
   }

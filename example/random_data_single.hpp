@@ -4,6 +4,7 @@
 
 #include <array>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -66,3 +67,16 @@ class random_data_single {
   std::vector<T> const &get_inserted() const { return inserted_; }
   std::vector<T> const &get_ordered() const { return ordered_; }
 };
+
+template <typename T>
+int generate_single(int argc, char **argv) {
+  if (argc != 3) {
+    std::cerr << "Usage: " << argv[0] << " <count> <output path>\n";
+    return EXIT_FAILURE;
+  }
+
+  std::size_t size = std::strtoul(argv[1], nullptr, 10);
+  random_data_single<T> data{size};
+  data.save(argv[2]);
+  return EXIT_SUCCESS;
+}
