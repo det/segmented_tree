@@ -1939,8 +1939,8 @@ class segmented_tree_seq {
 
   /// Assign the Sequence to the elements of the specified initializer_list.
   ///
-  /// Complexity: O(count) if n >= count, O(count) + O(diff * log(n)) otherwise,
-  /// where n = size(), where count = ilist.size(), where diff = count - n
+  /// Complexity: O(count) if n >= count, O(count) + O((count - n) * log(n))
+  /// otherwise, where n = size(), where count = ilist.size()
   segmented_tree_seq &operator=(std::initializer_list<T> ilist) {
     assign(ilist.begin(), ilist.end());
     return *this;
@@ -1948,8 +1948,8 @@ class segmented_tree_seq {
 
   /// Assign the Sequence to count elements copy constructed from value.
   ///
-  /// Complexity: O(count) if n >= count, O(count) + O(diff * log(n)) otherwise,
-  /// where n = size(), where diff = count - n
+  /// Complexity: O(count) if n >= count, O(count) + O((count - n) * log(n))
+  /// otherwise, where n = size()
   void assign(size_type count, T const &value) {
     auto first = begin();
     auto last = end();
@@ -1973,9 +1973,8 @@ class segmented_tree_seq {
   /// Assign the Sequence to the elements copy constructed from the range
   /// [first, last).
   ///
-  /// Complexity: O(count) if n >= count, O(count) + O(diff * log(n)) otherwise,
-  /// where n = size(), where count = std::distance(first, last), where diff =
-  /// count - n
+  /// Complexity: O(count) if n >= count, O(count) + O((count - n) * log(n))
+  /// otherwise, where n = size(), where count = std::distance(first, last)
   template <class InputIt,
             typename = typename std::iterator_traits<InputIt>::pointer>
   void assign(InputIt source_first, InputIt source_last) {
@@ -2000,8 +1999,8 @@ class segmented_tree_seq {
 
   /// Assign the Sequence to the elements of the specified initializer_list.
   ///
-  /// Complexity: O(count) if n >= count, O(count) + O(diff * log(n)) otherwise,
-  /// where n = size(), where count = ilist.size(), where diff = count - n
+  /// Complexity: O(count) if n >= count, O(count) + O((count - n) * log(n))
+  /// otherwise, where n = size(), where count = ilist.size()
   void assign(std::initializer_list<T> ilist) {
     assign(ilist.begin(), ilist.end());
   }
@@ -2082,10 +2081,25 @@ class segmented_tree_seq {
   /// Complexity: O(log(n)), where n = size()
   const_iterator cbegin() const { return find_first(); }
 
+  /// Return an iterator to the index size() - 1
+  ///
+  /// Complexity: O(log(n))
+  ///
+  /// Note: Non-standard function
   iterator penultimate() { return find_last(); }
 
+  /// Return a const_iterator to the index size() - 1
+  ///
+  /// Complexity: O(log(n))
+  ///
+  /// Note: Non-standard function
   const_iterator penultimate() const { return find_last(); }
 
+  /// Return a const_iterator to the index size() - 1
+  ///
+  /// Complexity: O(log(n))
+  ///
+  /// Note: Non-standard function
   const_iterator cpenultimate() const { return find_last(); }
 
   /// Return an iterator for the index size().
@@ -2103,6 +2117,44 @@ class segmented_tree_seq {
   /// Complexity: O(log(n)), where n = size()
   const_iterator cend() const { return find_end(); }
 
+  /// Return a reverse_iterator for the index size().
+  ///
+  /// Complexity: O(log(n)), where n = size()
+  reverse_iterator rbegin() { return reverse_iterator{end()}; }
+
+  /// Return a const_reverse_iterator for the index size().
+  ///
+  /// Complexity: O(log(n)), where n = size()
+  const_reverse_iterator rbegin() const {
+    return const_reverse_iterator{end()};
+  }
+
+  /// Return a const_reverse_iterator for the index size().
+  ///
+  /// Complexity: O(log(n)), where n = size()
+  const_reverse_iterator crbegin() const {
+    return const_reverse_iterator{end()};
+  }
+
+  /// Return a reverse_iterator for the index 0.
+  ///
+  /// Complexity: O(log(n)), where n = size()
+  reverse_iterator rend() { return reverse_iterator{begin()}; }
+
+  /// Return a const_reverse_iterator for the index 0.
+  ///
+  /// Complexity: O(log(n)), where n = size()
+  const_reverse_iterator rend() const {
+    return const_reverse_iterator{begin()};
+  }
+
+  /// Return a const_reverse_iterator for the index 0.
+  ///
+  /// Complexity: O(log(n)), where n = size()
+  const_reverse_iterator crend() const {
+    return const_reverse_iterator{begin()};
+  }
+
   /// Return an iterator for the index pos.
   ///
   /// Complexity: O(log(n)), where n = size()
@@ -2114,6 +2166,8 @@ class segmented_tree_seq {
   /// Return a const_iterator for the index pos.
   ///
   /// Complexity: O(log(n)), where n = size()
+  ///
+  /// Note: Non-standard function
   const_iterator nth(size_type pos) const {
     if (pos >= size()) return find_end();
     return find_index(pos);
@@ -2122,32 +2176,16 @@ class segmented_tree_seq {
   /// Return the index of the specified iterator
   ///
   /// Complexity: O(1)
+  ///
+  /// Note: Non-standard function
   size_type index_of(iterator pos) { return pos.it_.pos; }
 
   /// Return the index of the specified const_iterator
   ///
   /// Complexity: O(1)
+  ///
+  /// Note: Non-standard function
   size_type index_of(const_iterator pos) const { return pos.it_.pos; }
-
-  reverse_iterator rbegin() { return reverse_iterator{end()}; }
-
-  const_reverse_iterator rbegin() const {
-    return const_reverse_iterator{end()};
-  }
-
-  const_reverse_iterator crbegin() const {
-    return const_reverse_iterator{end()};
-  }
-
-  reverse_iterator rend() { return reverse_iterator{begin()}; }
-
-  const_reverse_iterator rend() const {
-    return const_reverse_iterator{begin()};
-  }
-
-  const_reverse_iterator crend() const {
-    return const_reverse_iterator{begin()};
-  }
 
   /// Return true if the sequence is empty, false otherwise.
   ///
@@ -2322,14 +2360,14 @@ class segmented_tree_seq {
   /// above the current size.
   ///
   /// Complexity: O(n - count * log(n)) if n > count, O(count - n * log(n))
-  /// otherwise, where  n = size(), where diff = n - count
+  /// otherwise, where  n = size()
   void resize(size_type count) { resize(count, {}); }
 
   /// Resize the seqeuence to the specified size, copy construct any elements
   /// from value above the current size.
   ///
   /// Complexity: O(n - count * log(n)) if n > count, O(count - n * log(n))
-  /// otherwise, where n = size(), where diff = n - count
+  /// otherwise, where n = size()
   void resize(size_type count, value_type const &value) {
     auto sz = size();
     if (sz == count) return;
