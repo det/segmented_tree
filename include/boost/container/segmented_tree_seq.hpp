@@ -729,7 +729,7 @@ class segmented_tree_seq {
     if (diff > 0)
       move_next_segment_count(it.entry, size);
     else if (diff < 0)
-      move_prev_segment_count(it.entry, -size);
+      move_prev_segment_count(it.entry, negate(size));
   }
 
   // move_next_count
@@ -1259,12 +1259,14 @@ class segmented_tree_seq {
     get_size() += sz;
   }
 
-  void increment_sizes(node_pointer pointer, size_type index) {
-    update_sizes(pointer, index, 1);
+  void increment_sizes(node_pointer pointer, size_type index,
+                       std::size_t by = 1) {
+    update_sizes(pointer, index, by);
   }
 
-  void decrement_sizes(node_pointer pointer, size_type index) {
-    update_sizes(pointer, index, -static_cast<size_type>(1));
+  void decrement_sizes(node_pointer pointer, size_type index,
+                       std::size_t by = 1) {
+    update_sizes(pointer, index, negate(by));
   }
 
   // alloc_nodes_single
@@ -1756,6 +1758,8 @@ class segmented_tree_seq {
   }
 
   // helpers
+  static constexpr std::size_t negate(std::size_t x) { return ~(x - 1); }
+
   void steal(segmented_tree_seq &other) {
     get_root() = other.get_root();
     get_height() = other.get_height();
