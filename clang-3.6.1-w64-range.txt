@@ -1,0 +1,704 @@
+Rusults for vector<std::uint8_t>, count: 1, size: 7626496
+       4.154275ms accumulate backward by 1
+       0.618126ms accumulate backward by 10
+       0.353149ms accumulate backward by 100
+       0.051783ms accumulate backward by 1000
+       0.013995ms accumulate backward by 10000
+       4.243378ms accumulate backward
+       3.610790ms accumulate forward by 1
+       0.612528ms accumulate forward by 10
+       0.361079ms accumulate forward by 100
+       0.049450ms accumulate forward by 1000
+       0.015395ms accumulate forward by 10000
+       3.607525ms accumulate forward
+       0.000000ms erase values
+       6.303022ms insert values
+
+Rusults for deque<std::uint8_t>, count: 1, size: 7626496
+      10.214245ms accumulate backward by 1
+       1.746615ms accumulate backward by 10
+       0.484704ms accumulate backward by 100
+       0.082106ms accumulate backward by 1000
+       0.013996ms accumulate backward by 10000
+       5.554272ms accumulate backward
+      10.301949ms accumulate forward by 1
+       1.745216ms accumulate forward by 10
+       0.491235ms accumulate forward by 100
+       0.092369ms accumulate forward by 1000
+       0.014461ms accumulate forward by 10000
+       5.602790ms accumulate forward
+       3.298229ms erase values
+      10.197451ms insert values
+
+Rusults for avl_array<std::uint8_t>, count: 1, size: 7626496
+     204.577400ms accumulate backward by 1
+     111.248732ms accumulate backward by 10
+      47.227178ms accumulate backward by 100
+       9.367528ms accumulate backward by 1000
+       1.218059ms accumulate backward by 10000
+     174.723534ms accumulate backward
+     221.313460ms accumulate forward by 1
+     129.110015ms accumulate forward by 10
+      50.224509ms accumulate forward by 100
+      10.039770ms accumulate forward by 1000
+       1.304363ms accumulate forward by 10000
+     157.424396ms accumulate forward
+     780.433621ms erase values
+     724.973467ms insert values
+
+Rusults for bpt_sequence<std::uint8_t>, count: 1, size: 7626496
+      46.788660ms accumulate backward by 1
+      18.120196ms accumulate backward by 10
+      11.231704ms accumulate backward by 100
+       2.115158ms accumulate backward by 1000
+       0.214129ms accumulate backward by 10000
+      17.038359ms accumulate backward
+      50.325741ms accumulate forward by 1
+      19.500601ms accumulate forward by 10
+      11.398248ms accumulate forward by 100
+       2.127754ms accumulate forward by 1000
+       0.208064ms accumulate forward by 10000
+      15.685945ms accumulate forward
+      49.138005ms erase values
+      55.090212ms insert values
+
+Rusults for btree_seq<std::uint8_t>, count: 1, size: 7626496
+      18.164515ms accumulate backward by 1
+       3.870636ms accumulate backward by 10
+       8.369663ms accumulate backward by 100
+       1.389268ms accumulate backward by 1000
+       0.118494ms accumulate backward by 10000
+      18.089407ms accumulate backward
+      12.676487ms accumulate forward by 1
+       3.289831ms accumulate forward by 10
+       8.281492ms accumulate forward by 100
+       1.386002ms accumulate forward by 1000
+       0.116628ms accumulate forward by 10000
+      12.508543ms accumulate forward
+      10.681221ms erase values
+      13.026370ms insert values
+
+Rusults for segmented_tree_seq<std::uint8_t>, count: 1, size: 7626496
+      15.399507ms accumulate backward by 1
+       2.490699ms accumulate backward by 10
+       1.028189ms accumulate backward by 100
+       0.361545ms accumulate backward by 1000
+       0.063912ms accumulate backward by 10000
+       8.957466ms accumulate backward
+      16.560652ms accumulate forward by 1
+       2.874170ms accumulate forward by 10
+       0.940952ms accumulate forward by 100
+       0.284571ms accumulate forward by 1000
+       0.048051ms accumulate forward by 10000
+       6.669699ms accumulate forward
+     203.715289ms erase values
+     197.356286ms insert values
+
+Rusults for vector<std::uint8_t>, count: 31, size: 246016
+       4.157541ms accumulate backward by 1
+       0.620926ms accumulate backward by 10
+       0.353615ms accumulate backward by 100
+       0.051317ms accumulate backward by 1000
+       0.014462ms accumulate backward by 10000
+       4.151943ms accumulate backward
+       3.499295ms accumulate forward by 1
+       0.611128ms accumulate forward by 10
+       0.357813ms accumulate forward by 100
+       0.052249ms accumulate forward by 1000
+       0.013995ms accumulate forward by 10000
+       3.500227ms accumulate forward
+       6.898289ms erase values
+      18.826026ms insert values
+
+Rusults for deque<std::uint8_t>, count: 31, size: 246016
+      10.161063ms accumulate backward by 1
+       1.645382ms accumulate backward by 10
+       0.479106ms accumulate backward by 100
+       0.082572ms accumulate backward by 1000
+       0.013995ms accumulate backward by 10000
+       5.500158ms accumulate backward
+      10.222642ms accumulate forward by 1
+       1.670574ms accumulate forward by 10
+       0.487503ms accumulate forward by 100
+       0.078374ms accumulate forward by 1000
+       0.012595ms accumulate forward by 10000
+       5.528148ms accumulate forward
+       5.580864ms erase values
+      19.398435ms insert values
+
+Rusults for avl_array<std::uint8_t>, count: 31, size: 246016
+     207.421714ms accumulate backward by 1
+     109.298252ms accumulate backward by 10
+      47.488424ms accumulate backward by 100
+       9.165063ms accumulate backward by 1000
+       1.199864ms accumulate backward by 10000
+     174.427301ms accumulate backward
+     223.633416ms accumulate forward by 1
+     127.274297ms accumulate forward by 10
+      49.729074ms accumulate forward by 100
+       9.661430ms accumulate forward by 1000
+       1.261444ms accumulate forward by 10000
+     157.105303ms accumulate forward
+    2713.331700ms erase values
+    2587.864199ms insert values
+
+Rusults for bpt_sequence<std::uint8_t>, count: 31, size: 246016
+      46.805453ms accumulate backward by 1
+      18.236358ms accumulate backward by 10
+      10.770792ms accumulate backward by 100
+       2.070840ms accumulate backward by 1000
+       0.201999ms accumulate backward by 10000
+      17.210035ms accumulate backward
+      50.330406ms accumulate forward by 1
+      19.538855ms accumulate forward by 10
+      10.753998ms accumulate forward by 100
+       1.983602ms accumulate forward by 1000
+       0.204331ms accumulate forward by 10000
+      15.819833ms accumulate forward
+      49.515413ms erase values
+      55.263287ms insert values
+
+Rusults for btree_seq<std::uint8_t>, count: 31, size: 246016
+      18.210233ms accumulate backward by 1
+       3.893495ms accumulate backward by 10
+       8.482559ms accumulate backward by 100
+       1.419125ms accumulate backward by 1000
+       0.117561ms accumulate backward by 10000
+      18.149586ms accumulate backward
+      12.644297ms accumulate forward by 1
+       3.328085ms accumulate forward by 10
+       8.403251ms accumulate forward by 100
+       1.385536ms accumulate forward by 1000
+       0.117560ms accumulate forward by 10000
+      12.745997ms accumulate forward
+      11.139335ms erase values
+      12.989515ms insert values
+
+Rusults for segmented_tree_seq<std::uint8_t>, count: 31, size: 246016
+      15.531997ms accumulate backward by 1
+       2.535018ms accumulate backward by 10
+       1.026322ms accumulate backward by 100
+       0.377873ms accumulate backward by 1000
+       0.085838ms accumulate backward by 10000
+       9.062431ms accumulate backward
+      16.614301ms accumulate forward by 1
+       2.907760ms accumulate forward by 10
+       0.939085ms accumulate forward by 100
+       0.280839ms accumulate forward by 1000
+       0.060646ms accumulate forward by 10000
+       6.669699ms accumulate forward
+     240.565410ms erase values
+     232.857726ms insert values
+
+Rusults for vector<std::uint8_t>, count: 961, size: 7936
+       4.154742ms accumulate backward by 1
+       0.619526ms accumulate backward by 10
+       0.353149ms accumulate backward by 100
+       0.049916ms accumulate backward by 1000
+       0.014928ms accumulate backward by 10000
+       4.155674ms accumulate backward
+       3.500694ms accumulate forward by 1
+       0.618126ms accumulate forward by 10
+       0.355947ms accumulate forward by 100
+       0.045252ms accumulate forward by 1000
+       0.013528ms accumulate forward by 10000
+       3.495096ms accumulate forward
+     244.149610ms erase values
+     249.396452ms insert values
+
+Rusults for deque<std::uint8_t>, count: 961, size: 7936
+      10.279090ms accumulate backward by 1
+       1.805861ms accumulate backward by 10
+       0.504298ms accumulate backward by 100
+       0.077441ms accumulate backward by 1000
+       0.013063ms accumulate backward by 10000
+       5.625183ms accumulate backward
+      10.302882ms accumulate forward by 1
+       1.791866ms accumulate forward by 10
+       0.515494ms accumulate forward by 100
+       0.081173ms accumulate forward by 1000
+       0.012596ms accumulate forward by 10000
+       5.608855ms accumulate forward
+      90.947132ms erase values
+     107.064134ms insert values
+
+Rusults for avl_array<std::uint8_t>, count: 961, size: 7936
+     208.135941ms accumulate backward by 1
+     115.947424ms accumulate backward by 10
+      52.453029ms accumulate backward by 100
+       9.786921ms accumulate backward by 1000
+       1.272641ms accumulate backward by 10000
+     174.703007ms accumulate backward
+     225.130914ms accumulate forward by 1
+     132.195514ms accumulate forward by 10
+      55.292211ms accumulate forward by 100
+      10.529139ms accumulate forward by 1000
+       1.361277ms accumulate forward by 10000
+     158.967146ms accumulate forward
+    1341.652147ms erase values
+    1440.650782ms insert values
+
+Rusults for bpt_sequence<std::uint8_t>, count: 961, size: 7936
+      48.719546ms accumulate backward by 1
+      20.024025ms accumulate backward by 10
+      11.796648ms accumulate backward by 100
+       2.368940ms accumulate backward by 1000
+       0.234655ms accumulate backward by 10000
+      19.084473ms accumulate backward
+      52.202046ms accumulate forward by 1
+      21.171174ms accumulate forward by 10
+      11.542400ms accumulate forward by 100
+       2.276571ms accumulate forward by 1000
+       0.229990ms accumulate forward by 10000
+      17.615433ms accumulate forward
+      58.932391ms erase values
+      71.018276ms insert values
+
+Rusults for btree_seq<std::uint8_t>, count: 961, size: 7936
+      19.052284ms accumulate backward by 1
+       4.625917ms accumulate backward by 10
+       9.092754ms accumulate backward by 100
+       1.604329ms accumulate backward by 1000
+       0.111030ms accumulate backward by 10000
+      18.993970ms accumulate backward
+      13.446696ms accumulate forward by 1
+       3.861306ms accumulate forward by 10
+       9.027443ms accumulate forward by 100
+       1.612260ms accumulate forward by 1000
+       0.112429ms accumulate forward by 10000
+      13.334266ms accumulate forward
+      12.593914ms erase values
+      14.298076ms insert values
+
+Rusults for segmented_tree_seq<std::uint8_t>, count: 961, size: 7936
+      15.887011ms accumulate backward by 1
+       2.940415ms accumulate backward by 10
+       1.072507ms accumulate backward by 100
+       0.293902ms accumulate backward by 1000
+       0.061113ms accumulate backward by 10000
+       9.590520ms accumulate backward
+      17.312667ms accumulate forward by 1
+       3.259975ms accumulate forward by 10
+       0.959612ms accumulate forward by 100
+       0.227657ms accumulate forward by 1000
+       0.058780ms accumulate forward by 10000
+       6.953337ms accumulate forward
+     241.129888ms erase values
+     241.052447ms insert values
+
+Rusults for avl_array<std::uint8_t>, count: 29791, size: 256
+     235.526632ms accumulate backward by 1
+     142.965373ms accumulate backward by 10
+      55.274483ms accumulate backward by 100
+      10.172725ms accumulate backward by 1000
+       1.262377ms accumulate backward by 10000
+     202.454778ms accumulate backward
+     256.923598ms accumulate forward by 1
+     161.481170ms accumulate forward by 10
+      59.385839ms accumulate forward by 100
+      11.066093ms accumulate forward by 1000
+       1.365009ms accumulate forward by 10000
+     179.975508ms accumulate forward
+    1498.934724ms erase values
+    1493.967321ms insert values
+
+Rusults for bpt_sequence<std::uint8_t>, count: 29791, size: 256
+      71.621007ms accumulate backward by 1
+      40.444584ms accumulate backward by 10
+      18.098737ms accumulate backward by 100
+       4.729015ms accumulate backward by 1000
+       0.424991ms accumulate backward by 10000
+      42.061043ms accumulate backward
+      74.454125ms accumulate forward by 1
+      40.963811ms accumulate forward by 10
+      17.760051ms accumulate forward by 100
+       4.624051ms accumulate forward by 1000
+       0.406797ms accumulate forward by 10000
+      39.919761ms accumulate forward
+     371.104813ms erase values
+     464.616354ms insert values
+
+Rusults for btree_seq<std::uint8_t>, count: 29791, size: 256
+      28.827077ms accumulate backward by 1
+      11.634303ms accumulate backward by 10
+      12.420372ms accumulate backward by 100
+       2.101163ms accumulate backward by 1000
+       0.116627ms accumulate backward by 10000
+      28.480459ms accumulate backward
+      21.604096ms accumulate forward by 1
+       8.870695ms accumulate forward by 10
+      12.749729ms accumulate forward by 100
+       2.134285ms accumulate forward by 1000
+       0.118494ms accumulate forward by 10000
+      21.638618ms accumulate forward
+      33.838331ms erase values
+      38.083576ms insert values
+
+Rusults for segmented_tree_seq<std::uint8_t>, count: 29791, size: 256
+      16.177647ms accumulate backward by 1
+       3.391997ms accumulate backward by 10
+       1.060844ms accumulate backward by 100
+       0.320959ms accumulate backward by 1000
+       0.093302ms accumulate backward by 10000
+      10.130739ms accumulate backward
+      18.545654ms accumulate forward by 1
+       3.798794ms accumulate forward by 10
+       0.967542ms accumulate forward by 100
+       0.231856ms accumulate forward by 1000
+       0.079307ms accumulate forward by 10000
+       7.299955ms accumulate forward
+     261.464143ms erase values
+     260.472809ms insert values
+
+Rusults for vector<std::uint64_t>, count: 1, size: 953312
+       0.506163ms accumulate backward by 1
+       0.430122ms accumulate backward by 10
+       0.056914ms accumulate backward by 100
+       0.019127ms accumulate backward by 1000
+       0.000933ms accumulate backward by 10000
+       0.479106ms accumulate backward
+       0.467444ms accumulate forward by 1
+       0.427791ms accumulate forward by 10
+       0.057848ms accumulate forward by 100
+       0.017261ms accumulate forward by 1000
+       0.000933ms accumulate forward by 10000
+       0.465577ms accumulate forward
+       0.000000ms erase values
+       2.516357ms insert values
+
+Rusults for deque<std::uint64_t>, count: 1, size: 953312
+       1.951413ms accumulate backward by 1
+       0.575674ms accumulate backward by 10
+       0.101232ms accumulate backward by 100
+       0.017261ms accumulate backward by 1000
+       0.001399ms accumulate backward by 10000
+       1.382271ms accumulate backward
+       1.964942ms accumulate forward by 1
+       0.578940ms accumulate forward by 10
+       0.116628ms accumulate forward by 100
+       0.018193ms accumulate forward by 1000
+       0.001399ms accumulate forward by 10000
+       1.309495ms accumulate forward
+       3.370071ms erase values
+       3.935481ms insert values
+
+Rusults for avl_array<std::uint64_t>, count: 1, size: 953312
+      25.323583ms accumulate backward by 1
+      13.839497ms accumulate backward by 10
+       5.692826ms accumulate backward by 100
+       0.847183ms accumulate backward by 1000
+       0.054115ms accumulate backward by 10000
+      21.605962ms accumulate backward
+      27.418215ms accumulate forward by 1
+      16.046091ms accumulate forward by 10
+       6.602988ms accumulate forward by 100
+       0.940018ms accumulate forward by 1000
+       0.054115ms accumulate forward by 10000
+      19.498734ms accumulate forward
+      94.168854ms erase values
+      89.573260ms insert values
+
+Rusults for bpt_sequence<std::uint64_t>, count: 1, size: 953312
+       6.088427ms accumulate backward by 1
+       2.724887ms accumulate backward by 10
+       1.145750ms accumulate backward by 100
+       0.111029ms accumulate backward by 1000
+       0.019593ms accumulate backward by 10000
+       2.092299ms accumulate backward
+       5.844443ms accumulate forward by 1
+       2.424454ms accumulate forward by 10
+       1.122424ms accumulate forward by 100
+       0.109163ms accumulate forward by 1000
+       0.018660ms accumulate forward by 10000
+       1.964941ms accumulate forward
+       5.810854ms erase values
+       7.640507ms insert values
+
+Rusults for btree_seq<std::uint64_t>, count: 1, size: 953312
+       2.783201ms accumulate backward by 1
+       0.943751ms accumulate backward by 10
+       1.137353ms accumulate backward by 100
+       0.176340ms accumulate backward by 1000
+       0.017727ms accumulate backward by 10000
+       2.649312ms accumulate backward
+       2.070373ms accumulate forward by 1
+       0.770675ms accumulate forward by 10
+       1.182604ms accumulate forward by 100
+       0.190336ms accumulate forward by 1000
+       0.017727ms accumulate forward by 10000
+       2.068041ms accumulate forward
+       3.516555ms erase values
+       3.816055ms insert values
+
+Rusults for segmented_tree_seq<std::uint64_t>, count: 1, size: 953312
+       2.680102ms accumulate backward by 1
+       1.121958ms accumulate backward by 10
+       0.402132ms accumulate backward by 100
+       0.121292ms accumulate backward by 1000
+       0.017261ms accumulate backward by 10000
+       2.579803ms accumulate backward
+       3.217988ms accumulate forward by 1
+       1.076706ms accumulate forward by 10
+       0.368543ms accumulate forward by 100
+       0.120359ms accumulate forward by 1000
+       0.019127ms accumulate forward by 10000
+       2.349346ms accumulate forward
+      32.648729ms erase values
+      30.641335ms insert values
+
+Rusults for vector<std::uint64_t>, count: 31, size: 30752
+       0.488436ms accumulate backward by 1
+       0.417993ms accumulate backward by 10
+       0.060180ms accumulate backward by 100
+       0.019127ms accumulate backward by 1000
+       0.000933ms accumulate backward by 10000
+       0.483304ms accumulate backward
+       0.476774ms accumulate forward by 1
+       0.431988ms accumulate forward by 10
+       0.061580ms accumulate forward by 100
+       0.018660ms accumulate forward by 1000
+       0.000933ms accumulate forward by 10000
+       0.474441ms accumulate forward
+       7.267765ms erase values
+      11.648764ms insert values
+
+Rusults for deque<std::uint64_t>, count: 31, size: 30752
+       1.933686ms accumulate backward by 1
+       0.567277ms accumulate backward by 10
+       0.102166ms accumulate backward by 100
+       0.017261ms accumulate backward by 1000
+       0.001399ms accumulate backward by 10000
+       1.351014ms accumulate backward
+       1.915959ms accumulate forward by 1
+       0.572408ms accumulate forward by 10
+       0.117094ms accumulate forward by 100
+       0.018193ms accumulate forward by 1000
+       0.001400ms accumulate forward by 10000
+       1.268909ms accumulate forward
+       6.908552ms erase values
+       8.929476ms insert values
+
+Rusults for avl_array<std::uint64_t>, count: 31, size: 30752
+      25.726648ms accumulate backward by 1
+      14.171653ms accumulate backward by 10
+       5.723616ms accumulate backward by 100
+       0.868642ms accumulate backward by 1000
+       0.055049ms accumulate backward by 10000
+      21.160912ms accumulate backward
+      27.959367ms accumulate forward by 1
+      16.451955ms accumulate forward by 10
+       6.299756ms accumulate forward by 100
+       0.963344ms accumulate forward by 1000
+       0.055514ms accumulate forward by 10000
+      19.620494ms accumulate forward
+     278.211865ms erase values
+     264.968103ms insert values
+
+Rusults for bpt_sequence<std::uint64_t>, count: 31, size: 30752
+       6.156071ms accumulate backward by 1
+       2.771538ms accumulate backward by 10
+       1.077172ms accumulate backward by 100
+       0.104032ms accumulate backward by 1000
+       0.017727ms accumulate backward by 10000
+       2.127287ms accumulate backward
+       5.785662ms accumulate forward by 1
+       2.460842ms accumulate forward by 10
+       1.025390ms accumulate forward by 100
+       0.101699ms accumulate forward by 1000
+       0.018194ms accumulate forward by 10000
+       2.015792ms accumulate forward
+       6.269433ms erase values
+       8.031909ms insert values
+
+Rusults for btree_seq<std::uint64_t>, count: 31, size: 30752
+       2.944614ms accumulate backward by 1
+       0.992267ms accumulate backward by 10
+       1.171407ms accumulate backward by 100
+       0.182406ms accumulate backward by 1000
+       0.018194ms accumulate backward by 10000
+       2.798129ms accumulate backward
+       2.132886ms accumulate forward by 1
+       0.803797ms accumulate forward by 10
+       1.173740ms accumulate forward by 100
+       0.186138ms accumulate forward by 1000
+       0.017727ms accumulate forward by 10000
+       2.132419ms accumulate forward
+       3.694295ms erase values
+       3.923352ms insert values
+
+Rusults for segmented_tree_seq<std::uint64_t>, count: 31, size: 30752
+       2.744947ms accumulate backward by 1
+       1.130821ms accumulate backward by 10
+       0.405864ms accumulate backward by 100
+       0.117560ms accumulate backward by 1000
+       0.016794ms accumulate backward by 10000
+       2.692698ms accumulate backward
+       3.253910ms accumulate forward by 1
+       1.075307ms accumulate forward by 10
+       0.359680ms accumulate forward by 100
+       0.115695ms accumulate forward by 1000
+       0.018661ms accumulate forward by 10000
+       2.345614ms accumulate forward
+      34.643061ms erase values
+      33.402610ms insert values
+
+Rusults for vector<std::uint64_t>, count: 961, size: 992
+       0.484705ms accumulate backward by 1
+       0.412395ms accumulate backward by 10
+       0.059246ms accumulate backward by 100
+       0.018660ms accumulate backward by 1000
+       0.000933ms accumulate backward by 10000
+       0.479573ms accumulate backward
+       0.464177ms accumulate forward by 1
+       0.420325ms accumulate forward by 10
+       0.054582ms accumulate forward by 100
+       0.017261ms accumulate forward by 1000
+       0.000933ms accumulate forward by 10000
+       0.470242ms accumulate forward
+     245.768401ms erase values
+     247.200588ms insert values
+
+Rusults for deque<std::uint64_t>, count: 961, size: 992
+       2.051713ms accumulate backward by 1
+       0.599933ms accumulate backward by 10
+       0.102632ms accumulate backward by 100
+       0.017261ms accumulate backward by 1000
+       0.001399ms accumulate backward by 10000
+       1.483969ms accumulate backward
+       2.004595ms accumulate forward by 1
+       0.608329ms accumulate forward by 10
+       0.108697ms accumulate forward by 100
+       0.015395ms accumulate forward by 1000
+       0.001399ms accumulate forward by 10000
+       1.371540ms accumulate forward
+      92.573388ms erase values
+      94.744994ms insert values
+
+Rusults for avl_array<std::uint64_t>, count: 961, size: 992
+      26.839742ms accumulate backward by 1
+      16.425364ms accumulate backward by 10
+       6.534411ms accumulate backward by 100
+       0.922757ms accumulate backward by 1000
+       0.055515ms accumulate backward by 10000
+      21.981037ms accumulate backward
+      29.058932ms accumulate forward by 1
+      18.658549ms accumulate forward by 10
+       7.262167ms accumulate forward by 100
+       0.968476ms accumulate forward by 1000
+       0.056448ms accumulate forward by 10000
+      20.064612ms accumulate forward
+     158.604201ms erase values
+     166.474232ms insert values
+
+Rusults for bpt_sequence<std::uint64_t>, count: 961, size: 992
+       6.786793ms accumulate backward by 1
+       3.216123ms accumulate backward by 10
+       1.190534ms accumulate backward by 100
+       0.131556ms accumulate backward by 1000
+       0.019594ms accumulate backward by 10000
+       2.696430ms accumulate backward
+       6.458370ms accumulate forward by 1
+       2.915690ms accumulate forward by 10
+       1.124757ms accumulate forward by 100
+       0.129223ms accumulate forward by 1000
+       0.019593ms accumulate forward by 10000
+       2.568140ms accumulate forward
+      11.645965ms erase values
+      17.630827ms insert values
+
+Rusults for btree_seq<std::uint64_t>, count: 961, size: 992
+       3.546412ms accumulate backward by 1
+       1.525956ms accumulate backward by 10
+       1.158346ms accumulate backward by 100
+       0.126891ms accumulate backward by 1000
+       0.012129ms accumulate backward by 10000
+       3.402727ms accumulate backward
+       2.664707ms accumulate forward by 1
+       1.117758ms accumulate forward by 10
+       1.168142ms accumulate forward by 100
+       0.121292ms accumulate forward by 1000
+       0.012129ms accumulate forward by 10000
+       2.688966ms accumulate forward
+       4.250376ms erase values
+       4.675367ms insert values
+
+Rusults for segmented_tree_seq<std::uint64_t>, count: 961, size: 992
+       3.153610ms accumulate backward by 1
+       1.197532ms accumulate backward by 10
+       0.404464ms accumulate backward by 100
+       0.126424ms accumulate backward by 1000
+       0.015395ms accumulate backward by 10000
+       3.144280ms accumulate backward
+       3.654643ms accumulate forward by 1
+       1.101898ms accumulate forward by 10
+       0.290170ms accumulate forward by 100
+       0.070909ms accumulate forward by 1000
+       0.012129ms accumulate forward by 10000
+       2.714158ms accumulate forward
+      35.362887ms erase values
+      34.029600ms insert values
+
+Rusults for avl_array<std::uint64_t>, count: 29791, size: 32
+      45.703090ms accumulate backward by 1
+      27.792356ms accumulate backward by 10
+       6.819916ms accumulate backward by 100
+       0.886836ms accumulate backward by 1000
+       0.056914ms accumulate backward by 10000
+      45.326615ms accumulate backward
+      50.361662ms accumulate forward by 1
+      31.244533ms accumulate forward by 10
+       7.664299ms accumulate forward by 100
+       0.953081ms accumulate forward by 1000
+       0.059247ms accumulate forward by 10000
+      38.843521ms accumulate forward
+     216.885810ms erase values
+     203.405526ms insert values
+
+Rusults for bpt_sequence<std::uint64_t>, count: 29791, size: 32
+       8.260966ms accumulate backward by 1
+       4.513955ms accumulate backward by 10
+       1.595466ms accumulate backward by 100
+       0.169810ms accumulate backward by 1000
+       0.023325ms accumulate backward by 10000
+       4.292362ms accumulate backward
+       8.078094ms accumulate forward by 1
+       4.365604ms accumulate forward by 10
+       1.466242ms accumulate forward by 100
+       0.162346ms accumulate forward by 1000
+       0.022392ms accumulate forward by 10000
+       4.248511ms accumulate forward
+     155.086246ms erase values
+     242.289633ms insert values
+
+Rusults for btree_seq<std::uint64_t>, count: 29791, size: 32
+       5.522083ms accumulate backward by 1
+       2.193532ms accumulate backward by 10
+       1.541817ms accumulate backward by 100
+       0.165611ms accumulate backward by 1000
+       0.013996ms accumulate backward by 10000
+       5.287896ms accumulate backward
+       3.846378ms accumulate forward by 1
+       1.647715ms accumulate forward by 10
+       1.563743ms accumulate forward by 100
+       0.159547ms accumulate forward by 1000
+       0.013062ms accumulate forward by 10000
+       3.874835ms accumulate forward
+      18.329660ms erase values
+      20.327723ms insert values
+
+Rusults for segmented_tree_seq<std::uint64_t>, count: 29791, size: 32
+       3.567872ms accumulate backward by 1
+       1.202664ms accumulate backward by 10
+       0.390469ms accumulate backward by 100
+       0.127357ms accumulate backward by 1000
+       0.013996ms accumulate backward by 10000
+       3.621054ms accumulate backward
+       4.150076ms accumulate forward by 1
+       1.100965ms accumulate forward by 10
+       0.297167ms accumulate forward by 100
+       0.118494ms accumulate forward by 1000
+       0.013995ms accumulate forward by 10000
+       3.079902ms accumulate forward
+      43.395730ms erase values
+      39.767211ms insert values
+
