@@ -1832,13 +1832,17 @@ class segmented_tree_seq {
       std::is_nothrow_default_constructible<allocator_type>::value)
       : segmented_tree_seq{Allocator()} {}
 
+  /// <b>Effects</b>: Constructs a count size sequence using the specified
+  /// allocator, each element copy constructed from value.
+  ///
+  /// <b>Complexity</b>: O(count * log(count))
   segmented_tree_seq(size_type count, T const &value,
                      Allocator const &alloc = Allocator())
       : segmented_tree_seq{alloc} {
     insert(end(), count, value);
   }
 
-  /// <b>Effects</b>:Constructs a count size sequence using the specified
+  /// <b>Effects</b>: Constructs a count size sequence using the specified
   /// allocator, each element default constructed.
   ///
   /// <b>Complexity</b>: O(count * log(count))
@@ -2075,7 +2079,7 @@ class segmented_tree_seq {
   /// <b>Complexity</b>: O(log(n)), where n = size()
   reference front() { return *begin(); }
 
-  /// <b>Effects</b>:  Returns a const_reference for the object located at the
+  /// <b>Effects</b>: Returns a const_reference for the object located at the
   /// index 0.
   ///
   /// <b>Complexity</b>: O(log(n)), where n = size()
@@ -2084,7 +2088,7 @@ class segmented_tree_seq {
   /// <b>Effects</b>: Returns a reference for the object located at the index
   /// size() - 1.
   ///
-  /// <b>Complexity</b>: O(log(n)), , where n = size()
+  /// <b>Complexity</b>: O(log(n)), where n = size()
   reference back() { return *penultimate(); }
 
   /// <b>Effects</b>: Returns a const_reference for the object located at the
@@ -2110,21 +2114,21 @@ class segmented_tree_seq {
 
   /// <b>Effects</b>: Returns an iterator to the index size() - 1
   ///
-  /// <b>Complexity</b>: O(log(n))
+  /// <b>Complexity</b>: O(log(n)), where n = size()
   ///
   /// <b>Note</b>: Non-standard extension
   iterator penultimate() noexcept { return find_last(); }
 
   /// <b>Effects</b>: Returns a const_iterator to the index size() - 1
   ///
-  /// <b>Complexity</b>: O(log(n))
+  /// <b>Complexity</b>: O(log(n)), where n = size()
   ///
   /// <b>Note</b>: Non-standard extension
   const_iterator penultimate() const noexcept { return find_last(); }
 
   /// <b>Effects</b>: Returns a const_iterator to the index size() - 1
   ///
-  /// <b>Complexity</b>: O(log(n))
+  /// <b>Complexity</b>: O(log(n)), where n = size()
   ///
   /// <b>Note</b>: Non-standard extension
   const_iterator cpenultimate() const noexcept { return find_last(); }
@@ -2200,21 +2204,21 @@ class segmented_tree_seq {
     return find_index(pos);
   }
 
-  /// <b>Effects</b>: Returns the index of the specified iterator
+  /// <b>Effects</b>: Returns the index of the specified iterator.
   ///
   /// <b>Complexity</b>: O(1)
   ///
   /// <b>Note</b>: Non-standard extension
   size_type index_of(iterator pos) noexcept { return pos.it_.pos; }
 
-  /// <b>Effects</b>: Returns the index of the specified const_iterator
+  /// <b>Effects</b>: Returns the index of the specified const_iterator.
   ///
   /// <b>Complexity</b>: O(1)
   ///
   /// <b>Note</b>: Non-standard extension
   size_type index_of(const_iterator pos) const noexcept { return pos.it_.pos; }
 
-  ///<b>Effects</b>: Returns true if the sequence is empty, false otherwise.
+  /// <b>Effects</b>: Returns true if the sequence is empty, false otherwise.
   ///
   /// <b>Complexity</b>: O(1)
   bool empty() const { return get_size() == 0; }
