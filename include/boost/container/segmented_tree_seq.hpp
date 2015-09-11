@@ -1,7 +1,6 @@
-//          Copyright Chris Clearwater 2014 - 2015.
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+// (C) Copyright Chris Clearwater 2014-2015. Distributed under the Boost
+// Software License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy
+// at http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_CONTAINER_SEGMENTED_TREE_SEQ
 #define BOOST_CONTAINER_SEGMENTED_TREE_SEQ
@@ -23,7 +22,7 @@
 
 namespace boost {
 namespace container {
-namespace detail {
+namespace segmented_tree_seq_detail {
 
 using std::swap;
 
@@ -65,17 +64,29 @@ class segmented_tree_seq {
   using void_pointer = typename element_traits::void_pointer;
 
  public:
+  /// \brief The type of elements stored in the container.
   using value_type = typename element_traits::value_type;
+  /// \brief The allocator type used by the container.
   using allocator_type = Allocator;
+  /// \brief The unsigned integral type used by the container.
   using size_type = typename element_traits::size_type;
+  /// \brief The pointers difference type.
   using difference_type = typename element_traits::difference_type;
+  /// \brief The value reference type.
   using reference = value_type &;
+  /// \brief The value const reference type.
   using const_reference = value_type const &;
+  /// \brief The pointer type.
   using pointer = typename element_traits::pointer;
+  /// \brief The const pointer type.
   using const_pointer = typename element_traits::const_pointer;
+  /// \brief The iterator type.
   using iterator = iterator_t<pointer, T &>;
+  /// \brief The const iterator type.
   using const_iterator = iterator_t<const_pointer, T const &>;
+  /// \brief The reverse iterator type.
   using reverse_iterator = std::reverse_iterator<iterator>;
+  /// \brief The const reverse iterator.
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
  private:
@@ -174,205 +185,228 @@ class segmented_tree_seq {
     pointer operator->() const { return begin() + index(); }
     reference operator*() const { return begin()[index()]; }
 
-    /// Move the iterator forward 1 element.
+    /// \brief Move the iterator forward 1 element.
     ///
-    /// <b>Complexity</b>: amortized O(1)
+    /// \par Complexity
+    /// O(1) amortized
     iterator_t &operator++() {
       move_next_iterator(it_);
       return *this;
     }
 
-    /// Move the iterator backward 1 element.
+    /// \brief Move the iterator backward 1 element.
     ///
-    /// <b>Complexity</b>: amortized O(1)
+    /// \par Complexity
+    /// O(1) amortized
     iterator_t &operator--() {
       move_prev_iterator(it_);
       return *this;
     }
 
-    /// Return a copy of the iterator moved forward 1 element.
+    /// \brief Return a copy of the iterator moved forward 1 element.
     ///
-    /// <b>Complexity</b>: amortized O(1)
+    /// \par Complexity
+    /// O(1) amortized
     iterator_t operator++(int) {
       auto copy = it_;
       move_next_iterator(it_);
       return copy;
     }
 
-    /// Return a copy of the iterator moved backward 1 element.
+    /// \brief Return a copy of the iterator moved backward 1 element.
     ///
-    /// <b>Complexity</b>: amortized O(1)
+    /// \par Complexity
+    /// O(1) amortized
     iterator_t operator--(int) {
       auto copy = it_;
       move_prev_iterator(it_);
       return copy;
     }
 
-    /// Move the iterator forward diff elements.
+    /// \brief Move the iterator forward diff elements.
     ///
-    /// <b>Complexity</b>: amortized O(log(abs(diff)))
+    /// \par Complexity
+    /// O(log(abs(diff))) amortized
     iterator_t &operator+=(difference_type diff) {
       move_iterator_count(it_, diff);
       return *this;
     }
 
-    /// Move the iterator backward diff elements.
+    /// \brief Move the iterator backward diff elements.
     ///
-    /// <b>Complexity</b>: amortized O(log(abs(diff)))
+    /// \par Complexity
+    /// O(log(abs(diff))) amortized
     iterator_t &operator-=(difference_type diff) {
       move_iterator_count(it_, -diff);
       return *this;
     }
 
-    /// Return a copy of the iterator moved forward diff elements.
+    /// \brief Return a copy of the iterator moved forward diff elements.
     ///
-    /// <b>Complexity</b>: amortized O(log(abs(diff)))
+    /// \par Complexity
+    /// O(log(abs(diff))) amortized
     iterator_t operator+(difference_type diff) const {
       auto copy = it_;
       move_iterator_count(copy, diff);
       return copy;
     }
 
-    /// Return a copy of the iterator moved backward diff elements.
+    /// \brief Return a copy of the iterator moved backward diff elements.
     ///
-    /// <b>Complexity</b>: amortized O(log(abs(diff)))
+    /// \par Complexity
+    /// O(log(abs(diff))) amortized
     iterator_t operator-(difference_type diff) const {
       auto copy = it_;
       move_iterator_count(copy, -diff);
       return copy;
     }
 
-    /// Return a distance between the specified iterator.
+    /// \brief Return a distance between the specified iterator.
     ///
-    /// <b>Complexity</b>: O(1)
+    /// \par Complexity
+    /// O(1)
     difference_type operator-(iterator_t const &other) const {
       return it_.pos > other.it_.pos
                  ? static_cast<difference_type>(it_.pos - other.it_.pos)
                  : -static_cast<difference_type>(other.it_.pos - it_.pos);
     }
 
-    /// Move the iterator to the last element of the previous segment.
+    /// \brief Move the iterator to the last element of the previous segment.
     ///
-    /// <b>Complexity</b>: amortized O(1)
+    /// \par Complexity
+    /// O(1) amortized
     iterator_t &move_before_segment() {
       it_.pos -= it_.entry.segment.index + 1;
       move_prev_leaf(it_.entry);
       return *this;
     }
 
-    /// Move the iterator to the last element of the previous segment and then
-    /// move backward count elements.
+    /// \brief Move the iterator to the last element of the previous segment and
+    /// then move backward count elements.
     ///
-    /// <b>Complexity</b>: amortized O(log(count))
+    /// \par Complexity
+    /// O(log(count)) amortized
     iterator_t &move_before_segment(size_type count) {
       it_.pos -= it_.entry.segment.index + 1 - count;
       move_prev_leaf_count(it_.entry, count);
       return *this;
     }
 
-    /// Move the iterator to the first element of the next segment.
+    /// \brief Move the iterator to the first element of the next segment.
     ///
-    /// <b>Complexity</b>: amortized O(1)
+    /// \par Complexity
+    /// O(1) amortized
     iterator_t &move_after_segment() {
       it_.pos += it_.entry.segment.length - it_.entry.segment.index;
       move_next_leaf(it_.entry);
       return *this;
     }
 
-    /// Move the iterator to the first element of the next segment and then
-    /// move forward count elements.
+    /// \brief Move the iterator to the first element of the next segment and
+    /// then move forward count elements.
     ///
-    /// <b>Complexity</b>: amortized O(log(count))
+    /// \par Complexity
+    /// O(log(count)) amortized
     iterator_t &move_after_segment(size_type count) {
       it_.pos += it_.entry.segment.length - it_.entry.segment.index + count;
       move_next_leaf_count(it_.entry, count);
       return *this;
     }
 
-    /// Return a copy of the iterator moved to the last element of the previous
-    /// segment.
+    /// \brief Return a copy of the iterator moved to the last element of the
+    /// previous segment.
     ///
-    /// <b>Complexity</b>: amortized O(1)
+    /// \par Complexity
+    /// O(1) amortized
     iterator_t before_segment() const {
       auto copy = it_;
       move_before_segment(copy);
       return copy;
     }
 
-    /// Return a copy of the iterator moved to the last element of the previous
-    /// segment and then move backward count elements.
+    /// \brief Return a copy of the iterator moved to the last element of the
+    /// previous segment and then move backward count elements.
     ///
-    /// <b>Complexity</b>: amortized O(log(count))
+    /// \par Complexity
+    /// O(log(count)) amortized
     iterator_t after_segment() const {
       auto copy = it_;
       move_after_segment(copy);
       return copy;
     }
 
-    /// Return a copy of the iterator moved to the last element of the previous
-    /// segment.
+    /// \brief Return a copy of the iterator moved to the last element of the
+    /// previous segment.
     ///
-    /// <b>Complexity</b>: amortized O(1)
+    /// \par Complexity
+    /// O(1) amortized
     iterator_t before_segment(size_type count) const {
       auto copy = it_;
       move_before_segment_count(copy, count);
       return copy;
     }
 
-    /// Return a copy of the iterator to the first element of the next segment
-    /// and then move forward count elements.
+    /// \brief Return a copy of the iterator to the first element of the next
+    /// segment and then move forward count elements.
     ///
-    /// <b>Complexity</b>: amortized O(log(count))
+    /// \par Complexity
+    /// O(log(count)) amortized
     iterator_t after_segment(size_type count) const {
       auto copy = it_;
       move_after_segment_count(copy, count);
       return copy;
     }
 
-    /// Return false if both iterators point to the same element. Return true
-    /// otherwise.
+    /// \brief Return false if both iterators point to the same element. Return
+    /// true otherwise.
     ///
-    /// <b>Complexity</b>: O(1)
+    /// \par Complexity
+    /// O(1)
     bool operator!=(iterator_t const &other) const {
       return it_.pos != other.it_.pos;
     }
 
-    /// Return true if both iterators point to the same element. Return false
-    /// otherwise.
+    /// \brief Return true if both iterators point to the same element. Return
+    /// false otherwise.
     ///
-    /// <b>Complexity</b>: O(1)
+    /// \par Complexity
+    /// O(1)
     bool operator==(iterator_t const &other) const {
       return it_.pos == other.it_.pos;
     }
 
-    /// Return true if *this points to an element before other. Return false
-    /// otherwise.
+    /// \brief Return true if *this points to an element before other. Return
+    /// false otherwise.
     ///
-    /// <b>Complexity</b>: O(1)
+    /// \par Complexity
+    /// O(1)
     bool operator<(iterator_t const &other) const {
       return it_.pos < other.it_.pos;
     }
 
-    /// Return true if *this points to an element after other. Return false
-    /// otherwise.
+    /// \brief Return true if *this points to an element after other. Return
+    /// false otherwise.
     ///
-    /// <b>Complexity</b>: O(1)
+    /// \par Complexity
+    /// O(1)
     bool operator>(iterator_t const &other) const {
       return it_.pos > other.it_.pos;
     }
 
-    /// Return true if *this points to the same element or before other. Return
-    /// false otherwise.
+    /// \brief Return true if *this points to the same element or before other.
+    /// Return false otherwise.
     ///
-    /// <b>Complexity</b>: O(1)
+    /// \par Complexity
+    /// O(1)
     bool operator<=(iterator_t const &other) const {
       return it_.pos <= other.it_.pos;
     }
 
-    /// Return true if *this points to the same element or after other. Return
-    /// false otherwise.
+    /// \brief Return true if *this points to the same element or after other.
+    /// Return false otherwise.
     ///
-    /// <b>Complexity</b>: O(1)
+    /// \par Complexity
+    /// O(1)
     bool operator>=(iterator_t const &other) const {
       return it_.pos >= other.it_.pos;
     }
@@ -1801,44 +1835,49 @@ class segmented_tree_seq {
 
  public:
   // public interface
-  /// <b>Effects</b>: Constructs an empty sequence using the specified
+  /// \brief Constructs an empty sequence using the specified
   /// allocator.
   ///
-  /// <b>Complexity</b>: O(1)
+  /// \par Complexity
+  /// O(1)
   explicit segmented_tree_seq(Allocator const &alloc)
       : data_{nullptr, 0, 0, alloc, alloc} {}
 
-  /// <b>Effects</b>: Default constructs an empty sequence.
+  /// \brief Default constructs an empty sequence.
   ///
-  /// <b>Complexity</b>: O(1)
+  /// \par Complexity
+  /// O(1)
   explicit segmented_tree_seq() noexcept(
       std::is_nothrow_default_constructible<allocator_type>::value)
       : segmented_tree_seq{Allocator()} {}
 
-  /// <b>Effects</b>: Constructs a count size sequence using the specified
-  /// allocator, each element copy constructed from value.
+  /// \brief Constructs a count size sequence using the specified allocator,
+  /// each element copy constructed from value.
   ///
-  /// <b>Complexity</b>: O(count * log(count))
+  /// \par Complexity
+  /// O(count * log(count))
   segmented_tree_seq(size_type count, T const &value,
                      Allocator const &alloc = Allocator())
       : segmented_tree_seq{alloc} {
     insert(end(), count, value);
   }
 
-  /// <b>Effects</b>: Constructs a count size sequence using the specified
-  /// allocator, each element default constructed.
+  /// \brief Constructs a count size sequence using the specified allocator,
+  /// each element default constructed.
   ///
-  /// <b>Complexity</b>: O(count * log(count))
+  /// \par Complexity
+  /// O(count * log(count))
   explicit segmented_tree_seq(size_type count,
                               Allocator const &alloc = Allocator())
       : segmented_tree_seq{alloc} {
     insert(end(), count, value_type{});
   }
 
-  /// <b>Effects</b>: Constructs an empty sequence using the specified
-  /// allocator, and inserts elements from the range [first, last).
+  /// \brief Constructs an empty sequence using the specified allocator, and
+  /// inserts elements from the range [first, last).
   ///
-  /// <b>Complexity</b>: O(n * log(n)), where n = std::distance(first, last)
+  /// \par Complexity
+  /// O(n * log(n)), where n = std::distance(first, last)
   template <class InputIt,
             typename = typename std::iterator_traits<InputIt>::pointer>
   segmented_tree_seq(InputIt first, InputIt last,
@@ -1847,9 +1886,10 @@ class segmented_tree_seq {
     insert(end(), first, last);
   }
 
-  /// <b>Effects</b>: Copy constructs a sequence.
+  /// \brief Copy constructs a sequence.
   ///
-  /// <b>Complexity</b>: O(n * log(n)), where n = other.size()
+  /// \par Complexity
+  /// O(n * log(n)), where n = other.size()
   segmented_tree_seq(segmented_tree_seq const &other)
       : segmented_tree_seq{
             element_traits::select_on_container_copy_construction(
@@ -1857,26 +1897,29 @@ class segmented_tree_seq {
     insert(end(), other.begin(), other.end());
   }
 
-  /// <b>Effects</b>: Copy constructs a sequence using the specified allocator.
+  /// \brief Copy constructs a sequence using the specified allocator.
   ///
-  /// <b>Complexity</b>: O(n * log(n)), where n = other.size()
+  /// \par Complexity
+  /// O(n * log(n)), where n = other.size()
   segmented_tree_seq(segmented_tree_seq const &other, Allocator const &alloc)
       : segmented_tree_seq{alloc} {
     insert(end(), other.begin(), other.end());
   }
 
-  /// <b>Effects</b>: Move constructs a sequence.
+  /// \brief Move constructs a sequence.
   ///
-  /// <b>Complexity</b>: O(1)
+  /// \par Complexity
+  /// O(1)
   segmented_tree_seq(segmented_tree_seq &&other) noexcept(
       std::is_nothrow_move_constructible<allocator_type>::value)
       : segmented_tree_seq{std::move(other.get_element_allocator())} {
     steal(other);
   }
 
-  /// <b>Effects</b>: Move constructs a sequence using the specified allocator.
+  /// \brief Move constructs a sequence using the specified allocator.
   ///
-  /// <b>Complexity</b>: O(1) if alloc compares equal to the allocator of *this,
+  /// \par Complexity
+  /// O(1) if alloc compares equal to the allocator of *this,
   /// O(n * log(n)) otherwise, where n = other.size()
   segmented_tree_seq(segmented_tree_seq &&other, Allocator const &alloc)
       : segmented_tree_seq{alloc} {
@@ -1887,25 +1930,27 @@ class segmented_tree_seq {
              std::make_move_iterator(other.end()));
   }
 
-  /// <b>Effects</b>: Constructs an empty sequence using the specified
-  /// allocator,
-  /// and insert elements from init.
+  /// \brief Constructs an empty sequence using the specified allocator, and
+  /// insert elements from init.
   ///
-  /// <b>Complexity</b>: O(n * log(n)), where n = init.size()
+  /// \par Complexity
+  /// O(n * log(n)), where n = init.size()
   segmented_tree_seq(std::initializer_list<T> init,
                      Allocator const &alloc = Allocator())
       : segmented_tree_seq{alloc} {
     insert(end(), init.begin(), init.end());
   }
 
-  /// <b>Effects</b>: Destructs the sequence releasing all memory.
+  /// \brief Destructs the sequence releasing all memory.
   ///
-  /// <b>Complexity</b>: O(n), where n = size()
+  /// \par Complexity
+  /// O(n), where n = size()
   ~segmented_tree_seq() { purge(); }
 
-  /// <b>Effects</b>: Copy assigns a sequence.
+  /// \brief Copy assigns a sequence.
   ///
-  /// <b>Complexity</b>: O(n * log(n)), where n = other.size()
+  /// \par Complexity
+  /// O(n * log(n)), where n = other.size()
   segmented_tree_seq &operator=(segmented_tree_seq const &other) {
     if (this != &other) {
       if (element_traits::propagate_on_container_copy_assignment::value) {
@@ -1918,10 +1963,11 @@ class segmented_tree_seq {
     return *this;
   }
 
-  /// <b>Effects</b>: Move assigns a sequence.
+  /// \brief Move assigns a sequence.
   ///
-  /// <b>Complexity</b>: O(1) if the allocator propegates on move assignment,
-  /// O(n * log(n)) otherwise, where n = other.size()
+  /// \par Complexity
+  /// O(1) if the allocator propegates on move assignment, O(n * log(n))
+  /// otherwise, where n = other.size()
   segmented_tree_seq &operator=(segmented_tree_seq &&other) noexcept(
       allocator_type::propagate_on_container_move_assignment::value &&
           std::is_nothrow_move_assignable<allocator_type>::value) {
@@ -1940,21 +1986,22 @@ class segmented_tree_seq {
     return *this;
   }
 
-  /// <b>Effects</b>: Assigns the sequence to the elements of the specified
+  /// \brief Assigns the sequence to the elements of the specified
   /// initializer_list.
   ///
-  /// <b>Complexity</b>: O(count) if n >= count, O(count) + O((count - n) *
-  /// log(n)) otherwise, where n = size(), where count = ilist.size()
+  /// \par Complexity
+  /// O(count) if n >= count, O(count) + O((count - n) * log(n)) otherwise,
+  /// where n = size(), where count = ilist.size()
   segmented_tree_seq &operator=(std::initializer_list<T> ilist) {
     assign(ilist.begin(), ilist.end());
     return *this;
   }
 
-  /// <b>Effects</b>: Assigns the sequence to count elements copy constructed
-  /// from value.
+  /// \brief Assigns the sequence to count elements copy constructed from value.
   ///
-  /// <b>Complexity</b>: O(count) if n >= count, O(count) + O((count - n) *
-  /// log(n)) otherwise, where n = size()
+  /// \par Complexity
+  /// O(count) if n >= count, O(count) + O((count - n) * log(n)) otherwise,
+  /// where n = size()
   void assign(size_type count, T const &value) {
     auto first = begin();
     auto last = end();
@@ -1975,12 +2022,12 @@ class segmented_tree_seq {
     }
   }
 
-  /// <b>Effects</b>: Assigns the sequence to the elements copy constructed from
-  /// the range [first, last).
+  /// \brief Assigns the sequence to the elements copy constructed from the
+  /// range [first, last).
   ///
-  /// <b>Complexity</b>: O(count) if n >= count, O(count) + O((count - n) *
-  /// log(n)) otherwise, where n = size(), where count = std::distance(first,
-  /// last)
+  /// \par Complexity
+  /// O(count) if n >= count, O(count) + O((count - n) * log(n)) otherwise,
+  /// where n = size(), where count = std::distance(first, last)
   template <class InputIt,
             typename = typename std::iterator_traits<InputIt>::pointer>
   void assign(InputIt source_first, InputIt source_last) {
@@ -2003,230 +2050,267 @@ class segmented_tree_seq {
     }
   }
 
-  /// <b>Effects</b>: Assigns the sequence to the elements of the specified
+  /// \brief Assigns the sequence to the elements of the specified
   /// initializer_list.
   ///
-  /// <b>Complexity</b>: O(count) if n >= count, O(count) + O((count - n) *
-  /// log(n)) otherwise, where n = size(), where count = ilist.size()
+  /// \par Complexity
+  /// O(count) if n >= count, O(count) + O((count - n) * log(n)) otherwise,
+  /// where n = size(), where count = ilist.size()
   void assign(std::initializer_list<T> ilist) {
     assign(ilist.begin(), ilist.end());
   }
 
-  /// <b>Effects</b>: Returns a copy of the allocator for the sequence.
+  /// \brief Returns a copy of the allocator for the sequence.
   ///
-  /// <b>Complexity</b>: O(1)
+  /// \par Complexity
+  /// O(1)
   allocator_type get_allocator() const noexcept {
     return get_element_allocator();
   }
 
-  /// <b>Effects</b>: Returns a reference for the object located at the index
-  /// pos.
+  /// \brief Returns a reference for the object located at the index pos.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   reference at(size_type pos) {
     if (pos > size())
       throw std::out_of_range{"segmented_tree_seq at() out of bounds"};
     return (*this)[pos];
   }
 
-  /// <b>Effects</b>: Returns a const_reference for the object located at the
-  /// specified index pos.
+  /// \brief Returns a const_reference for the object located at the specified
+  /// index pos.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   const_reference at(size_type pos) const {
     if (pos > size())
       throw std::out_of_range{"segmented_tree_seq at() out of bounds"};
     return (*this)[pos];
   }
 
-  /// <b>Effects</b>: Returns a reference for the object located at the
-  /// specified index pos.
+  /// \brief Returns a reference for the object located at the specified index
+  /// pos.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   reference operator[](size_type pos) {
     iterator it = find_index(pos);
     return *it;
   }
 
-  /// <b>Effects</b>: Returns a const_reference for the object located at the
-  /// specified index pos.
+  /// \brief Returns a const_reference for the object located at the specified
+  /// index pos.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   const_reference operator[](size_type pos) const {
     iterator it = find_index(pos);
     return *it;
   }
 
-  /// <b>Effects</b>: Returns a reference for the object located at the index 0.
+  /// \brief Returns a reference for the object located at the index 0.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   reference front() { return *begin(); }
 
-  /// <b>Effects</b>: Returns a const_reference for the object located at the
-  /// index 0.
+  /// \brief Returns a const_reference for the object located at the index 0.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   const_reference front() const { return *begin(); }
 
-  /// <b>Effects</b>: Returns a reference for the object located at the index
-  /// size() - 1.
+  /// \brief Returns a reference for the object located at the index size() - 1.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   reference back() { return *penultimate(); }
 
-  /// <b>Effects</b>: Returns a const_reference for the object located at the
-  /// index size() - 1.
+  /// \brief Returns a const_reference for the object located at the index
+  /// size() - 1.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   const_reference back() const { return *penultimate(); }
 
-  /// <b>Effects</b>: Returns an iterator for the index 0.
+  /// \brief Returns an iterator for the index 0.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   iterator begin() noexcept { return find_first(); }
 
-  /// <b>Effects</b>: Returns a const_iterator for the index 0.
+  /// \brief Returns a const_iterator for the index 0.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   const_iterator begin() const noexcept { return find_first(); }
 
-  /// <b>Effects</b>: Returns a const_iterator for the index 0.
+  /// \brief Returns a const_iterator for the index 0.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   const_iterator cbegin() const noexcept { return find_first(); }
 
-  /// <b>Effects</b>: Returns an iterator to the index size() - 1
+  /// \brief Returns an iterator to the index size() - 1
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   ///
-  /// <b>Note</b>: Non-standard extension
+  /// \par Note
+  /// Non-standard extension
   iterator penultimate() noexcept { return find_last(); }
 
-  /// <b>Effects</b>: Returns a const_iterator to the index size() - 1
+  /// \brief Returns a const_iterator to the index size() - 1
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   ///
-  /// <b>Note</b>: Non-standard extension
+  /// \par Note
+  /// Non-standard extension
   const_iterator penultimate() const noexcept { return find_last(); }
 
-  /// <b>Effects</b>: Returns a const_iterator to the index size() - 1
+  /// \brief Returns a const_iterator to the index size() - 1
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   ///
-  /// <b>Note</b>: Non-standard extension
+  /// \par Note
+  /// Non-standard extension
   const_iterator cpenultimate() const noexcept { return find_last(); }
 
-  /// <b>Effects</b>: Returns an iterator for the index size().
+  /// \brief Returns an iterator for the index size().
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   iterator end() noexcept { return find_end(); }
 
-  /// <b>Effects</b>: Returns a const_iterator for the index size().
+  /// \brief Returns a const_iterator for the index size().
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   const_iterator end() const noexcept { return find_end(); }
 
-  /// <b>Effects</b>: Returns a const_iterator for the index size().
+  /// \brief Returns a const_iterator for the index size().
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   const_iterator cend() const noexcept { return find_end(); }
 
-  /// <b>Effects</b>: Returns a reverse_iterator for the index size().
+  /// \brief Returns a reverse_iterator for the index size().
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   reverse_iterator rbegin() noexcept { return reverse_iterator{end()}; }
 
-  /// <b>Effects</b>: Returns a const_reverse_iterator for the index size().
+  /// \brief Returns a const_reverse_iterator for the index size().
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   const_reverse_iterator rbegin() const noexcept {
     return const_reverse_iterator{end()};
   }
 
-  /// <b>Effects</b>: Returns a const_reverse_iterator for the index size().
+  /// \brief Returns a const_reverse_iterator for the index size().
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   const_reverse_iterator crbegin() const noexcept {
     return const_reverse_iterator{end()};
   }
 
-  /// <b>Effects</b>: Returns a reverse_iterator for the index 0.
+  /// \brief Returns a reverse_iterator for the index 0.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   reverse_iterator rend() noexcept { return reverse_iterator{begin()}; }
 
-  /// <b>Effects</b>: Returns a const_reverse_iterator for the index 0.
+  /// \brief Returns a const_reverse_iterator for the index 0.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   const_reverse_iterator rend() const noexcept {
     return const_reverse_iterator{begin()};
   }
 
-  /// <b>Effects</b>: Returns a const_reverse_iterator for the index 0.
+  /// \brief Returns a const_reverse_iterator for the index 0.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   const_reverse_iterator crend() const noexcept {
     return const_reverse_iterator{begin()};
   }
 
-  /// <b>Effects</b>: Returns an iterator for the index pos.
+  /// \brief Returns an iterator for the index pos.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   iterator nth(size_type pos) noexcept {
     if (pos >= size()) return find_end();
     return find_index(pos);
   }
 
-  /// <b>Effects</b>: Returns a const_iterator for the index pos.
+  /// \brief Returns a const_iterator for the index pos.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   ///
-  /// <b>Note</b>: Non-standard extension
+  /// \par Note
+  /// Non-standard extension
   const_iterator nth(size_type pos) const noexcept {
     if (pos >= size()) return find_end();
     return find_index(pos);
   }
 
-  /// <b>Effects</b>: Returns the index of the specified iterator.
+  /// \brief Returns the index of the specified iterator.
   ///
-  /// <b>Complexity</b>: O(1)
+  /// \par Complexity
+  /// O(1)
   ///
-  /// <b>Note</b>: Non-standard extension
+  /// \par Note
+  /// Non-standard extension
   size_type index_of(iterator pos) noexcept { return pos.it_.pos; }
 
-  /// <b>Effects</b>: Returns the index of the specified const_iterator.
+  /// \brief Returns the index of the specified const_iterator.
   ///
-  /// <b>Complexity</b>: O(1)
+  /// \par Complexity
+  /// O(1)
   ///
-  /// <b>Note</b>: Non-standard extension
+  /// \par Note
+  /// Non-standard extension
   size_type index_of(const_iterator pos) const noexcept { return pos.it_.pos; }
 
-  /// <b>Effects</b>: Returns true if the sequence is empty, false otherwise.
+  /// \brief Returns true if the sequence is empty, false otherwise.
   ///
-  /// <b>Complexity</b>: O(1)
+  /// \par Complexity
+  /// O(1)
   bool empty() const { return get_size() == 0; }
 
-  /// <b>Effects</b>: Returns the count of elements stored in the sequence.
+  /// \brief Returns the count of elements stored in the sequence.
   ///
-  /// <b>Complexity</b>: O(1)
+  /// \par Complexity
+  /// O(1)
   size_type size() const noexcept { return get_size(); }
 
-  /// <b>Effects</b>: Returns the height of the tree.
+  /// \brief Returns the height of the tree.
   ///
-  /// <b>Complexity</b>: O(1)
+  /// \par Complexity
+  /// O(1)
   size_type height() const noexcept { return get_height(); }
 
-  /// <b>Effects</b>: Returns the maximum count of elements able to be stored in
-  /// the sequence.
+  /// \brief Returns the maximum count of elements able to be stored in the
+  /// sequence.
   ///
-  /// <b>Complexity</b>: O(1)
+  /// \par Complexity
+  /// O(1)
   size_type max_size() const noexcept {
     return (std::numeric_limits<size_type>::max)();
   }
 
-  /// <b>Effects</b>: Removes all elements from the sequence.
+  /// \brief Removes all elements from the sequence.
   ///
-  /// <b>Complexity</b>: O(n), where n = size()
+  /// \par Complexity
+  /// O(n), where n = size()
   void clear() noexcept {
     purge();
     get_root() = nullptr;
@@ -2234,23 +2318,26 @@ class segmented_tree_seq {
     get_size() = 0;
   }
 
-  /// <b>Effects</b>: Copy constructs an object at the specified position.
+  /// \brief Copy constructs an object at the specified position.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   iterator insert(const_iterator pos, T const &value) {
     return emplace(pos, value);
   }
 
-  /// <b>Effects</b>: Move construct an object at the specified position.
+  /// \brief Move construct an object at the specified position.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   iterator insert(const_iterator pos, T &&value) {
     return emplace(pos, std::move(value));
   }
 
-  /// <b>Effects</b>: Copy construct count elements at the specified position.
+  /// \brief Copy construct count elements at the specified position.
   ///
-  /// <b>Complexity</b>: O(count * log(n)), n = count + size();
+  /// \par Complexity
+  /// O(count * log(n)), n = count + size();
   iterator insert(const_iterator pos, size_type count, T const &value) {
     for (size_type i = 0; i != count; ++i) {
       pos = insert(pos, value);
@@ -2260,11 +2347,12 @@ class segmented_tree_seq {
     return pos.it_;
   }
 
-  /// <b>Effects</b>: Copy constructs all elements in the range [first, last) at
-  /// the specified position.
+  /// \brief Copy constructs all elements in the range [first, last) at the
+  /// specified position.
   ///
-  /// <b>Complexity</b>: O(count * log(n)), where count = std::distance(first,
-  /// last), where n = count + size()
+  /// \par Complexity
+  /// O(count * log(n)), where count = std::distance(first, last), where n =
+  /// count + size()
   template <class InputIt,
             typename = typename std::iterator_traits<InputIt>::pointer>
   iterator insert(const_iterator pos, InputIt first, InputIt last) {
@@ -2279,18 +2367,19 @@ class segmented_tree_seq {
     return pos.it_;
   }
 
-  /// <b>Effects</b>: Copy constructs all elements in the specified
-  /// initializer_list at the specified position.
+  /// \brief Copy constructs all elements in the specified initializer_list at
+  /// the specified position.
   ///
-  /// <b>Complexity</b>: O(count * log(n)), where count = ilist.size(), where n
-  /// = count + size();
+  /// \par Complexity
+  /// O(count * log(n)), where count = ilist.size(), where n = count + size();
   iterator insert(const_iterator pos, std::initializer_list<T> ilist) {
     return insert(pos, ilist.begin(), ilist.end());
   }
 
-  /// <b>Effects</b>: Forward constructs an object at the specified position.
+  /// \brief Forward constructs an object at the specified position.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   template <class... Args>
   iterator emplace(const_iterator pos, Args &&... args) {
     auto it = reserve_single_iterator(pos.it_);
@@ -2306,21 +2395,21 @@ class segmented_tree_seq {
     return it;
   }
 
-  /// <b>Effects</b>: Remove the object at the specified position from the
-  /// sequence.
+  /// \brief Remove the object at the specified position from the sequence.
   ///
-  /// <b>Complexity</b>: O(log(n)), where n = size()
+  /// \par Complexity
+  /// O(log(n)), where n = size()
   iterator erase(const_iterator pos) {
     auto it = erase_single_iterator(pos.it_);
     verify_iterator(it, pos.it_.pos);
     return it;
   }
 
-  /// <b>Effects</b>: Remove all elements in the range [first, last) from the
-  /// sequence.
+  /// \brief Remove all elements in the range [first, last) from the sequence.
   ///
-  /// <b>Complexity</b>: O(count * log(n)), where count = std::distance(first,
-  /// last), where n = size()
+  /// \par Complexity
+  /// O(count * log(n)), where count = std::distance(first, last), where n =
+  /// size()
   iterator erase(const_iterator first, const_iterator last) {
     while (first != last) {
       --last;
@@ -2329,64 +2418,74 @@ class segmented_tree_seq {
     return last.it_;
   }
 
-  /// <b>Effects</b>: Copy constructs an object at end().
+  /// \brief Copy constructs an object at end().
   ///
-  /// <b>Complexity</b>: O(log(n)), where  n = size()
+  /// \par Complexity
+  /// O(log(n)), where  n = size()
   void push_back(T const &value) { emplace_back(value); }
 
-  /// <b>Effects</b>: Move constructs an object at end().
+  /// \brief Move constructs an object at end().
   ///
-  /// <b>Complexity</b>: O(log(n)), where  n = size()
+  /// \par Complexity
+  /// O(log(n)), where  n = size()
   void push_back(T &&value) { emplace_back(std::move(value)); }
 
-  /// <b>Effects</b>: Forward constructs an object at end().
+  /// \brief Forward constructs an object at end().
   ///
-  /// <b>Complexity</b>: O(log(n)), where  n = size()
+  /// \par Complexity
+  /// O(log(n)), where  n = size()
   template <class... Args>
   void emplace_back(Args &&... args) {
     emplace(end(), std::forward<Args>(args)...);
   }
 
-  /// <b>Effects</b>: Removes the object at end() - 1.
+  /// \brief Removes the object at end() - 1.
   ///
-  /// <b>Complexity</b>: O(log(n)), where  n = size()
+  /// \par Complexity
+  /// O(log(n)), where  n = size()
   void pop_back() { erase(penultimate()); }
 
-  /// <b>Effects</b>: Copy constructs an object at begin().
+  /// \brief Copy constructs an object at begin().
   ///
-  /// <b>Complexity</b>: O(log(n)), where  n = size()
+  /// \par Complexity
+  /// O(log(n)), where  n = size()
   void push_front(const T &value) { emplace_front(value); }
 
-  /// <b>Effects</b>: Move constructs an object at begin().
+  /// \brief Move constructs an object at begin().
   ///
-  /// <b>Complexity</b>: O(log(n)), where  n = size()
+  /// \par Complexity
+  /// O(log(n)), where  n = size()
   void push_front(T &&value) { emplace_front(std::move(value)); }
 
-  /// <b>Effects</b>: Forward constructs an object at begin().
+  /// \brief Forward constructs an object at begin().
   ///
-  /// <b>Complexity</b>: O(log(n)), where  n = size()
+  /// \par Complexity
+  /// O(log(n)), where  n = size()
   template <class... Args>
   void emplace_front(Args &&... args) {
     emplace(begin(), std::forward<Args>(args)...);
   }
 
-  /// Removes the object at begin().
+  /// \brief Removes the object at begin().
   ///
-  /// <b>Complexity</b>: O(log(n)), where  n = size()
+  /// \par Complexity
+  /// O(log(n)), where  n = size()
   void pop_front() { erase(begin()); }
 
-  /// <b>Effects</b>: Resizes the seqeuence to the specified size, default
-  /// construct any elements above the current size.
+  /// \brief Resizes the seqeuence to the specified size, default construct any
+  /// elements above the current size.
   ///
-  /// <b>Complexity</b>: O(n - count * log(n)) if n > count, O(count - n *
-  /// log(n)) otherwise, where  n = size()
+  /// \par Complexity
+  /// O(n - count * log(n)) if n > count, O(count - n * log(n)) otherwise, where
+  /// n = size()
   void resize(size_type count) { resize(count, {}); }
 
-  /// <b>Effects</b>: Resizes the seqeuence to the specified size, copy
-  /// construct any elements from value above the current size.
+  /// \brief Resizes the seqeuence to the specified size, copy construct any
+  /// elements from value above the current size.
   ///
-  /// <b>Complexity</b>: O(n - count * log(n)) if n > count, O(count - n *
-  /// log(n)) otherwise, where n = size()
+  /// \par Complexity
+  /// O(n - count * log(n)) if n > count, O(count - n * log(n)) otherwise, where
+  /// n = size()
   void resize(size_type count, value_type const &value) {
     auto sz = size();
     if (sz == count) return;
@@ -2398,12 +2497,13 @@ class segmented_tree_seq {
       insert(last, count, value);
   }
 
-  /// <b>Effects</b>: Swaps the contents *this with the specified sequence.
+  /// \brief Swaps the contents *this with the specified sequence.
   ///
-  /// <b>Complexity</b>: O(1)
+  /// \par Complexity
+  /// O(1)
   void swap(segmented_tree_seq &other) noexcept(
       !element_traits::propagate_on_container_swap::value ||
-      detail::is_nothrow_swappable<allocator_type>::value) {
+      segmented_tree_seq_detail::is_nothrow_swappable<allocator_type>::value) {
     using std::swap;
     swap(get_root(), other.get_root());
     swap(get_height(), other.get_height());
@@ -2435,49 +2535,56 @@ class segmented_tree_seq {
   //  first,
   //              const_iterator last);
 
-  /// <b>Effects</b>: Removes all elements matching the specified value.
+  /// \brief Removes all elements matching the specified value.
   ///
-  /// <b>Complexity</b>: O(n), where n = size()
+  /// \par Complexity
+  /// O(n), where n = size()
   void remove(const T &value) {
     erase(std::remove(begin(), end(), value), end());
   }
 
-  /// <b>Effects</b>: Removes all elements matching the specified predicate.
+  /// \brief Removes all elements matching the specified predicate.
   ///
-  /// <b>Complexity</b>: O(n), where n = size()
+  /// \par Complexity
+  /// O(n), where n = size()
   template <class UnaryPredicate>
   void remove_if(UnaryPredicate p) {
     erase(std::remove_if(begin(), end(), p), end());
   }
 
-  /// <b>Effects</b>: Reverses the sequence.
+  /// \brief Reverses the sequence.
   ///
-  /// <b>Complexity</b>: O(n), where n = size()
+  /// \par Complexity
+  /// O(n), where n = size()
   void reverse() { std::reverse(begin(), end()); }
 
-  /// <b>Effects</b>: Removes all consecutive duplicate elements from the
+  /// \brief Removes all consecutive duplicate elements from the
   /// sequence.
   ///
-  /// <b>Complexity</b>: O(n), where n = size()
+  /// \par Complexity
+  /// O(n), where n = size()
   void unique() { unique(std::equal_to<value_type>{}); }
 
-  /// <b>Effects</b>: Removes all consecutive duplicate elements from the
+  /// \brief Removes all consecutive duplicate elements from the
   /// sequence using the specified predicate.
   ///
-  /// <b>Complexity</b>: O(n), where n = size()
+  /// \par Complexity
+  /// O(n), where n = size()
   template <class BinaryPredicate>
   void unique(BinaryPredicate p) {
     erase(std::unique(begin(), end(), p), end());
   }
 
-  /// <b>Effects</b>: Stable sorts the sequence.
+  /// \brief Stable sorts the sequence.
   ///
-  /// <b>Complexity</b>: O(n * log(n)), where n = size()
+  /// \par Complexity
+  /// O(n * log(n)), where n = size()
   void sort() { sort(std::less<value_type>{}); }
 
-  /// Stable sort the sequence using the specified predicate.
+  /// \brief Stable sort the sequence using the specified predicate.
   ///
-  /// <b>Complexity</b>: O(n * log(n)), where n = size()
+  /// \par Complexity
+  /// O(n * log(n)), where n = size()
   template <class Compare>
   void sort(Compare comp) {
     std::stable_sort(begin(), end(), comp);
@@ -2486,10 +2593,11 @@ class segmented_tree_seq {
 
 // free functions
 
-/// <b>Effects</b>: Returns true if both sequences are of the same length and
-/// have each element in both sequences are equal. Returns false otherwise.
+/// \brief Returns true if both sequences are of the same length and have each
+/// element in both sequences are equal. Returns false otherwise.
 ///
-/// <b>Complexity</b>: O(n), where n = size()
+/// \par Complexity
+/// O(n), where n = size()
 template <typename T, typename Alloc, size_t... Args>
 bool operator==(segmented_tree_seq<T, Alloc, Args...> &lhs,
                 segmented_tree_seq<T, Alloc, Args...> &rhs) {
@@ -2497,20 +2605,22 @@ bool operator==(segmented_tree_seq<T, Alloc, Args...> &lhs,
          std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 
-/// <b>Effects</b>: Returns false if both sequences are of the same length and
-/// have each element in both sequences are equal. Returns true otherwise.
+/// \brief Returns false if both sequences are of the same length and have each
+/// element in both sequences are equal. Returns true otherwise.
 ///
-/// <b>Complexity</b>: O(n), where n = size()
+/// \par Complexity
+/// O(n), where n = size()
 template <typename T, typename Alloc, size_t... Args>
 bool operator!=(segmented_tree_seq<T, Alloc, Args...> &lhs,
                 segmented_tree_seq<T, Alloc, Args...> &rhs) {
   return !(lhs == rhs);
 }
 
-/// <b>Effects</b>: Returns true if the first sequence is lexicographically less
-/// than the second. Returns false otherwise.
+/// \brief Returns true if the first sequence is lexicographically less than the
+/// second. Returns false otherwise.
 ///
-/// <b>Complexity</b>: O(n), where n = size()
+/// \par Complexity
+/// O(n), where n = size()
 template <typename T, typename Alloc, size_t... Args>
 bool operator<(segmented_tree_seq<T, Alloc, Args...> &lhs,
                segmented_tree_seq<T, Alloc, Args...> &rhs) {
@@ -2518,39 +2628,43 @@ bool operator<(segmented_tree_seq<T, Alloc, Args...> &lhs,
                                       rhs.end());
 }
 
-/// <b>Effects</b>: Returns true if the first sequence is equal or
-/// lexicographically less than the second. Returns false otherwise.
+/// \brief Returns true if the first sequence is equal or lexicographically less
+/// than the second. Returns false otherwise.
 ///
-/// <b>Complexity</b>: O(n), where n = size()
+/// \par Complexity
+/// O(n), where n = size()
 template <typename T, typename Alloc, size_t... Args>
 bool operator<=(segmented_tree_seq<T, Alloc, Args...> &lhs,
                 segmented_tree_seq<T, Alloc, Args...> &rhs) {
   return !(rhs < lhs);
 }
 
-/// <b>Effects</b>: Returns true if the first sequence is lexicographically
-/// greater than the second. Returns false otherwise.
+/// \brief Returns true if the first sequence is lexicographically greater than
+/// the second. Returns false otherwise.
 ///
-/// <b>Complexity</b>: O(n), where n = size()
+/// \par Complexity
+/// O(n), where n = size()
 template <typename T, typename Alloc, size_t... Args>
 bool operator>(segmented_tree_seq<T, Alloc, Args...> &lhs,
                segmented_tree_seq<T, Alloc, Args...> &rhs) {
   return rhs < lhs;
 }
 
-/// <b>Effects</b>: Returns true if the first sequence is lexicographically
-/// greater or equal to the second. Returns false otherwise.
+/// \brief Returns true if the first sequence is lexicographically greater or
+/// equal to the second. Returns false otherwise.
 ///
-/// <b>Complexity</b>: O(n), where n = size()
+/// \par Complexity
+/// O(n), where n = size()
 template <typename T, typename Alloc, size_t... Args>
 bool operator>=(segmented_tree_seq<T, Alloc> &lhs,
                 segmented_tree_seq<T, Alloc> &rhs) {
   return !(lhs < rhs);
 }
 
-/// <b>Effects</b>: Swaps the contents of the sequences.
+/// \brief Swaps the contents of the sequences.
 ///
-/// <b>Complexity</b>: O(1)
+/// \par Complexity
+/// O(1)
 template <typename T, typename Traits, typename Alloc, size_t... Args>
 void swap(
     segmented_tree_seq<T, Alloc, Args...> &a,

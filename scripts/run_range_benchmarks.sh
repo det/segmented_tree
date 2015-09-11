@@ -1,14 +1,14 @@
 #!/bin/bash
 
 if [ "$#" -ne 5 ]; then
-    echo "Expected 5 arguments" 1>&2
+  echo "Expected 5 arguments" 1>&2
   exit 1
 fi
 
 function bench {
   for benchmark in $2; do
     echo "Rusults for ${benchmark}<std::uint$3_t>, count: $4, size: $5"
-      for i in {0..5}; do
+      for i in {0..10}; do
         $1/bench_range_${benchmark}_$3 $4 $5 $6 $7
       done | sort -k2 -k1,1n | uniq -f1
     echo
