@@ -255,7 +255,8 @@ class segmented_tree_seq {
     ///
     /// <b>Complexity</b>: amortized O(1)
     iterator_t &move_before_segment() {
-      move_before_segment(it_);
+      it_.pos -= it_.entry.segment.index + 1;
+      move_prev_leaf(it_.entry);
       return *this;
     }
 
@@ -264,7 +265,8 @@ class segmented_tree_seq {
     ///
     /// <b>Complexity</b>: amortized O(log(count))
     iterator_t &move_before_segment(size_type count) {
-      move_before_segment_count(it_, count);
+      it_.pos -= it_.entry.segment.index + 1 - count;
+      move_prev_leaf_count(it_.entry, count);
       return *this;
     }
 
@@ -272,7 +274,8 @@ class segmented_tree_seq {
     ///
     /// <b>Complexity</b>: amortized O(1)
     iterator_t &move_after_segment() {
-      move_after_segment(it_);
+      it_.pos += it_.entry.segment.length - it_.entry.segment.index;
+      move_next_leaf(it_.entry);
       return *this;
     }
 
@@ -281,7 +284,8 @@ class segmented_tree_seq {
     ///
     /// <b>Complexity</b>: amortized O(log(count))
     iterator_t &move_after_segment(size_type count) {
-      move_after_segment_count(it_, count);
+      it_.pos += it_.entry.segment.length - it_.entry.segment.index + count;
+      move_next_leaf_count(it_.entry, count);
       return *this;
     }
 
@@ -873,27 +877,6 @@ class segmented_tree_seq {
       pointer = pointer->parent_pointer;
       ++child_ht;
     }
-  }
-
-  // move_segment
-  static void move_after_segment(iterator_data it) {
-    it.pos += it.segment.length - it.segment.index;
-    move_next_leaf(it.entry);
-  }
-
-  static void move_after_segment_count(iterator_data it, size_type count) {
-    it.pos += it.segment.length - it.segment.index + count;
-    move_next_leaf_count(it.entry, count);
-  }
-
-  static void find_before_segment(iterator_data it) {
-    it.pos -= it.segment.index + 1;
-    move_prev_leaf(it.entry);
-  }
-
-  static void find_before_segment_count(iterator_data it, size_type count) {
-    it.pos -= it.segment.index + 1 - count;
-    move_prev_leaf_count(it.entry, count);
   }
 
   // private data
@@ -2573,26 +2556,6 @@ void swap(
     segmented_tree_seq<T, Alloc, Args...> &a,
     segmented_tree_seq<T, Alloc, Args...> &b) noexcept(noexcept(a.swap(b))) {
   a.swap(b);
-}
-
-/// <b>Effects</b>: Outputs the sequence to the specified ostream.
-///
-/// <b>Complexity</b>: O(n), where n = size()
-template <typename T, typename Traits, typename Alloc, size_t... Args>
-std::ostream &operator<<(std::basic_ostream<T, Traits> &out,
-                         segmented_tree_seq<T, Alloc, Args...> &tree) {
-  auto first = tree.begin();
-  auto last = tree.end();
-
-  while (first.begin() != last.begin()) {
-    out.write(first.index(), first.end() - first.index());
-    first.move_after_segment();
-  }
-  if (first.index() != last.index()) {
-    out.write(first.index(), last.index() - first.index());
-  }
-
-  return out;
 }
 }
 }

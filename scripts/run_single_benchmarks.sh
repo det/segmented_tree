@@ -1,24 +1,27 @@
 #!/bin/bash
 
-if [ "$#" -ne 6 ]; then
-  echo "Expected 6 arguments" 1>&2
+if [ "$#" -ne 5 ]; then
+  echo "Expected 5 arguments" 1>&2
   exit 1
 fi
 
 function bench {
-  for count in $3; do
-    for benchmark in $4; do
-      echo "Rusults for ${benchmark}<std::uint$5_t>, count: ${count}"
-        for i in {0..20}; do
-          $1/bench_single_${benchmark}_$5 $2/single.$5.${count}
-        done | sort -k2 -k1,1n | uniq -f1
-      echo
-    done
-  done  
+  for benchmark in $2; do
+    echo "Rusults for ${benchmark}<std::uint$3_t>, count: $4"
+      for i in {0..5}; do
+        $1/bench_single_${benchmark}_$3 $4 $5 $6
+      done | sort -k2 -k1,1n | uniq -f1
+    echo
+  done
 }
 
-bench $1 $2 "256 7936 246016" "$3" 8
-bench $1 $2 "7626496" "$4" 8
-bench $1 $2 "32 992 30752" "$5" 64
-bench $1 $2 "953312" "$6" 64
+bench "$1" "$2" 8 256 2107779313 15865477950454414828
+bench "$1" "$2" 8 7936 976634119 3238950223561105499
+bench "$1" "$2" 8 246016 3515491141 5644467892570804156
+bench "$1" "$3" 8 7626496 1106530671 6965094249249093704
+
+bench "$1" "$4" 64 32 2397254571 4723602420748635361
+bench "$1" "$4" 64 992 463092544 12966777589746855639
+bench "$1" "$4" 64 30752 430452927 751509891372566603
+bench "$1" "$5" 64 953312 3109453262 10176667110359292238
 

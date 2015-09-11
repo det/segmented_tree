@@ -7,76 +7,45 @@
 #include <utility>
 #include <vector>
 
-template <typename T>
-struct has_nth {
+template <typename F>
+class scope_guard {
  private:
-  template <typename U>
-  static auto test(U *t) -> decltype(t->nth(0), std::true_type{});
-  template <typename>
-  static std::false_type test(...);
+  bool active_;
+  F f_;
 
  public:
-  static bool constexpr value = decltype(test<T>(nullptr))::value;
+  scope_guard(F &&f) : active_{true}, f_(std::forward<F>(f)) {}
+
+  scope_guard(scope_guard &&other)
+      : active_{other.active_}, f_{std::move(other.f_)} {
+    other.dismiss();
+  }
+
+  ~scope_guard() noexcept {
+    if (active_) f_();
+  }
+
+  void dismiss() { active_ = false; }
 };
 
-template <typename T>
-typename std::enable_if<has_nth<T>::value, typename T::iterator>::type nth(
-    T &object, typename T::size_type pos) {
-  return object.nth(pos);
+template <typename F>
+scope_guard<F> make_scope_guard(F &&f) {
+  return {std::forward<F>(f)};
 }
 
-template <typename T>
-typename std::enable_if<!has_nth<T>::value, typename T::iterator>::type nth(
-    T &object, typename T::size_type pos) {
-  return object.begin() + static_cast<std::ptrdiff_t>(pos);
-}
-
-template <typename T>
-struct has_reserve {
- private:
-  template <typename U>
-  static auto test(U *t) -> decltype(t->reserve(0), std::true_type{});
-  template <typename>
-  static std::false_type test(...);
-
- public:
-  static bool constexpr value = decltype(test<T>(nullptr))::value;
-};
-
-template <typename T>
-typename std::enable_if<has_reserve<T>::value, void>::type reserve(
-    T &object, typename T::size_type n) {
-  return object.reserve(n);
-}
-
-template <typename T>
-typename std::enable_if<!has_reserve<T>::value, void>::type reserve(
-    T &, typename T::size_type) {}
-
-class scoped_timer {
- private:
+template <typename F>
+auto bench(char const *description, F f) -> typename std::result_of<F()>::type {
   using Clock = std::chrono::steady_clock;
   using Ns = std::chrono::nanoseconds;
-  char const *description_;
-  Clock::time_point start_;
-
- public:
-  scoped_timer(char const *description)
-      : description_{description}, start_{Clock::now()} {}
-  ~scoped_timer() {
+  auto start = Clock::now();
+  auto guard = make_scope_guard([&] {
     auto stop = Clock::now();
-    auto ns = std::chrono::duration_cast<Ns>(stop - start_);
+    auto ns = std::chrono::duration_cast<Ns>(stop - start);
     auto ms = ns.count() / 1000000.0;
-    std::cout << std::setw(15) << std::setfill(' ') << std::setprecision(6)
-              << ms << "ms " << description_ << "\n";
-  }
-};
-
-template <typename F, typename... Args>
-auto bench(char const *description, F functor, Args &&... args) ->
-    typename std::result_of<F && (Args && ...)>::type {
-  scoped_timer timer{description};
-  return functor(std::forward<Args>(args)...);
+    std::cout << std::fixed << std::setw(15) << std::setfill(' ')
+              << std::setprecision(6) << ms << "ms " << description << "\n";
+  });
+  return f();
 }
 
 template <typename T>
@@ -147,8 +116,6 @@ std::uint64_t accumulate_backward_by(T const &container, std::size_t distance) {
 
 template <typename Container, typename T>
 void bench_iterator(Container const &container, std::vector<T> const &data) {
-  verify(std::equal(container.begin(), container.end(), data.begin()), true);
-
   verify(accumulate_forward(data), bench("accumulate forward", [&] {
     return accumulate_forward(container);
   }));

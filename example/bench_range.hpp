@@ -4,32 +4,14 @@
 #include <cstdlib>
 
 template <typename Container, typename T>
-void insert_values_range(Container &container,
-                         random_data_range<T> const &data) {
-  auto count = data.get_count();
-  auto size = data.get_size();
-  auto &indexes = data.get_indexes();
-  auto &ordered = data.get_ordered();
-  reserve(container, count);
-  auto first = ordered.begin();
-  auto last = first;
-  for (std::size_t i = 0; i != count; ++i) {
-    last += static_cast<std::ptrdiff_t>(size);
-    container.insert(nth(container, indexes[i]), first, last);
-    first += static_cast<std::ptrdiff_t>(size);
-  }
-}
-
-template <typename Container, typename T>
 void erase_values_range(Container &container,
-                        random_data_range<T> const &data) {
-  auto count = data.get_count();
-  auto size = data.get_size();
-  auto &indexes = data.get_indexes();
+                        random_insert_data<T> const &data) {
+  auto count = data.indexes.size();
+  auto size = data.ordered.size() / count;
 
   while (count != 1) {
     --count;
-    auto first = nth(container, indexes[count]);
+    auto first = nth(container, data.indexes[count]);
     auto last = first + static_cast<std::ptrdiff_t>(size);
     container.erase(first, last);
   }
@@ -38,20 +20,24 @@ void erase_values_range(Container &container,
 
 template <template <typename T> class Container, typename T>
 int bench_range(int argc, char **argv) {
-  if (argc != 2) {
-    std::cerr << "Usage: " << argv[0] << " <" << std::numeric_limits<T>::digits
-              << "-bit generated range random data>\n";
+  if (argc != 5) {
+    std::cerr << "Usage: " << argv[0] << "<count> <size> <seed> <checksum>\n";
     return EXIT_FAILURE;
   }
 
-  std::cout << std::fixed;
-  random_data_range<T> data{argv[1]};
-  Container<T> container;
+  auto count = boost::lexical_cast<std::size_t>(argv[1]);
+  auto size = boost::lexical_cast<std::size_t>(argv[2]);
+  auto seed = boost::lexical_cast<std::uint32_t>(argv[3]);
+  auto checksum = boost::lexical_cast<std::size_t>(argv[4]);
 
+  auto data = make_insert_data_range<T>(count, size, seed);
+  Container<T> container;
   bench("insert values", [&] { insert_values_range(container, data); });
-  bench_iterator(container, data.get_inserted());
+  std::vector<T> inserted{container.begin(), container.end()};
+  verify(checksum, make_checksum(inserted));
+  bench_iterator(container, inserted);
   bench("erase values", [&] { erase_values_range(container, data); });
   verify(std::size_t{1}, container.size());
-  verify(data.get_ordered()[0], container[0]);
+  verify(data.ordered[0], container[0]);
   return EXIT_SUCCESS;
 }
