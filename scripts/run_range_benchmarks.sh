@@ -7,7 +7,7 @@ fi
 
 function bench {
   for benchmark in $2; do
-    echo "Rusults for ${benchmark}<std::uint$3_t>, count: $4, size: $5"
+    echo "Results for ${benchmark}<std::uint$3_t>, count: $4, size: $5"
       for i in {0..10}; do
         $1/bench_range_${benchmark}_$3 $4 $5 $6 $7
       done | sort -k2 -k1,1n | uniq -f1
