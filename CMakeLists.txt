@@ -11,7 +11,11 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
   add_definitions(-DBOOST_SEGMENTED_TREE_SEQ_DEBUG)
 endif ()
 
+
+find_package(Boost)
+
 include_directories (include)
 include_directories (SYSTEM submodule)
+include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
 add_subdirectory (include/boost/container)
 add_subdirectory (example)

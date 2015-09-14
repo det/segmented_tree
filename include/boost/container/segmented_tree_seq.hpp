@@ -24,14 +24,19 @@
 namespace boost {
 namespace container {
 namespace segmented_tree_seq_detail {
-namespace trait {
+namespace is_nothrow_swappable_impl {
 using std::swap;
+template <typename T>
+struct test {
+  static bool const value =
+      noexcept(swap(std::declval<T &>(), std::declval<T &>()));
+};
+}
 
 template <typename T>
 struct is_nothrow_swappable
-    : std::integral_constant<bool, noexcept(swap(std::declval<T &>(),
-                                                 std::declval<T &>()))> {};
-}
+    : std::integral_constant<bool, is_nothrow_swappable_impl::test<T>::value> {
+};
 
 template <typename T, typename VoidPointer, typename SizeType,
           std::size_t segment_target, std::size_t base_target>
@@ -1287,8 +1292,7 @@ class segmented_tree_seq {
 
     while (from != last) {
       auto sz = pointer->sizes[from];
-      purge_node(static_traits::cast_node(pointer->pointers[from]), sz,
-                 ht - 1);
+      purge_node(static_traits::cast_node(pointer->pointers[from]), sz, ht - 1);
       erase_size += sz;
       ++from;
     }
@@ -1807,18 +1811,16 @@ class segmented_tree_seq {
 
   // helpers
   iterator_data find_index(size_type pos) const {
-    return static_traits::find_index_root(get_root(), get_size(),
-                                            get_height(), pos);
+    return static_traits::find_index_root(get_root(), get_size(), get_height(),
+                                          pos);
   }
 
   iterator_data find_first() const {
-    return static_traits::find_first_root(get_root(), get_size(),
-                                            get_height());
+    return static_traits::find_first_root(get_root(), get_size(), get_height());
   }
 
   iterator_data find_last() const {
-    return static_traits::find_last_root(get_root(), get_size(),
-                                           get_height());
+    return static_traits::find_last_root(get_root(), get_size(), get_height());
   }
 
   iterator_data find_end() const {
@@ -2542,8 +2544,7 @@ class segmented_tree_seq {
   /// O(1)
   void swap(segmented_tree_seq &other) noexcept(
       !element_traits::propagate_on_container_swap::value ||
-      segmented_tree_seq_detail::trait::is_nothrow_swappable<
-          allocator_type>::value) {
+      segmented_tree_seq_detail::is_nothrow_swappable<allocator_type>::value) {
     using std::swap;
     swap(get_root(), other.get_root());
     swap(get_height(), other.get_height());
