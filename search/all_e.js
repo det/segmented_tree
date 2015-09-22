@@ -5,5 +5,6 @@ var searchData=
   ['size',['size',['../classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21',1,'boost::container::segmented_tree_seq']]],
   ['size_5ftype',['size_type',['../classboost_1_1container_1_1segmented__tree__seq.html#a86c01867901b5c16949ba2377423b96f',1,'boost::container::segmented_tree_seq']]],
   ['sort',['sort',['../classboost_1_1container_1_1segmented__tree__seq.html#a25b2d6ad9a82ad1f4a8fb828291b114e',1,'boost::container::segmented_tree_seq::sort()'],['../classboost_1_1container_1_1segmented__tree__seq.html#a2c094b10ba79e30721a9f56b72ac9926',1,'boost::container::segmented_tree_seq::sort(Compare comp)']]],
+  ['static_5ftraits_5ft',['static_traits_t',['../structboost_1_1container_1_1segmented__tree__seq__detail_1_1static__traits__t.html',1,'boost::container::segmented_tree_seq_detail']]],
   ['swap',['swap',['../classboost_1_1container_1_1segmented__tree__seq.html#a9d64a537fb34ae7dbb94e6c5f1be94e6',1,'boost::container::segmented_tree_seq']]]
 ];
