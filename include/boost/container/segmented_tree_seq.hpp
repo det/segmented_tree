@@ -24,8 +24,10 @@
 namespace boost {
 namespace container {
 namespace segmented_tree_seq_detail {
+#ifndef BOOST_CONTAINER_DOXYGEN_INVOKED
 namespace is_nothrow_swappable_impl {
 using std::swap;
+
 template <typename T>
 struct test {
   static bool const value =
@@ -37,10 +39,12 @@ template <typename T>
 struct is_nothrow_swappable
     : std::integral_constant<bool, is_nothrow_swappable_impl::test<T>::value> {
 };
+#endif  // BOOST_CONTAINER_DOXYGEN_INVOKED
 
 template <typename T, typename VoidPointer, typename SizeType,
           std::size_t segment_target, std::size_t base_target>
 struct static_traits_t {
+#ifndef BOOST_CONTAINER_DOXYGEN_INVOKED
   // forward declarations
   struct node_base;
   struct node_data;
@@ -124,292 +128,6 @@ struct static_traits_t {
   struct iterator_data {
     iterator_entry entry;
     size_type pos;
-  };
-
-  template <typename Pointer, typename Reference>
-  class iterator_t {
-    template <typename, typename, std::size_t, std::size_t>
-    friend class boost::container::segmented_tree_seq;
-
-    template <typename, typename>
-    friend class iterator_t;
-
-   private:
-    iterator_data it_;
-    iterator_t(iterator_data it) : it_(it) {}
-
-   public:
-    using iterator_category = std::random_access_iterator_tag;
-    using value_type = T;
-    using difference_type =
-        typename std::pointer_traits<VoidPointer>::difference_type;
-    using pointer = Pointer;
-    using reference = Reference;
-    iterator_t() = default;
-    iterator_t(iterator_t const &) = default;
-    iterator_t &operator=(iterator_t const &) = default;
-
-    template <typename P, typename R,
-              typename = typename std::enable_if<
-                  std::is_convertible<P, pointer>::value>::type>
-    iterator_t(iterator_t<P, R> const &other)
-        : it_(other.it_) {}
-
-    size_type index() const { return it_.entry.segment.index; }
-    pointer begin() const { return it_.entry.segment.pointer; }
-    pointer end() const { return begin() + it_.entry.segment.length; }
-    pointer operator->() const { return begin() + index(); }
-    reference operator*() const { return begin()[index()]; }
-
-    /// \brief Move the iterator forward 1 element.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    iterator_t &operator++() {
-      move_next_iterator(it_);
-      return *this;
-    }
-
-    /// \brief Move the iterator backward 1 element.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    iterator_t &operator--() {
-      move_prev_iterator(it_);
-      return *this;
-    }
-
-    /// \brief Return a copy of the iterator moved forward 1 element.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    iterator_t operator++(int) {
-      auto copy = it_;
-      move_next_iterator(it_);
-      return copy;
-    }
-
-    /// \brief Return a copy of the iterator moved backward 1 element.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    iterator_t operator--(int) {
-      auto copy = it_;
-      move_prev_iterator(it_);
-      return copy;
-    }
-
-    /// \brief Move the iterator forward diff elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in the absolute value of diff.
-    iterator_t &operator+=(difference_type diff) {
-      move_iterator_count(it_, diff);
-      return *this;
-    }
-
-    /// \brief Move the iterator backward diff elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in the absolute value of diff.
-    iterator_t &operator-=(difference_type diff) {
-      move_iterator_count(it_, -diff);
-      return *this;
-    }
-
-    /// \brief Return a copy of the iterator moved forward diff elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in the absolute value of diff.
-    iterator_t operator+(difference_type diff) const {
-      auto copy = it_;
-      move_iterator_count(copy, diff);
-      return copy;
-    }
-
-    /// \brief Return a copy of the iterator moved backward diff elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in the absolute value of diff.
-    iterator_t operator-(difference_type diff) const {
-      auto copy = it_;
-      move_iterator_count(copy, -diff);
-      return copy;
-    }
-
-    /// \brief Return a distance between the specified iterator.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    difference_type operator-(iterator_t const &other) const {
-      return it_.pos > other.it_.pos
-                 ? static_cast<difference_type>(it_.pos - other.it_.pos)
-                 : -static_cast<difference_type>(other.it_.pos - it_.pos);
-    }
-
-    /// \brief Move the iterator to the last element of the previous segment.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t &move_before_segment() {
-      it_.pos -= it_.entry.segment.index + 1;
-      move_prev_leaf(it_.entry);
-      return *this;
-    }
-
-    /// \brief Move the iterator to the last element of the previous segment and
-    ///        then move backward count elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in count.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t &move_before_segment(size_type count) {
-      it_.pos -= it_.entry.segment.index + 1 - count;
-      move_prev_leaf_count(it_.entry, count);
-      return *this;
-    }
-
-    /// \brief Move the iterator to the first element of the next segment.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t &move_after_segment() {
-      it_.pos += it_.entry.segment.length - it_.entry.segment.index;
-      move_next_leaf(it_.entry);
-      return *this;
-    }
-
-    /// \brief Move the iterator to the first element of the next segment and
-    ///        then move forward count elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in count
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t &move_after_segment(size_type count) {
-      it_.pos += it_.entry.segment.length - it_.entry.segment.index + count;
-      move_next_leaf_count(it_.entry, count);
-      return *this;
-    }
-
-    /// \brief Return a copy of the iterator moved to the last element of the
-    ///        previous segment.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t before_segment() const {
-      auto copy = it_;
-      move_before_segment(copy);
-      return copy;
-    }
-
-    /// \brief Return a copy of the iterator moved to the last element of the
-    ///        previous segment and then move backward count elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in count
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t after_segment() const {
-      auto copy = it_;
-      move_after_segment(copy);
-      return copy;
-    }
-
-    /// \brief Return a copy of the iterator moved to the last element of the
-    ///        previous segment.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t before_segment(size_type count) const {
-      auto copy = it_;
-      move_before_segment_count(copy, count);
-      return copy;
-    }
-
-    /// \brief Return a copy of the iterator to the first element of the next
-    ///        segment and then move forward count elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in count
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t after_segment(size_type count) const {
-      auto copy = it_;
-      move_after_segment_count(copy, count);
-      return copy;
-    }
-
-    /// \brief Return false if both iterators point to the same element. Return
-    ///        true otherwise.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    bool operator!=(iterator_t const &other) const {
-      return it_.pos != other.it_.pos;
-    }
-
-    /// \brief Return true if both iterators point to the same element. Return
-    ///        false otherwise.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    bool operator==(iterator_t const &other) const {
-      return it_.pos == other.it_.pos;
-    }
-
-    /// \brief Return true if *this points to an element before other. Return
-    ///        false otherwise.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    bool operator<(iterator_t const &other) const {
-      return it_.pos < other.it_.pos;
-    }
-
-    /// \brief Return true if *this points to an element after other. Return
-    ///        false otherwise.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    bool operator>(iterator_t const &other) const {
-      return it_.pos > other.it_.pos;
-    }
-
-    /// \brief Return true if *this points to the same element or before other.
-    ///        Return false otherwise.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    bool operator<=(iterator_t const &other) const {
-      return it_.pos <= other.it_.pos;
-    }
-
-    /// \brief Return true if *this points to the same element or after other.
-    ///        Return false otherwise.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    bool operator>=(iterator_t const &other) const {
-      return it_.pos >= other.it_.pos;
-    }
   };
 
   // cast
@@ -896,16 +614,365 @@ struct static_traits_t {
       ++child_ht;
     }
   }
+#endif  // BOOST_CONTAINER_DOXYGEN_INVOKED
+
+  /// \brief A template class used for const and non-const iterators for
+  /// segmented_tree_seq.
+  ///
+  /// \tparam Pointer A const or non-const pointer.
+  /// \tparam Pointer A const or non-const reference.
+  template <typename Pointer, typename Reference>
+  class iterator_t {
+    template <typename, typename, std::size_t, std::size_t>
+    friend class boost::container::segmented_tree_seq;
+
+    template <typename, typename>
+    friend class iterator_t;
+
+   private:
+    iterator_data it_;
+    iterator_t(iterator_data it) : it_(it) {}
+
+   public:
+    /// \brief The iterator category type.
+    using iterator_category = std::random_access_iterator_tag;
+    /// \brief The value type.
+    using value_type = T;
+    /// \brief The difference type.
+    using difference_type =
+        typename std::pointer_traits<VoidPointer>::difference_type;
+    /// \brief The pointer type.
+    using pointer = Pointer;
+    /// \brief The iterator reference type.
+    using reference = Reference;
+
+    /// \brief Default constructs an iterator_t from another.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    iterator_t() = default;
+
+    /// \brief Copy constructs an iterator_t from other.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    iterator_t(iterator_t const &other) = default;
+
+    /// \brief Copy assigns from other.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    iterator_t &operator=(iterator_t const &other) = default;
+
+    /// \brief Copy constructs a const iterator from non-const iterator other.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    template <typename P, typename R,
+              typename = typename std::enable_if<
+                  std::is_convertible<P, pointer>::value>::type>
+    iterator_t(iterator_t<P, R> const &other)
+        : it_(other.it_) {}
+
+    /// \brief Returns the index into the segment that the iterator points to.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    ///
+    /// \note
+    ///   Non-standard extension.
+    size_type index() const { return it_.entry.segment.index; }
+
+    /// \brief Returns the beginning of the segment that the iterator points to.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    ///
+    /// \note
+    ///   Non-standard extension.
+    pointer begin() const { return it_.entry.segment.pointer; }
+
+    /// \brief Returns the end of the segment that the iterator points to.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    ///
+    /// \note
+    ///   Non-standard extension.
+    pointer end() const { return begin() + it_.entry.segment.length; }
+
+    /// \brief Returns a pointer to the current element.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    pointer operator->() const { return begin() + index(); }
+
+    /// \brief Returns a reference to the current element.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    reference operator*() const { return begin()[index()]; }
+
+    /// \brief Move the iterator forward 1 element.
+    ///
+    /// \par Complexity
+    ///   Constant amortized.
+    iterator_t &operator++() {
+      move_next_iterator(it_);
+      return *this;
+    }
+
+    /// \brief Move the iterator backward 1 element.
+    ///
+    /// \par Complexity
+    ///   Constant amortized.
+    iterator_t &operator--() {
+      move_prev_iterator(it_);
+      return *this;
+    }
+
+    /// \brief Return a copy of the iterator moved forward 1 element.
+    ///
+    /// \par Complexity
+    ///   Constant amortized.
+    iterator_t operator++(int) {
+      auto copy = it_;
+      move_next_iterator(it_);
+      return copy;
+    }
+
+    /// \brief Return a copy of the iterator moved backward 1 element.
+    ///
+    /// \par Complexity
+    ///   Constant amortized.
+    iterator_t operator--(int) {
+      auto copy = it_;
+      move_prev_iterator(it_);
+      return copy;
+    }
+
+    /// \brief Move the iterator forward diff elements.
+    ///
+    /// \par Complexity
+    ///   Logarithmic amortized in the absolute value of diff.
+    iterator_t &operator+=(difference_type diff) {
+      move_iterator_count(it_, diff);
+      return *this;
+    }
+
+    /// \brief Move the iterator backward diff elements.
+    ///
+    /// \par Complexity
+    ///   Logarithmic amortized in the absolute value of diff.
+    iterator_t &operator-=(difference_type diff) {
+      move_iterator_count(it_, -diff);
+      return *this;
+    }
+
+    /// \brief Return a copy of the iterator moved forward diff elements.
+    ///
+    /// \par Complexity
+    ///   Logarithmic amortized in the absolute value of diff.
+    iterator_t operator+(difference_type diff) const {
+      auto copy = it_;
+      move_iterator_count(copy, diff);
+      return copy;
+    }
+
+    /// \brief Return a copy of the iterator moved backward diff elements.
+    ///
+    /// \par Complexity
+    ///   Logarithmic amortized in the absolute value of diff.
+    iterator_t operator-(difference_type diff) const {
+      auto copy = it_;
+      move_iterator_count(copy, -diff);
+      return copy;
+    }
+
+    /// \brief Return a distance between the specified iterator.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    difference_type operator-(iterator_t const &other) const {
+      return it_.pos > other.it_.pos
+                 ? static_cast<difference_type>(it_.pos - other.it_.pos)
+                 : -static_cast<difference_type>(other.it_.pos - it_.pos);
+    }
+
+    /// \brief Move the iterator to the last element of the previous segment.
+    ///
+    /// \par Complexity
+    ///   Constant amortized.
+    ///
+    /// \note
+    ///   Non-standard extension.
+    iterator_t &move_before_segment() {
+      it_.pos -= it_.entry.segment.index + 1;
+      move_prev_leaf(it_.entry);
+      return *this;
+    }
+
+    /// \brief Move the iterator to the last element of the previous segment and
+    ///        then move backward count elements.
+    ///
+    /// \par Complexity
+    ///   Logarithmic amortized in count.
+    ///
+    /// \note
+    ///   Non-standard extension.
+    iterator_t &move_before_segment(size_type count) {
+      it_.pos -= it_.entry.segment.index + 1 - count;
+      move_prev_leaf_count(it_.entry, count);
+      return *this;
+    }
+
+    /// \brief Move the iterator to the first element of the next segment.
+    ///
+    /// \par Complexity
+    ///   Constant amortized.
+    ///
+    /// \note
+    ///   Non-standard extension.
+    iterator_t &move_after_segment() {
+      it_.pos += it_.entry.segment.length - it_.entry.segment.index;
+      move_next_leaf(it_.entry);
+      return *this;
+    }
+
+    /// \brief Move the iterator to the first element of the next segment and
+    ///        then move forward count elements.
+    ///
+    /// \par Complexity
+    ///   Logarithmic amortized in count
+    ///
+    /// \note
+    ///   Non-standard extension.
+    iterator_t &move_after_segment(size_type count) {
+      it_.pos += it_.entry.segment.length - it_.entry.segment.index + count;
+      move_next_leaf_count(it_.entry, count);
+      return *this;
+    }
+
+    /// \brief Return a copy of the iterator moved to the last element of the
+    ///        previous segment.
+    ///
+    /// \par Complexity
+    ///   Constant amortized.
+    ///
+    /// \note
+    ///   Non-standard extension.
+    iterator_t before_segment() const {
+      auto copy = it_;
+      move_before_segment(copy);
+      return copy;
+    }
+
+    /// \brief Return a copy of the iterator moved to the last element of the
+    ///        previous segment and then move backward count elements.
+    ///
+    /// \par Complexity
+    ///   Logarithmic amortized in count
+    ///
+    /// \note
+    ///   Non-standard extension.
+    iterator_t after_segment() const {
+      auto copy = it_;
+      move_after_segment(copy);
+      return copy;
+    }
+
+    /// \brief Return a copy of the iterator moved to the last element of the
+    ///        previous segment.
+    ///
+    /// \par Complexity
+    ///   Constant amortized.
+    ///
+    /// \note
+    ///   Non-standard extension.
+    iterator_t before_segment(size_type count) const {
+      auto copy = it_;
+      move_before_segment_count(copy, count);
+      return copy;
+    }
+
+    /// \brief Return a copy of the iterator to the first element of the next
+    ///        segment and then move forward count elements.
+    ///
+    /// \par Complexity
+    ///   Logarithmic amortized in count
+    ///
+    /// \note
+    ///   Non-standard extension.
+    iterator_t after_segment(size_type count) const {
+      auto copy = it_;
+      move_after_segment_count(copy, count);
+      return copy;
+    }
+
+    /// \brief Return false if both iterators point to the same element. Return
+    ///        true otherwise.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    bool operator!=(iterator_t const &other) const {
+      return it_.pos != other.it_.pos;
+    }
+
+    /// \brief Return true if both iterators point to the same element. Return
+    ///        false otherwise.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    bool operator==(iterator_t const &other) const {
+      return it_.pos == other.it_.pos;
+    }
+
+    /// \brief Return true if *this points to an element before other. Return
+    ///        false otherwise.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    bool operator<(iterator_t const &other) const {
+      return it_.pos < other.it_.pos;
+    }
+
+    /// \brief Return true if *this points to an element after other. Return
+    ///        false otherwise.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    bool operator>(iterator_t const &other) const {
+      return it_.pos > other.it_.pos;
+    }
+
+    /// \brief Return true if *this points to the same element or before other.
+    ///        Return false otherwise.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    bool operator<=(iterator_t const &other) const {
+      return it_.pos <= other.it_.pos;
+    }
+
+    /// \brief Return true if *this points to the same element or after other.
+    ///        Return false otherwise.
+    ///
+    /// \par Complexity
+    ///   Constant.
+    bool operator>=(iterator_t const &other) const {
+      return it_.pos >= other.it_.pos;
+    }
+  };
 };
 }
 
 /// \brief A segmented_tree_seq is a sequence container that provides efficient
 ///        random access insert and erase.
 ///
-/// \param T The type of object to be stored
-/// \param Allocator The type of the allocator used for all memory management
-/// \param segment_target Size in bytes to try to use for object nodes
-/// \param base_target Size in bytes to try to use for index nodes
+/// \tparam T The type of object to be stored
+/// \tparam Allocator The type of the allocator used for all memory management
+/// \tparam segment_target Size in bytes to try to use for object nodes
+/// \tparam base_target Size in bytes to try to use for index nodes
 template <typename T, typename Allocator, std::size_t segment_target,
           std::size_t base_target>
 class segmented_tree_seq {
