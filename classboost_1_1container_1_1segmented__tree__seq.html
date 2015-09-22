@@ -86,7 +86,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classboost_1_1container_1_1segmented__tree__seq-members.html">List of all members</a>  </div>
@@ -94,6 +93,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">boost::container::segmented_tree_seq&lt; T, Allocator, segment_target, base_target &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>A segmented_tree_seq is a SequenceContainer that provides efficient random access insert and erase.  
+ <a href="classboost_1_1container_1_1segmented__tree__seq.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="segmented__tree__seq_8hpp_source.html">segmented_tree_seq.hpp</a>&gt;</code></p>
 <table class="memberdecls">
@@ -179,7 +181,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a16bf8a9a04f3377115bca46e3339dc16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructs a sequence using the specified allocator.  <a href="#a16bf8a9a04f3377115bca46e3339dc16">More...</a><br /></td></tr>
 <tr class="separator:a16bf8a9a04f3377115bca46e3339dc16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf01f7c60dddce42f06ad18e02a3a1f6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#abf01f7c60dddce42f06ad18e02a3a1f6">segmented_tree_seq</a> (std::initializer_list&lt; T &gt; init, Allocator const &amp;alloc=Allocator())</td></tr>
-<tr class="memdesc:abf01f7c60dddce42f06ad18e02a3a1f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an empty sequence using the specified allocator, and insert elements from init.  <a href="#abf01f7c60dddce42f06ad18e02a3a1f6">More...</a><br /></td></tr>
+<tr class="memdesc:abf01f7c60dddce42f06ad18e02a3a1f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an empty sequence using the specified allocator, and inserts elements from init.  <a href="#abf01f7c60dddce42f06ad18e02a3a1f6">More...</a><br /></td></tr>
 <tr class="separator:abf01f7c60dddce42f06ad18e02a3a1f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a150e6370398c73554f47a8feedc064dd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a150e6370398c73554f47a8feedc064dd">~segmented_tree_seq</a> ()</td></tr>
 <tr class="memdesc:a150e6370398c73554f47a8feedc064dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructs the sequence releasing all memory.  <a href="#a150e6370398c73554f47a8feedc064dd">More...</a><br /></td></tr>
@@ -191,7 +193,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:adf892be6944ef3edbbd6c569a65082a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move assigns a sequence.  <a href="#adf892be6944ef3edbbd6c569a65082a2">More...</a><br /></td></tr>
 <tr class="separator:adf892be6944ef3edbbd6c569a65082a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26dd6958e87d105be3081fc529dc6db5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html">segmented_tree_seq</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a26dd6958e87d105be3081fc529dc6db5">operator=</a> (std::initializer_list&lt; T &gt; ilist)</td></tr>
-<tr class="memdesc:a26dd6958e87d105be3081fc529dc6db5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assigns the sequence to the elements of the specified initializer_list.  <a href="#a26dd6958e87d105be3081fc529dc6db5">More...</a><br /></td></tr>
+<tr class="memdesc:a26dd6958e87d105be3081fc529dc6db5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assigns the sequence to count elements copy constructed from value.  <a href="#a26dd6958e87d105be3081fc529dc6db5">More...</a><br /></td></tr>
 <tr class="separator:a26dd6958e87d105be3081fc529dc6db5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58a00e1275976493e0d9de2a583b4d9f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a58a00e1275976493e0d9de2a583b4d9f">assign</a> (<a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a86c01867901b5c16949ba2377423b96f">size_type</a> count, T const &amp;value)</td></tr>
 <tr class="memdesc:a58a00e1275976493e0d9de2a583b4d9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assigns the sequence to count elements copy constructed from value.  <a href="#a58a00e1275976493e0d9de2a583b4d9f">More...</a><br /></td></tr>
@@ -225,10 +227,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a82e2b733fce99c20b31f29dd44150ce1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_reference for the object located at the index 0.  <a href="#a82e2b733fce99c20b31f29dd44150ce1">More...</a><br /></td></tr>
 <tr class="separator:a82e2b733fce99c20b31f29dd44150ce1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a854fbfddb195e01e6606cce27387f7bb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a5c080ce5696a13d4496dfa62f19f53ce">reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a854fbfddb195e01e6606cce27387f7bb">back</a> ()</td></tr>
-<tr class="memdesc:a854fbfddb195e01e6606cce27387f7bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a reference for the object located at the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> - 1.  <a href="#a854fbfddb195e01e6606cce27387f7bb">More...</a><br /></td></tr>
+<tr class="memdesc:a854fbfddb195e01e6606cce27387f7bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a reference for the object located at the index size() - 1.  <a href="#a854fbfddb195e01e6606cce27387f7bb">More...</a><br /></td></tr>
 <tr class="separator:a854fbfddb195e01e6606cce27387f7bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9826fe687a13982a55b3cb022d860829"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#acbcf64eda8f7e97d36f972cf63fcca6f">const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a9826fe687a13982a55b3cb022d860829">back</a> () const </td></tr>
-<tr class="memdesc:a9826fe687a13982a55b3cb022d860829"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_reference for the object located at the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> - 1.  <a href="#a9826fe687a13982a55b3cb022d860829">More...</a><br /></td></tr>
+<tr class="memdesc:a9826fe687a13982a55b3cb022d860829"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_reference for the object located at the index size() - 1.  <a href="#a9826fe687a13982a55b3cb022d860829">More...</a><br /></td></tr>
 <tr class="separator:a9826fe687a13982a55b3cb022d860829"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2e8c0fc6a97bb63e7c11d90c7cc270a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a8e7b87e6fcd753ce232c11088192d63e">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa2e8c0fc6a97bb63e7c11d90c7cc270a">begin</a> () noexcept</td></tr>
 <tr class="memdesc:aa2e8c0fc6a97bb63e7c11d90c7cc270a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator for the index 0.  <a href="#aa2e8c0fc6a97bb63e7c11d90c7cc270a">More...</a><br /></td></tr>
@@ -240,31 +242,31 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ac091db2869dcfb5fd6028e67e33b85ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_iterator for the index 0.  <a href="#ac091db2869dcfb5fd6028e67e33b85ee">More...</a><br /></td></tr>
 <tr class="separator:ac091db2869dcfb5fd6028e67e33b85ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67db6490da979e73b6f5ffe02ec53bdb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a8e7b87e6fcd753ce232c11088192d63e">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a67db6490da979e73b6f5ffe02ec53bdb">penultimate</a> () noexcept</td></tr>
-<tr class="memdesc:a67db6490da979e73b6f5ffe02ec53bdb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator to the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> - 1.  <a href="#a67db6490da979e73b6f5ffe02ec53bdb">More...</a><br /></td></tr>
+<tr class="memdesc:a67db6490da979e73b6f5ffe02ec53bdb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator to the index size() - 1.  <a href="#a67db6490da979e73b6f5ffe02ec53bdb">More...</a><br /></td></tr>
 <tr class="separator:a67db6490da979e73b6f5ffe02ec53bdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a319da7c983b0d4bcc7f1e8eb3511f82b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa5bea87e824b662fd8dd7ea77b7c62fb">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a319da7c983b0d4bcc7f1e8eb3511f82b">penultimate</a> () const  noexcept</td></tr>
-<tr class="memdesc:a319da7c983b0d4bcc7f1e8eb3511f82b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_iterator to the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> - 1.  <a href="#a319da7c983b0d4bcc7f1e8eb3511f82b">More...</a><br /></td></tr>
+<tr class="memdesc:a319da7c983b0d4bcc7f1e8eb3511f82b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_iterator to the index size() - 1.  <a href="#a319da7c983b0d4bcc7f1e8eb3511f82b">More...</a><br /></td></tr>
 <tr class="separator:a319da7c983b0d4bcc7f1e8eb3511f82b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a415ac3567b9c24a6e433e1ca41bd9089"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa5bea87e824b662fd8dd7ea77b7c62fb">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a415ac3567b9c24a6e433e1ca41bd9089">cpenultimate</a> () const  noexcept</td></tr>
-<tr class="memdesc:a415ac3567b9c24a6e433e1ca41bd9089"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_iterator to the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> - 1.  <a href="#a415ac3567b9c24a6e433e1ca41bd9089">More...</a><br /></td></tr>
+<tr class="memdesc:a415ac3567b9c24a6e433e1ca41bd9089"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_iterator to the index size() - 1.  <a href="#a415ac3567b9c24a6e433e1ca41bd9089">More...</a><br /></td></tr>
 <tr class="separator:a415ac3567b9c24a6e433e1ca41bd9089"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abcf454cb608ccba75ceff1a78e82a1a8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a8e7b87e6fcd753ce232c11088192d63e">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#abcf454cb608ccba75ceff1a78e82a1a8">end</a> () noexcept</td></tr>
-<tr class="memdesc:abcf454cb608ccba75ceff1a78e82a1a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator for the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>.  <a href="#abcf454cb608ccba75ceff1a78e82a1a8">More...</a><br /></td></tr>
+<tr class="memdesc:abcf454cb608ccba75ceff1a78e82a1a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator for the index size().  <a href="#abcf454cb608ccba75ceff1a78e82a1a8">More...</a><br /></td></tr>
 <tr class="separator:abcf454cb608ccba75ceff1a78e82a1a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a342650aa64a6a2e1b3f6eae4a3343149"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa5bea87e824b662fd8dd7ea77b7c62fb">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a342650aa64a6a2e1b3f6eae4a3343149">end</a> () const  noexcept</td></tr>
-<tr class="memdesc:a342650aa64a6a2e1b3f6eae4a3343149"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_iterator for the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>.  <a href="#a342650aa64a6a2e1b3f6eae4a3343149">More...</a><br /></td></tr>
+<tr class="memdesc:a342650aa64a6a2e1b3f6eae4a3343149"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_iterator for the index size().  <a href="#a342650aa64a6a2e1b3f6eae4a3343149">More...</a><br /></td></tr>
 <tr class="separator:a342650aa64a6a2e1b3f6eae4a3343149"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa063813ca250438066c4b00db1c6360f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa5bea87e824b662fd8dd7ea77b7c62fb">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa063813ca250438066c4b00db1c6360f">cend</a> () const  noexcept</td></tr>
-<tr class="memdesc:aa063813ca250438066c4b00db1c6360f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_iterator for the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>.  <a href="#aa063813ca250438066c4b00db1c6360f">More...</a><br /></td></tr>
+<tr class="memdesc:aa063813ca250438066c4b00db1c6360f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_iterator for the index size().  <a href="#aa063813ca250438066c4b00db1c6360f">More...</a><br /></td></tr>
 <tr class="separator:aa063813ca250438066c4b00db1c6360f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c505a59a968f6935c082a7978416da4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a61182eb9ea0625c4c6f2e43dd316e0f5">reverse_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a9c505a59a968f6935c082a7978416da4">rbegin</a> () noexcept</td></tr>
-<tr class="memdesc:a9c505a59a968f6935c082a7978416da4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a reverse_iterator for the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>.  <a href="#a9c505a59a968f6935c082a7978416da4">More...</a><br /></td></tr>
+<tr class="memdesc:a9c505a59a968f6935c082a7978416da4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a reverse_iterator for the index size().  <a href="#a9c505a59a968f6935c082a7978416da4">More...</a><br /></td></tr>
 <tr class="separator:a9c505a59a968f6935c082a7978416da4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23e29690e43f7dd6a5d1c32ddc3f7406"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a00c5fb657f549f439cb7401c9de8c083">const_reverse_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a23e29690e43f7dd6a5d1c32ddc3f7406">rbegin</a> () const  noexcept</td></tr>
-<tr class="memdesc:a23e29690e43f7dd6a5d1c32ddc3f7406"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_reverse_iterator for the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>.  <a href="#a23e29690e43f7dd6a5d1c32ddc3f7406">More...</a><br /></td></tr>
+<tr class="memdesc:a23e29690e43f7dd6a5d1c32ddc3f7406"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_reverse_iterator for the index size().  <a href="#a23e29690e43f7dd6a5d1c32ddc3f7406">More...</a><br /></td></tr>
 <tr class="separator:a23e29690e43f7dd6a5d1c32ddc3f7406"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a004d94988016bcbeab7a52088649b9fd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a00c5fb657f549f439cb7401c9de8c083">const_reverse_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a004d94988016bcbeab7a52088649b9fd">crbegin</a> () const  noexcept</td></tr>
-<tr class="memdesc:a004d94988016bcbeab7a52088649b9fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_reverse_iterator for the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>.  <a href="#a004d94988016bcbeab7a52088649b9fd">More...</a><br /></td></tr>
+<tr class="memdesc:a004d94988016bcbeab7a52088649b9fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const_reverse_iterator for the index size().  <a href="#a004d94988016bcbeab7a52088649b9fd">More...</a><br /></td></tr>
 <tr class="separator:a004d94988016bcbeab7a52088649b9fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14ef8f17fb622f5f9cd1e085c041d165"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a61182eb9ea0625c4c6f2e43dd316e0f5">reverse_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a14ef8f17fb622f5f9cd1e085c041d165">rend</a> () noexcept</td></tr>
 <tr class="memdesc:a14ef8f17fb622f5f9cd1e085c041d165"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a reverse_iterator for the index 0.  <a href="#a14ef8f17fb622f5f9cd1e085c041d165">More...</a><br /></td></tr>
@@ -329,30 +331,30 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ae728be96517630adbca51492edee075b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove all elements in the range [first, last) from the sequence.  <a href="#ae728be96517630adbca51492edee075b">More...</a><br /></td></tr>
 <tr class="separator:ae728be96517630adbca51492edee075b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab12b2648d7c59d6d64d11c3d39c19626"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#ab12b2648d7c59d6d64d11c3d39c19626">push_back</a> (T const &amp;value)</td></tr>
-<tr class="memdesc:ab12b2648d7c59d6d64d11c3d39c19626"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructs an object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#abcf454cb608ccba75ceff1a78e82a1a8" title="Returns an iterator for the index size(). ">end()</a>.  <a href="#ab12b2648d7c59d6d64d11c3d39c19626">More...</a><br /></td></tr>
+<tr class="memdesc:ab12b2648d7c59d6d64d11c3d39c19626"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructs an object at end().  <a href="#ab12b2648d7c59d6d64d11c3d39c19626">More...</a><br /></td></tr>
 <tr class="separator:ab12b2648d7c59d6d64d11c3d39c19626"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00ab9e638a6c23497d179d5b55726bce"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a00ab9e638a6c23497d179d5b55726bce">push_back</a> (T &amp;&amp;value)</td></tr>
-<tr class="memdesc:a00ab9e638a6c23497d179d5b55726bce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructs an object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#abcf454cb608ccba75ceff1a78e82a1a8" title="Returns an iterator for the index size(). ">end()</a>.  <a href="#a00ab9e638a6c23497d179d5b55726bce">More...</a><br /></td></tr>
+<tr class="memdesc:a00ab9e638a6c23497d179d5b55726bce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructs an object at end().  <a href="#a00ab9e638a6c23497d179d5b55726bce">More...</a><br /></td></tr>
 <tr class="separator:a00ab9e638a6c23497d179d5b55726bce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab62697d12cacfd16d71de0f6b49e0905"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
 <tr class="memitem:ab62697d12cacfd16d71de0f6b49e0905"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#ab62697d12cacfd16d71de0f6b49e0905">emplace_back</a> (Args &amp;&amp;...args)</td></tr>
-<tr class="memdesc:ab62697d12cacfd16d71de0f6b49e0905"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forward constructs an object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#abcf454cb608ccba75ceff1a78e82a1a8" title="Returns an iterator for the index size(). ">end()</a>.  <a href="#ab62697d12cacfd16d71de0f6b49e0905">More...</a><br /></td></tr>
+<tr class="memdesc:ab62697d12cacfd16d71de0f6b49e0905"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forward constructs an object at end().  <a href="#ab62697d12cacfd16d71de0f6b49e0905">More...</a><br /></td></tr>
 <tr class="separator:ab62697d12cacfd16d71de0f6b49e0905"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4edcf18daae0e14f87694850741b0ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#ab4edcf18daae0e14f87694850741b0ba">pop_back</a> ()</td></tr>
-<tr class="memdesc:ab4edcf18daae0e14f87694850741b0ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#abcf454cb608ccba75ceff1a78e82a1a8" title="Returns an iterator for the index size(). ">end()</a> - 1.  <a href="#ab4edcf18daae0e14f87694850741b0ba">More...</a><br /></td></tr>
+<tr class="memdesc:ab4edcf18daae0e14f87694850741b0ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the object at end() - 1.  <a href="#ab4edcf18daae0e14f87694850741b0ba">More...</a><br /></td></tr>
 <tr class="separator:ab4edcf18daae0e14f87694850741b0ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af48db19e362b24b4edea9c767d9b9a6b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#af48db19e362b24b4edea9c767d9b9a6b">push_front</a> (const T &amp;value)</td></tr>
-<tr class="memdesc:af48db19e362b24b4edea9c767d9b9a6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructs an object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa2e8c0fc6a97bb63e7c11d90c7cc270a" title="Returns an iterator for the index 0. ">begin()</a>.  <a href="#af48db19e362b24b4edea9c767d9b9a6b">More...</a><br /></td></tr>
+<tr class="memdesc:af48db19e362b24b4edea9c767d9b9a6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructs an object at begin().  <a href="#af48db19e362b24b4edea9c767d9b9a6b">More...</a><br /></td></tr>
 <tr class="separator:af48db19e362b24b4edea9c767d9b9a6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae09bb21d03f538faddbafd9dff17f76a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#ae09bb21d03f538faddbafd9dff17f76a">push_front</a> (T &amp;&amp;value)</td></tr>
-<tr class="memdesc:ae09bb21d03f538faddbafd9dff17f76a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructs an object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa2e8c0fc6a97bb63e7c11d90c7cc270a" title="Returns an iterator for the index 0. ">begin()</a>.  <a href="#ae09bb21d03f538faddbafd9dff17f76a">More...</a><br /></td></tr>
+<tr class="memdesc:ae09bb21d03f538faddbafd9dff17f76a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructs an object at begin().  <a href="#ae09bb21d03f538faddbafd9dff17f76a">More...</a><br /></td></tr>
 <tr class="separator:ae09bb21d03f538faddbafd9dff17f76a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1cc0a741cb1a84dc8944f0199fc7f138"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
 <tr class="memitem:a1cc0a741cb1a84dc8944f0199fc7f138"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a1cc0a741cb1a84dc8944f0199fc7f138">emplace_front</a> (Args &amp;&amp;...args)</td></tr>
-<tr class="memdesc:a1cc0a741cb1a84dc8944f0199fc7f138"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forward constructs an object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa2e8c0fc6a97bb63e7c11d90c7cc270a" title="Returns an iterator for the index 0. ">begin()</a>.  <a href="#a1cc0a741cb1a84dc8944f0199fc7f138">More...</a><br /></td></tr>
+<tr class="memdesc:a1cc0a741cb1a84dc8944f0199fc7f138"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forward constructs an object at begin().  <a href="#a1cc0a741cb1a84dc8944f0199fc7f138">More...</a><br /></td></tr>
 <tr class="separator:a1cc0a741cb1a84dc8944f0199fc7f138"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa947de9ebc3fcdc3f26a8a7734caf620"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa947de9ebc3fcdc3f26a8a7734caf620">pop_front</a> ()</td></tr>
-<tr class="memdesc:aa947de9ebc3fcdc3f26a8a7734caf620"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa2e8c0fc6a97bb63e7c11d90c7cc270a" title="Returns an iterator for the index 0. ">begin()</a>.  <a href="#aa947de9ebc3fcdc3f26a8a7734caf620">More...</a><br /></td></tr>
+<tr class="memdesc:aa947de9ebc3fcdc3f26a8a7734caf620"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the object at begin().  <a href="#aa947de9ebc3fcdc3f26a8a7734caf620">More...</a><br /></td></tr>
 <tr class="separator:aa947de9ebc3fcdc3f26a8a7734caf620"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64b70861dbe791f5f7ca4d95ec4677af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a64b70861dbe791f5f7ca4d95ec4677af">resize</a> (<a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a86c01867901b5c16949ba2377423b96f">size_type</a> count)</td></tr>
 <tr class="memdesc:a64b70861dbe791f5f7ca4d95ec4677af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resizes the seqeuence to the specified size, default construct any elements above the current size.  <a href="#a64b70861dbe791f5f7ca4d95ec4677af">More...</a><br /></td></tr>
@@ -389,12 +391,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2c094b10ba79e30721a9f56b72ac9926"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename T, typename Allocator = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt;<br />
+<div class="textblock"><h3>template&lt;typename T, typename Allocator, std::size_t segment_target, std::size_t base_target&gt;<br />
 class boost::container::segmented_tree_seq&lt; T, Allocator, segment_target, base_target &gt;</h3>
 
-<p>A <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html">segmented_tree_seq</a> is a SequenceContainer that provides efficient random access insert and erase.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
+<p>A segmented_tree_seq is a SequenceContainer that provides efficient random access insert and erase. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
     <tr><td class="paramname">T</td><td>The type of object to be stored </td></tr>
     <tr><td class="paramname">Allocator</td><td>The type of the allocator used for all memory management </td></tr>
     <tr><td class="paramname">segment_target</td><td>Size in bytes to try to use for object nodes </td></tr>
@@ -407,7 +409,7 @@ class boost::container::segmented_tree_seq&lt; T, Allocator, segment_target, bas
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -428,7 +430,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Constructs an empty sequence using the specified allocator. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(1) </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant. </dd></dl>
 
 </div>
 </div>
@@ -436,7 +438,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -456,7 +458,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Default constructs an empty sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(1) </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant. </dd></dl>
 
 </div>
 </div>
@@ -464,7 +466,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -501,7 +503,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Constructs a count size sequence using the specified allocator, each element copy constructed from value. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(count * log(count)) </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>NlogN, where N is count. </dd></dl>
 
 </div>
 </div>
@@ -509,7 +511,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -540,7 +542,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Constructs a count size sequence using the specified allocator, each element default constructed. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(count * log(count)) </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>NlogN, where N is count. </dd></dl>
 
 </div>
 </div>
@@ -548,7 +550,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <div class="memtemplate">
 template&lt;class InputIt , typename  = typename std::iterator_traits&lt;InputIt&gt;::pointer&gt; </div>
 <table class="mlabels">
@@ -587,7 +589,7 @@ template&lt;class InputIt , typename  = typename std::iterator_traits&lt;InputIt
 </div><div class="memdoc">
 
 <p>Constructs an empty sequence using the specified allocator, and inserts elements from the range [first, last). </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n * log(n)), where n = std::distance(first, last) </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>NlogN, where N is the size of the range. </dd></dl>
 
 </div>
 </div>
@@ -595,7 +597,7 @@ template&lt;class InputIt , typename  = typename std::iterator_traits&lt;InputIt
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -616,7 +618,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Copy constructs a sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n * log(n)), where n = other.size() </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>NlogN, where N is other.size(). </dd></dl>
 
 </div>
 </div>
@@ -624,7 +626,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -655,7 +657,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Copy constructs a sequence using the specified allocator. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n * log(n)), where n = other.size() </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>NlogN, where N is other.size(). </dd></dl>
 
 </div>
 </div>
@@ -663,7 +665,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -684,7 +686,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Move constructs a sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(1) </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant. </dd></dl>
 
 </div>
 </div>
@@ -692,7 +694,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -723,7 +725,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Move constructs a sequence using the specified allocator. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(1) if alloc compares equal to the allocator of *this, O(n * log(n)) otherwise, where n = other.size() </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant if alloc compares equal to other's allocator. NlogN, where N is other.size() otherwise. </dd></dl>
 
 </div>
 </div>
@@ -731,7 +733,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -761,8 +763,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Constructs an empty sequence using the specified allocator, and insert elements from init. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n * log(n)), where n = init.size() </dd></dl>
+<p>Constructs an empty sequence using the specified allocator, and inserts elements from init. </p>
+<dl class="section user"><dt>Complexity</dt><dd>NlogN, where N is init.size(). </dd></dl>
 
 </div>
 </div>
@@ -770,7 +772,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -790,7 +792,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Destructs the sequence releasing all memory. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in size(). </dd></dl>
 
 </div>
 </div>
@@ -799,7 +801,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -830,7 +832,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Assigns the sequence to count elements copy constructed from value. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(count) if n &gt;= count, O(count) + O((count - n) * log(n)) otherwise, where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in the minimum of size() and count, plus MlogN, where M is the difference of size() and count, and N is the maximum of size() and count.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -838,7 +841,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <div class="memtemplate">
 template&lt;class InputIt , typename  = typename std::iterator_traits&lt;InputIt&gt;::pointer&gt; </div>
 <table class="mlabels">
@@ -871,7 +874,8 @@ template&lt;class InputIt , typename  = typename std::iterator_traits&lt;InputIt
 </div><div class="memdoc">
 
 <p>Assigns the sequence to the elements copy constructed from the range [first, last). </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(count) if n &gt;= count, O(count) + O((count - n) * log(n)) otherwise, where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>, where count = std::distance(first, last) </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in the minimum of size() and the size of the range, plus MlogN, where M is the difference of size() and the size of the range, and N is the maximum of size() and the size of the range.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -879,7 +883,7 @@ template&lt;class InputIt , typename  = typename std::iterator_traits&lt;InputIt
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -900,7 +904,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Assigns the sequence to the elements of the specified initializer_list. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(count) if n &gt;= count, O(count) + O((count - n) * log(n)) otherwise, where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>, where count = ilist.size() </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in the minimum of size() and ilist.size(), plus MlogN, where M is the difference of size() and ilist.size(), and N is the maximum of size() and ilist.size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -908,7 +913,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -929,7 +934,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns a reference for the object located at the index pos. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -937,7 +943,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -958,7 +964,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns a const_reference for the object located at the specified index pos. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -966,7 +973,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -985,8 +992,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Returns a reference for the object located at the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> - 1. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Returns a reference for the object located at the index size() - 1. </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -994,7 +1002,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1013,8 +1021,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Returns a const_reference for the object located at the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> - 1. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Returns a const_reference for the object located at the index size() - 1. </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1022,7 +1031,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1042,7 +1051,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns an iterator for the index 0. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1050,7 +1060,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1070,7 +1080,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns a const_iterator for the index 0. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1078,7 +1089,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1098,7 +1109,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns a const_iterator for the index 0. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1106,7 +1118,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1125,8 +1137,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Returns a const_iterator for the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Returns a const_iterator for the index size(). </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1134,7 +1147,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1154,7 +1167,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Removes all elements from the sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -1162,7 +1176,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1181,9 +1195,10 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Returns a const_iterator to the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> - 1. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a></dd></dl>
-<dl class="section user"><dt>Note</dt><dd>Non-standard extension </dd></dl>
+<p>Returns a const_iterator to the index size() - 1. </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Non-standard extension. </dd></dl>
 
 </div>
 </div>
@@ -1191,7 +1206,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1210,8 +1225,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Returns a const_reverse_iterator for the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Returns a const_reverse_iterator for the index size(). </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1219,7 +1235,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1239,7 +1255,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns a const_reverse_iterator for the index 0. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1247,7 +1264,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <div class="memtemplate">
 template&lt;class... Args&gt; </div>
 <table class="mlabels">
@@ -1280,7 +1297,8 @@ template&lt;class... Args&gt; </div>
 </div><div class="memdoc">
 
 <p>Forward constructs an object at the specified position. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -1288,7 +1306,7 @@ template&lt;class... Args&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <div class="memtemplate">
 template&lt;class... Args&gt; </div>
 <table class="mlabels">
@@ -1310,8 +1328,9 @@ template&lt;class... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Forward constructs an object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#abcf454cb608ccba75ceff1a78e82a1a8" title="Returns an iterator for the index size(). ">end()</a>. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Forward constructs an object at end(). </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -1319,7 +1338,7 @@ template&lt;class... Args&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <div class="memtemplate">
 template&lt;class... Args&gt; </div>
 <table class="mlabels">
@@ -1341,8 +1360,9 @@ template&lt;class... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Forward constructs an object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa2e8c0fc6a97bb63e7c11d90c7cc270a" title="Returns an iterator for the index 0. ">begin()</a>. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Forward constructs an object at begin(). </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -1350,7 +1370,7 @@ template&lt;class... Args&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1370,7 +1390,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns true if the sequence is empty, false otherwise. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(1) </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1378,7 +1399,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1397,8 +1418,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Returns an iterator for the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Returns an iterator for the index size(). </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1406,7 +1428,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1425,8 +1447,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Returns a const_iterator for the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Returns a const_iterator for the index size(). </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1434,7 +1457,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1455,7 +1478,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Remove the object at the specified position from the sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -1463,7 +1487,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1494,7 +1518,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Remove all elements in the range [first, last) from the sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(count * log(n)), where count = std::distance(first, last), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>MlogN, where M is the size of the range, and N is size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -1502,7 +1527,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1522,7 +1547,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns a reference for the object located at the index 0. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1530,7 +1556,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1550,7 +1576,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns a const_reference for the object located at the index 0. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1558,7 +1585,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1578,7 +1605,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns a copy of the allocator for the sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(1) </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1586,7 +1614,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1606,7 +1634,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns the height of the tree. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(1) </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Non-standard extension. </dd></dl>
 
 </div>
 </div>
@@ -1614,7 +1644,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1635,8 +1665,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns the index of the specified iterator. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(1)</dd></dl>
-<dl class="section user"><dt>Note</dt><dd>Non-standard extension </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Non-standard extension. </dd></dl>
 
 </div>
 </div>
@@ -1644,7 +1675,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1665,8 +1696,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns the index of the specified const_iterator. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(1)</dd></dl>
-<dl class="section user"><dt>Note</dt><dd>Non-standard extension </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Non-standard extension. </dd></dl>
 
 </div>
 </div>
@@ -1674,7 +1706,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1705,7 +1737,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Copy constructs an object at the specified position. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -1713,7 +1746,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1744,7 +1777,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Move construct an object at the specified position. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -1752,7 +1786,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1789,7 +1823,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Copy construct count elements at the specified position. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(count * log(n)), n = count + <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>; </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>MlogN, where M is count, and N is the maximum of size() and count.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -1797,7 +1832,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <div class="memtemplate">
 template&lt;class InputIt , typename  = typename std::iterator_traits&lt;InputIt&gt;::pointer&gt; </div>
 <table class="mlabels">
@@ -1836,7 +1871,8 @@ template&lt;class InputIt , typename  = typename std::iterator_traits&lt;InputIt
 </div><div class="memdoc">
 
 <p>Copy constructs all elements in the range [first, last) at the specified position. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(count * log(n)), where count = std::distance(first, last), where n = count + <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>MlogN, where M is the size of the range, and N is the maximum of size() and the size of the range.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -1844,7 +1880,7 @@ template&lt;class InputIt , typename  = typename std::iterator_traits&lt;InputIt
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1875,7 +1911,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Copy constructs all elements in the specified initializer_list at the specified position. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(count * log(n)), where count = ilist.size(), where n = count + <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>; </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>MlogN, where M is ilist.size(), and N is the maximum of size() and ilist.size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -1883,7 +1920,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1903,7 +1940,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns the maximum count of elements able to be stored in the sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(1) </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -1911,7 +1949,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1932,7 +1970,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns an iterator for the index pos. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Non-standard extension. </dd></dl>
 
 </div>
 </div>
@@ -1940,7 +1980,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1961,8 +2001,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns a const_iterator for the index pos. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a></dd></dl>
-<dl class="section user"><dt>Note</dt><dd>Non-standard extension </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Non-standard extension. </dd></dl>
 
 </div>
 </div>
@@ -1970,7 +2011,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -1991,7 +2032,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Copy assigns a sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n * log(n)), where n = other.size() </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in the minimum of size() and other.size(), plus MlogN, where M is the difference of size() and other.size(), and N is the maximum of size() and other.size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -1999,7 +2041,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2020,7 +2062,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Move assigns a sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(1) if the allocator propegates on move assignment, O(n * log(n)) otherwise, where n = other.size() </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in size() if the allocator propagates on move assignment or the sequence's allocator compares equal to other's allocator. Linear in the minimum of size() and other.size(), plus MlogN, where M is the difference of size() and other.size(), and N is the maximum of size() and other.size() otherwise.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -2028,7 +2071,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2048,8 +2091,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Assigns the sequence to the elements of the specified initializer_list. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(count) if n &gt;= count, O(count) + O((count - n) * log(n)) otherwise, where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>, where count = ilist.size() </dd></dl>
+<p>Assigns the sequence to count elements copy constructed from value. </p>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in the minimum of size() and ilist.size(), plus MlogN, where M is the difference of size() and ilist.size(), and N is the maximum of size() and ilist.size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -2057,7 +2101,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2078,7 +2122,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns a reference for the object located at the specified index pos. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -2086,7 +2131,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2107,7 +2152,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns a const_reference for the object located at the specified index pos. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -2115,7 +2161,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2134,9 +2180,10 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Returns an iterator to the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> - 1. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a></dd></dl>
-<dl class="section user"><dt>Note</dt><dd>Non-standard extension </dd></dl>
+<p>Returns an iterator to the index size() - 1. </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Non-standard extension. </dd></dl>
 
 </div>
 </div>
@@ -2144,7 +2191,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2163,9 +2210,10 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Returns a const_iterator to the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> - 1. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a></dd></dl>
-<dl class="section user"><dt>Note</dt><dd>Non-standard extension </dd></dl>
+<p>Returns a const_iterator to the index size() - 1. </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Non-standard extension. </dd></dl>
 
 </div>
 </div>
@@ -2173,7 +2221,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2192,8 +2240,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Removes the object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#abcf454cb608ccba75ceff1a78e82a1a8" title="Returns an iterator for the index size(). ">end()</a> - 1. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Removes the object at end() - 1. </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -2201,7 +2250,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2220,8 +2269,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Removes the object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa2e8c0fc6a97bb63e7c11d90c7cc270a" title="Returns an iterator for the index 0. ">begin()</a>. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Removes the object at begin(). </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -2229,7 +2279,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2249,8 +2299,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Copy constructs an object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#abcf454cb608ccba75ceff1a78e82a1a8" title="Returns an iterator for the index size(). ">end()</a>. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Copy constructs an object at end(). </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -2258,7 +2309,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2278,8 +2329,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Move constructs an object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#abcf454cb608ccba75ceff1a78e82a1a8" title="Returns an iterator for the index size(). ">end()</a>. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Move constructs an object at end(). </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -2287,7 +2339,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2307,8 +2359,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Copy constructs an object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa2e8c0fc6a97bb63e7c11d90c7cc270a" title="Returns an iterator for the index 0. ">begin()</a>. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Copy constructs an object at begin(). </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -2316,7 +2369,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2336,8 +2389,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Move constructs an object at <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#aa2e8c0fc6a97bb63e7c11d90c7cc270a" title="Returns an iterator for the index 0. ">begin()</a>. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Move constructs an object at begin(). </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -2345,7 +2399,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2364,8 +2418,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Returns a reverse_iterator for the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Returns a reverse_iterator for the index size(). </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -2373,7 +2428,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2392,8 +2447,9 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </table>
 </div><div class="memdoc">
 
-<p>Returns a const_reverse_iterator for the index <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a>. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<p>Returns a const_reverse_iterator for the index size(). </p>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -2401,7 +2457,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2422,7 +2478,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Removes all elements matching the specified value. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -2430,7 +2487,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <div class="memtemplate">
 template&lt;class UnaryPredicate &gt; </div>
 <table class="mlabels">
@@ -2453,7 +2510,8 @@ template&lt;class UnaryPredicate &gt; </div>
 </div><div class="memdoc">
 
 <p>Removes all elements matching the specified predicate. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -2461,7 +2519,7 @@ template&lt;class UnaryPredicate &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2481,7 +2539,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns a reverse_iterator for the index 0. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -2489,7 +2548,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2509,7 +2568,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns a const_reverse_iterator for the index 0. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Logarithmic in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -2517,7 +2577,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2538,7 +2598,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Resizes the seqeuence to the specified size, default construct any elements above the current size. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n - count * log(n)) if n &gt; count, O(count - n * log(n)) otherwise, where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>MlogN, where M is the difference of size() and count, and N is the max of size() and count.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -2546,7 +2607,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2577,7 +2638,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Resizes the seqeuence to the specified size, copy construct any elements from value above the current size. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n - count * log(n)) if n &gt; count, O(count - n * log(n)) otherwise, where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>MlogN, where M is the difference of size() and count, and N is the max of size() and count.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -2585,7 +2647,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2605,7 +2667,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Reverses the sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated, but reflect the change in ordering. </dd></dl>
 
 </div>
 </div>
@@ -2613,7 +2676,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2633,7 +2696,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Returns the count of elements stored in the sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(1) </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated. </dd></dl>
 
 </div>
 </div>
@@ -2641,7 +2705,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2661,7 +2725,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Stable sorts the sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n * log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>NlogN, where N is size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated, but reflect the change in ordering. </dd></dl>
 
 </div>
 </div>
@@ -2669,7 +2734,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <div class="memtemplate">
 template&lt;class Compare &gt; </div>
 <table class="mlabels">
@@ -2692,7 +2757,8 @@ template&lt;class Compare &gt; </div>
 </div><div class="memdoc">
 
 <p>Stable sort the sequence using the specified predicate. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n * log(n)), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>NlogN, where N is size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Iterators are not invalidated, but reflect the change in ordering. </dd></dl>
 
 </div>
 </div>
@@ -2700,7 +2766,7 @@ template&lt;class Compare &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2721,7 +2787,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Swaps the contents *this with the specified sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(1) </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant.</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Every iterator referring to an element in one container before the swap shall refer to the same element in the other container after the swap. </dd></dl>
 
 </div>
 </div>
@@ -2729,7 +2796,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -2749,7 +2816,8 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 </div><div class="memdoc">
 
 <p>Removes all consecutive duplicate elements from the sequence. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
@@ -2757,7 +2825,7 @@ template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::siz
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Allocator  = std::allocator&lt;T&gt;, std::size_t segment_target = 512, std::size_t base_target = 512&gt; </div>
+template&lt;typename T , typename Allocator , std::size_t segment_target, std::size_t base_target&gt; </div>
 <div class="memtemplate">
 template&lt;class BinaryPredicate &gt; </div>
 <table class="mlabels">
@@ -2780,7 +2848,8 @@ template&lt;class BinaryPredicate &gt; </div>
 </div><div class="memdoc">
 
 <p>Removes all consecutive duplicate elements from the sequence using the specified predicate. </p>
-<dl class="section user"><dt>Complexity</dt><dd>O(n), where n = <a class="el" href="classboost_1_1container_1_1segmented__tree__seq.html#a933ca7e0417f7d9819a9fb5b23dc4f21" title="Returns the count of elements stored in the sequence. ">size()</a> </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in size().</dd></dl>
+<dl class="section user"><dt>Iterator invalidation</dt><dd>Invalidates all iterators. </dd></dl>
 
 </div>
 </div>
