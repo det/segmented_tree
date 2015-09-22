@@ -202,7 +202,7 @@ struct static_traits_t {
     /// \brief Move the iterator forward diff elements.
     ///
     /// \par Complexity
-    ///   Logarithmic in the absolute value of diff.
+    ///   Logarithmic amortized in the absolute value of diff.
     iterator_t &operator+=(difference_type diff) {
       move_iterator_count(it_, diff);
       return *this;
@@ -211,7 +211,7 @@ struct static_traits_t {
     /// \brief Move the iterator backward diff elements.
     ///
     /// \par Complexity
-    ///   Logarithmic in the absolute value of diff.
+    ///   Logarithmic amortized in the absolute value of diff.
     iterator_t &operator-=(difference_type diff) {
       move_iterator_count(it_, -diff);
       return *this;
@@ -220,7 +220,7 @@ struct static_traits_t {
     /// \brief Return a copy of the iterator moved forward diff elements.
     ///
     /// \par Complexity
-    ///   Logarithmic in the absolute value of diff.
+    ///   Logarithmic amortized in the absolute value of diff.
     iterator_t operator+(difference_type diff) const {
       auto copy = it_;
       move_iterator_count(copy, diff);
@@ -230,7 +230,7 @@ struct static_traits_t {
     /// \brief Return a copy of the iterator moved backward diff elements.
     ///
     /// \par Complexity
-    ///   Logarithmic in the absolute value of diff.
+    ///   Logarithmic amortized in the absolute value of diff.
     iterator_t operator-(difference_type diff) const {
       auto copy = it_;
       move_iterator_count(copy, -diff);
