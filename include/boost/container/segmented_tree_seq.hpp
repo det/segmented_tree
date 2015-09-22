@@ -620,7 +620,7 @@ struct static_traits_t {
   /// segmented_tree_seq.
   ///
   /// \tparam Pointer A const or non-const pointer.
-  /// \tparam Pointer A const or non-const reference.
+  /// \tparam Reference A const or non-const reference.
   template <typename Pointer, typename Reference>
   class iterator_t {
     template <typename, typename, std::size_t, std::size_t>
