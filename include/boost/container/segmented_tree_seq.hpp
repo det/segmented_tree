@@ -80,7 +80,9 @@ struct static_traits_t {
 
   // constexpr
   static constexpr auto segment_free = segment_target;
-  static constexpr auto base_free = base_target - sizeof(node_base);
+  static constexpr auto node_size = sizeof(node_base);
+  static constexpr auto base_free =
+      node_size > base_target ? 0 : base_target - node_size;
   static constexpr auto segment_fit = segment_free / sizeof(T);
   static constexpr auto base_fit = base_free / sizeof(node_data);
   static constexpr auto segment_max = segment_fit > 1 ? segment_fit : 1;
@@ -671,8 +673,7 @@ struct static_traits_t {
     template <typename P, typename R,
               typename = typename std::enable_if<
                   std::is_convertible<P, pointer>::value>::type>
-    iterator_t(iterator_t<P, R> const &other)
-        : it_(other.it_) {}
+    iterator_t(iterator_t<P, R> const &other) : it_(other.it_) {}
 
     /// \brief Returns the index into the segment that the iterator points to.
     ///
@@ -1646,7 +1647,8 @@ class segmented_tree_seq {
     auto parent_pointer = entry.leaf.pointer;
     auto parent_index = entry.leaf.index;
 
-    if (length == 1) {
+    if (length == 1 &&
+        (static_traits::segment_min != 1 || parent_pointer == nullptr)) {
       deallocate_segment(pointer);
       get_root() = nullptr;
       get_size() = 0;
@@ -1664,7 +1666,7 @@ class segmented_tree_seq {
       return;
     }
 
-    constexpr auto merge_size = static_traits::segment_max - 1;
+    constexpr auto merge_size = static_traits::segment_min * 2 - 1;
     auto pointers = &parent_pointer->pointers[0];
     auto sizes = &parent_pointer->sizes[0];
 
@@ -1730,7 +1732,8 @@ class segmented_tree_seq {
     auto parent_index = pointer->parent_index();
     auto length = pointer->length();
 
-    if (length == 2) {
+    if (length == 2 &&
+        (static_traits::base_min != 2 || parent_pointer == nullptr)) {
       auto other = pointer->pointers[index ^ 1];
       deallocate_node(pointer);
       get_root() = other;
@@ -1818,7 +1821,8 @@ class segmented_tree_seq {
       auto parent_index = pointer->parent_index();
       auto length = pointer->length();
 
-      if (length == 2) {
+      if (length == 2 &&
+          (static_traits::base_min != 2 || parent_pointer == nullptr)) {
         auto other = static_traits::cast_node(pointer->pointers[index ^ 1]);
         deallocate_node(pointer);
         get_root() = other;
@@ -2111,8 +2115,8 @@ class segmented_tree_seq {
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
   segmented_tree_seq &operator=(segmented_tree_seq &&other) noexcept(
-      allocator_type::propagate_on_container_move_assignment::value &&
-          std::is_nothrow_move_assignable<allocator_type>::value) {
+      allocator_type::propagate_on_container_move_assignment::value
+          &&std::is_nothrow_move_assignable<allocator_type>::value) {
     if (element_traits::propagate_on_container_move_assignment::value ||
         get_element_allocator() == other.get_element_allocator()) {
       purge();
