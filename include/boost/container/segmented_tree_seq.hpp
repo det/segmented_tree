@@ -75,7 +75,7 @@ struct static_traits_t {
 
   struct node_data {
     void_pointer pointer;
-    size_type size;
+    size_type sz;
   };
 
   // constexpr
@@ -142,7 +142,7 @@ struct static_traits_t {
   }
 
   // find_index
-  static iterator_data find_index_root(void_pointer pointer, size_type size,
+  static iterator_data find_index_root(void_pointer pointer, size_type sz,
                                        size_type ht, size_type pos) {
     iterator_data it;
     it.pos = pos;
@@ -150,7 +150,7 @@ struct static_traits_t {
     if (ht < 2) {
       it.entry.leaf.pointer = nullptr;
       it.entry.leaf.index = 0;
-      it.entry.segment = find_index_segment(cast_segment(pointer), size, pos);
+      it.entry.segment = find_index_segment(cast_segment(pointer), sz, pos);
     } else
       it.entry = find_index_node(cast_node(pointer), ht, pos);
 
@@ -199,17 +199,17 @@ struct static_traits_t {
     return entry;
   }
 
-  static segment_entry find_index_segment(element_pointer pointer,
-                                          size_type size, size_type pos) {
+  static segment_entry find_index_segment(element_pointer pointer, size_type sz,
+                                          size_type pos) {
     segment_entry entry;
     entry.pointer = pointer;
     entry.index = pos;
-    entry.length = size;
+    entry.length = sz;
     return entry;
   }
 
   // find_first
-  static iterator_data find_first_root(void_pointer pointer, size_type size,
+  static iterator_data find_first_root(void_pointer pointer, size_type sz,
                                        size_type ht) {
     iterator_data it;
     it.pos = 0;
@@ -217,7 +217,7 @@ struct static_traits_t {
     if (ht < 2) {
       it.entry.leaf.pointer = nullptr;
       it.entry.leaf.index = 0;
-      it.entry.segment = find_first_segment(cast_segment(pointer), size);
+      it.entry.segment = find_first_segment(cast_segment(pointer), sz);
     } else
       it.entry = find_first_node(cast_node(pointer), ht);
 
@@ -249,24 +249,24 @@ struct static_traits_t {
   }
 
   static segment_entry find_first_segment(element_pointer pointer,
-                                          size_type size) {
+                                          size_type sz) {
     segment_entry entry;
     entry.pointer = pointer;
     entry.index = 0;
-    entry.length = size;
+    entry.length = sz;
     return entry;
   }
 
   // find_last
-  static iterator_data find_last_root(void_pointer pointer, size_type size,
+  static iterator_data find_last_root(void_pointer pointer, size_type sz,
                                       size_type ht) {
     iterator_data it;
-    it.pos = size - 1;
+    it.pos = sz - 1;
 
     if (ht < 2) {
       it.entry.leaf.pointer = nullptr;
       it.entry.leaf.index = 0;
-      it.entry.segment = find_last_segment(cast_segment(pointer), size);
+      it.entry.segment = find_last_segment(cast_segment(pointer), sz);
     } else
       it.entry = find_last_node(cast_node(pointer), ht);
 
@@ -300,24 +300,24 @@ struct static_traits_t {
   }
 
   static segment_entry find_last_segment(element_pointer pointer,
-                                         size_type size) {
+                                         size_type sz) {
     segment_entry entry;
     entry.pointer = pointer;
-    entry.index = size - 1;
-    entry.length = size;
+    entry.index = sz - 1;
+    entry.length = sz;
     return entry;
   }
 
   // find_end
-  static iterator_data find_end_root(void_pointer pointer, size_type size,
+  static iterator_data find_end_root(void_pointer pointer, size_type sz,
                                      size_type ht) {
     iterator_data it;
-    it.pos = size;
+    it.pos = sz;
 
     if (ht < 2) {
       it.entry.leaf.pointer = nullptr;
       it.entry.leaf.index = 0;
-      it.entry.segment = find_end_segment(cast_segment(pointer), size);
+      it.entry.segment = find_end_segment(cast_segment(pointer), sz);
     } else
       it.entry = find_end_node(cast_node(pointer), ht);
 
@@ -351,12 +351,11 @@ struct static_traits_t {
     return entry;
   }
 
-  static segment_entry find_end_segment(element_pointer pointer,
-                                        size_type size) {
+  static segment_entry find_end_segment(element_pointer pointer, size_type sz) {
     segment_entry entry;
     entry.pointer = pointer;
-    entry.index = size;
-    entry.length = size;
+    entry.index = sz;
+    entry.length = sz;
     return entry;
   }
 
