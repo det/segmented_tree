@@ -1,7 +1,7 @@
 # What is segmented_tree_seq?
 
 The segmented_tree_seq container supports the interfaces of vector and deque while offering efficient random access insert and erase with a low memory overhead.
-h
+
 # When should I use segmented_tree_seq?
 
 You should use segmented_tree_seq when you are frequently calling insert or erase in random positions of your container and you don't need stable iterators. A good example would be a text editor buffer.
