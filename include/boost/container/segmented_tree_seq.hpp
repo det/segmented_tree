@@ -843,7 +843,7 @@ struct static_traits_t {
     ///        then move forward count elements.
     ///
     /// \par Complexity
-    ///   Logarithmic amortized in count
+    ///   Logarithmic amortized in count.
     ///
     /// \note
     ///   Non-standard extension.
@@ -871,7 +871,7 @@ struct static_traits_t {
     ///        previous segment and then move backward count elements.
     ///
     /// \par Complexity
-    ///   Logarithmic amortized in count
+    ///   Logarithmic amortized in count.
     ///
     /// \note
     ///   Non-standard extension.
@@ -899,7 +899,7 @@ struct static_traits_t {
     ///        segment and then move forward count elements.
     ///
     /// \par Complexity
-    ///   Logarithmic amortized in count
+    ///   Logarithmic amortized in count.
     ///
     /// \note
     ///   Non-standard extension.
@@ -2090,6 +2090,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   segmented_tree_seq &operator=(segmented_tree_seq const &other) {
     if (this != &other) {
       if (element_traits::propagate_on_container_copy_assignment::value) {
@@ -2112,7 +2115,14 @@ class segmented_tree_seq {
   ///   and other.size() otherwise.
   ///
   /// \par Iterator invalidation
-  ///   Invalidates all iterators.
+  ///   No iterators are invalidated if the allocator propagates on move
+  ///   assignment or the sequence's allocator compares equal to other's
+  ///   allocator. Invalidates all iterators otherwise.
+  ///
+  /// \par Exception safety
+  ///   No-throw if the allocator propagates on move assignment or the
+  ///   sequence's allocator compares equal to other's allocator. Basic
+  ///   otherwise.
   segmented_tree_seq &operator=(segmented_tree_seq &&other) noexcept(
       allocator_type::propagate_on_container_move_assignment::value
           &&std::is_nothrow_move_assignable<allocator_type>::value) {
@@ -2140,6 +2150,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   segmented_tree_seq &operator=(std::initializer_list<T> ilist) {
     assign(ilist.begin(), ilist.end());
     return *this;
@@ -2155,6 +2168,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///  Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void assign(size_type count, T const &value) {
     auto first = begin();
     auto last = end();
@@ -2185,6 +2201,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   template <class InputIt,
             typename = typename std::iterator_traits<InputIt>::pointer>
   void assign(InputIt source_first, InputIt source_last) {
@@ -2217,6 +2236,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void assign(std::initializer_list<T> ilist) {
     assign(ilist.begin(), ilist.end());
   }
@@ -2228,6 +2250,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   allocator_type get_allocator() const noexcept {
     return get_element_allocator();
   }
@@ -2239,6 +2264,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   reference at(size_type pos) {
     if (pos > size())
       throw std::out_of_range{"segmented_tree_seq at() out of bounds"};
@@ -2253,6 +2281,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   const_reference at(size_type pos) const {
     if (pos > size())
       throw std::out_of_range{"segmented_tree_seq at() out of bounds"};
@@ -2267,6 +2298,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   reference operator[](size_type pos) {
     iterator it = find_index(pos);
     return *it;
@@ -2280,6 +2314,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   const_reference operator[](size_type pos) const {
     iterator it = find_index(pos);
     return *it;
@@ -2292,6 +2329,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   reference front() { return *begin(); }
 
   /// \brief Returns a const_reference for the object located at the index 0.
@@ -2301,6 +2341,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   const_reference front() const { return *begin(); }
 
   /// \brief Returns a reference for the object located at the index size() - 1.
@@ -2310,6 +2353,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   reference back() { return *penultimate(); }
 
   /// \brief Returns a const_reference for the object located at the index
@@ -2320,6 +2366,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   const_reference back() const { return *penultimate(); }
 
   /// \brief Returns an iterator for the index 0.
@@ -2329,6 +2378,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   iterator begin() noexcept { return find_first(); }
 
   /// \brief Returns a const_iterator for the index 0.
@@ -2338,6 +2390,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   const_iterator begin() const noexcept { return find_first(); }
 
   /// \brief Returns a const_iterator for the index 0.
@@ -2347,6 +2402,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   const_iterator cbegin() const noexcept { return find_first(); }
 
   /// \brief Returns an iterator to the index size() - 1
@@ -2356,6 +2414,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   ///
   /// \note
   ///   Non-standard extension.
@@ -2369,6 +2430,9 @@ class segmented_tree_seq {
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
   ///
+  /// \par Exception safety
+  ///   No-throw.
+  ///
   /// \note
   ///   Non-standard extension.
   const_iterator penultimate() const noexcept { return find_last(); }
@@ -2381,6 +2445,9 @@ class segmented_tree_seq {
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
   ///
+  /// \par Exception safety
+  ///   No-throw.
+  ///
   /// \note
   ///   Non-standard extension.
   const_iterator cpenultimate() const noexcept { return find_last(); }
@@ -2392,6 +2459,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   iterator end() noexcept { return find_end(); }
 
   /// \brief Returns a const_iterator for the index size().
@@ -2401,6 +2471,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   const_iterator end() const noexcept { return find_end(); }
 
   /// \brief Returns a const_iterator for the index size().
@@ -2410,6 +2483,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   const_iterator cend() const noexcept { return find_end(); }
 
   /// \brief Returns a reverse_iterator for the index size().
@@ -2419,6 +2495,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   reverse_iterator rbegin() noexcept { return reverse_iterator{end()}; }
 
   /// \brief Returns a const_reverse_iterator for the index size().
@@ -2428,6 +2507,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   const_reverse_iterator rbegin() const noexcept {
     return const_reverse_iterator{end()};
   }
@@ -2439,6 +2521,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   const_reverse_iterator crbegin() const noexcept {
     return const_reverse_iterator{end()};
   }
@@ -2450,6 +2535,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   reverse_iterator rend() noexcept { return reverse_iterator{begin()}; }
 
   /// \brief Returns a const_reverse_iterator for the index 0.
@@ -2459,6 +2547,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   const_reverse_iterator rend() const noexcept {
     return const_reverse_iterator{begin()};
   }
@@ -2470,6 +2561,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   const_reverse_iterator crend() const noexcept {
     return const_reverse_iterator{begin()};
   }
@@ -2482,8 +2576,15 @@ class segmented_tree_seq {
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
   ///
+  /// \par Exception safety
+  ///   No-throw.
+  ///
   /// \note
   ///   Non-standard extension.
+  ///
+  /// \note
+  ///   This member function is more efficient than calling begin() and
+  ///   advancing.
   iterator nth(size_type pos) noexcept {
     if (pos >= size()) return find_end();
     return find_index(pos);
@@ -2497,8 +2598,15 @@ class segmented_tree_seq {
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
   ///
+  /// \par Exception safety
+  ///   No-throw.
+  ///
   /// \note
   ///   Non-standard extension.
+  ///
+  /// \note
+  ///   This member function is more efficient than calling begin() and
+  ///   advancing.
   const_iterator nth(size_type pos) const noexcept {
     if (pos >= size()) return find_end();
     return find_index(pos);
@@ -2512,6 +2620,9 @@ class segmented_tree_seq {
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
   ///
+  /// \par Exception safety
+  ///   No-throw.
+  ///
   /// \note
   ///   Non-standard extension.
   size_type index_of(iterator pos) noexcept { return pos.it_.pos; }
@@ -2524,6 +2635,9 @@ class segmented_tree_seq {
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
   ///
+  /// \par Exception safety
+  ///   No-throw.
+  ///
   /// \note
   ///   Non-standard extension.
   size_type index_of(const_iterator pos) const noexcept { return pos.it_.pos; }
@@ -2535,7 +2649,10 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
-  bool empty() const { return get_size() == 0; }
+  ///
+  /// \par Exception safety
+  ///   No-throw.
+  bool empty() const noexcept { return get_size() == 0; }
 
   /// \brief Returns the count of elements stored in the sequence.
   ///
@@ -2544,6 +2661,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   size_type size() const noexcept { return get_size(); }
 
   /// \brief Returns the height of the tree.
@@ -2553,6 +2673,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   ///
   /// \note
   ///   Non-standard extension.
@@ -2566,6 +2689,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   size_type max_size() const noexcept {
     return (std::numeric_limits<size_type>::max)();
   }
@@ -2577,6 +2703,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
   void clear() noexcept {
     purge();
     get_root() = nullptr;
@@ -2591,6 +2720,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   iterator insert(const_iterator pos, T const &value) {
     return emplace(pos, value);
   }
@@ -2602,6 +2734,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   iterator insert(const_iterator pos, T &&value) {
     return emplace(pos, std::move(value));
   }
@@ -2613,6 +2748,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   iterator insert(const_iterator pos, size_type count, T const &value) {
     for (size_type i = 0; i != count; ++i) {
       pos = insert(pos, value);
@@ -2631,6 +2769,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   template <class InputIt,
             typename = typename std::iterator_traits<InputIt>::pointer>
   iterator insert(const_iterator pos, InputIt first, InputIt last) {
@@ -2654,6 +2795,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   iterator insert(const_iterator pos, std::initializer_list<T> ilist) {
     return insert(pos, ilist.begin(), ilist.end());
   }
@@ -2665,6 +2809,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   template <class... Args>
   iterator emplace(const_iterator pos, Args &&... args) {
     auto it = reserve_single_iterator(pos.it_);
@@ -2687,6 +2834,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   iterator erase(const_iterator pos) {
     auto it = erase_single_iterator(pos.it_);
     verify_iterator(it, pos.it_.pos);
@@ -2700,6 +2850,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   iterator erase(const_iterator first, const_iterator last) {
     while (first != last) {
       --last;
@@ -2715,6 +2868,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   void push_back(T const &value) { emplace_back(value); }
 
   /// \brief Move constructs an object at end().
@@ -2724,6 +2880,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   void push_back(T &&value) { emplace_back(std::move(value)); }
 
   /// \brief Forward constructs an object at end().
@@ -2733,6 +2892,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   template <class... Args>
   void emplace_back(Args &&... args) {
     emplace(end(), std::forward<Args>(args)...);
@@ -2745,6 +2907,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   void pop_back() { erase(penultimate()); }
 
   /// \brief Copy constructs an object at begin().
@@ -2754,6 +2919,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   void push_front(const T &value) { emplace_front(value); }
 
   /// \brief Move constructs an object at begin().
@@ -2763,6 +2931,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   void push_front(T &&value) { emplace_front(std::move(value)); }
 
   /// \brief Forward constructs an object at begin().
@@ -2772,6 +2943,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   template <class... Args>
   void emplace_front(Args &&... args) {
     emplace(begin(), std::forward<Args>(args)...);
@@ -2784,6 +2958,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   void pop_front() { erase(begin()); }
 
   /// \brief Resizes the seqeuence to the specified size, default construct any
@@ -2795,6 +2972,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Strong.
   void resize(size_type count) { resize(count, {}); }
 
   /// \brief Resizes the seqeuence to the specified size, copy construct any
@@ -2806,6 +2986,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void resize(size_type count, value_type const &value) {
     auto sz = size();
     if (sz == count) return;
@@ -2826,17 +3009,21 @@ class segmented_tree_seq {
   ///   Every iterator referring to an element in one container before the
   ///   swap shall refer to the same element in the other container after the
   ///   swap.
+  ///
+  /// \par Exception safety
+  ///   No-throw if the allocator propagates on swap or the allocator doesn't
+  ///   throw on swap. Strong otherwise.
   void swap(segmented_tree_seq &other) noexcept(
       !element_traits::propagate_on_container_swap::value ||
       segmented_tree_seq_detail::is_nothrow_swappable<allocator_type>::value) {
     using std::swap;
-    swap(get_root(), other.get_root());
-    swap(get_height(), other.get_height());
-    swap(get_size(), other.get_size());
     if (element_traits::propagate_on_container_swap::value) {
       swap(get_element_allocator(), other.get_element_allocator());
       swap(get_node_allocator(), other.get_node_allocator());
     }
+    swap(get_root(), other.get_root());
+    swap(get_height(), other.get_height());
+    swap(get_size(), other.get_size());
   }
 
   //  TODO
@@ -2867,6 +3054,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void remove(const T &value) {
     erase(std::remove(begin(), end(), value), end());
   }
@@ -2878,6 +3068,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   template <class UnaryPredicate>
   void remove_if(UnaryPredicate p) {
     erase(std::remove_if(begin(), end(), p), end());
@@ -2890,6 +3083,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated, but reflect the change in ordering.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void reverse() { std::reverse(begin(), end()); }
 
   /// \brief Removes all consecutive duplicate elements from the sequence.
@@ -2899,6 +3095,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void unique() { unique(std::equal_to<value_type>{}); }
 
   /// \brief Removes all consecutive duplicate elements from the
@@ -2909,6 +3108,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Invalidates all iterators.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   template <class BinaryPredicate>
   void unique(BinaryPredicate p) {
     erase(std::unique(begin(), end(), p), end());
@@ -2921,6 +3123,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated, but reflect the change in ordering.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void sort() { sort(std::less<value_type>{}); }
 
   /// \brief Stable sort the sequence using the specified predicate.
@@ -2930,6 +3135,9 @@ class segmented_tree_seq {
   ///
   /// \par Iterator invalidation
   ///   Iterators are not invalidated, but reflect the change in ordering.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   template <class Compare>
   void sort(Compare comp) {
     std::stable_sort(begin(), end(), comp);
@@ -2946,6 +3154,9 @@ class segmented_tree_seq {
 ///
 /// \par Iterator invalidation
 ///   Iterators are not invalidated.
+///
+/// \par Exception safety
+///   Strong.
 template <typename T, typename Alloc, size_t... Args>
 bool operator==(segmented_tree_seq<T, Alloc, Args...> &lhs,
                 segmented_tree_seq<T, Alloc, Args...> &rhs) {
@@ -2961,6 +3172,9 @@ bool operator==(segmented_tree_seq<T, Alloc, Args...> &lhs,
 ///
 /// \par Iterator invalidation
 ///   Iterators are not invalidated.
+///
+/// \par Exception safety
+///   Strong.
 template <typename T, typename Alloc, size_t... Args>
 bool operator!=(segmented_tree_seq<T, Alloc, Args...> &lhs,
                 segmented_tree_seq<T, Alloc, Args...> &rhs) {
@@ -2975,6 +3189,9 @@ bool operator!=(segmented_tree_seq<T, Alloc, Args...> &lhs,
 ///
 /// \par Iterator invalidation
 ///   Iterators are not invalidated.
+///
+/// \par Exception safety
+///   Strong.
 template <typename T, typename Alloc, size_t... Args>
 bool operator<(segmented_tree_seq<T, Alloc, Args...> &lhs,
                segmented_tree_seq<T, Alloc, Args...> &rhs) {
@@ -2990,6 +3207,9 @@ bool operator<(segmented_tree_seq<T, Alloc, Args...> &lhs,
 ///
 /// \par Iterator invalidation
 ///   Iterators are not invalidated.
+///
+/// \par Exception safety
+///   Strong.
 template <typename T, typename Alloc, size_t... Args>
 bool operator<=(segmented_tree_seq<T, Alloc, Args...> &lhs,
                 segmented_tree_seq<T, Alloc, Args...> &rhs) {
@@ -3004,6 +3224,9 @@ bool operator<=(segmented_tree_seq<T, Alloc, Args...> &lhs,
 ///
 /// \par Iterator invalidation
 ///   Iterators are not invalidated.
+///
+/// \par Exception safety
+///   Strong.
 template <typename T, typename Alloc, size_t... Args>
 bool operator>(segmented_tree_seq<T, Alloc, Args...> &lhs,
                segmented_tree_seq<T, Alloc, Args...> &rhs) {
@@ -3018,6 +3241,9 @@ bool operator>(segmented_tree_seq<T, Alloc, Args...> &lhs,
 ///
 /// \par Iterator invalidation
 ///   Iterators are not invalidated.
+///
+/// \par Exception safety
+///   Strong.
 template <typename T, typename Alloc, size_t... Args>
 bool operator>=(segmented_tree_seq<T, Alloc> &lhs,
                 segmented_tree_seq<T, Alloc> &rhs) {
@@ -3033,6 +3259,10 @@ bool operator>=(segmented_tree_seq<T, Alloc> &lhs,
 ///   Every iterator referring to an element in one container before the
 ///   swap shall refer to the same element in the other container after the
 ///   swap.
+///
+/// \par Exception safety
+///   No-throw if the allocator propagates on swap or the allocator doesn't
+///   throw on swap. Strong otherwise.
 template <typename T, typename Traits, typename Alloc, size_t... Args>
 void swap(
     segmented_tree_seq<T, Alloc, Args...> &a,
