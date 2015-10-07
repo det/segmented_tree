@@ -42,7 +42,7 @@ Cons:
 
 [1] Iterators in btree_seq are lazy, which is not what you would expect when using a C++ container. Obtaining an iterator to the nth element is constant time and will only do the work of traversing the tree when dereferenced. The advantage of this is that calling begin() + offset as you would with a vector suffers no performance penalty. The iterator must also restart from the root of the tree when crossing leaf boundaries. I've observed that btree_seq is up to 20x slower when calling std::sort or using reverse_iterators.
 
-[2] Using memcpy/memove is important when operating on 8 bit values as allows you to use optimal segment sizes which leads to greater performance.
+[2] Using memcpy/memove is important when operating on 8 bit values as it allows you to use optimal segment sizes which leads to greater performance.
 
 [3] Rather than passing the sizes of nodes to segmented_tree_seq, you pass the target size in bytes and then the lengths are caluclated to fit inside that.
 
