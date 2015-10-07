@@ -29,7 +29,7 @@ Cons:
 Pros:
 
  * Slightly faster single insert/erase.
- * Slightly faster iteration.
+ * Moderately faster iteration.
  * Supports the C++11 allocator model.
  * Provides eager iterators[1].
  * Uses memcpy/memmove for trivial types[2].
