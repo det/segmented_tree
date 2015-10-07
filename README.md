@@ -48,6 +48,10 @@ Cons:
 
 [4] Range insert/erase in segmented_tree_seq currently calls single insert/erase multiple times which performs a lot of duplicate work of moving data around and is very slow.
 
+# Additional work
+
+In the future the following things could be implemented: optimized range insert/erase, splice and merge from the std::list interface, and additional indexes.
+
 # More information
 
 [Class documentation](https://det.github.io/segmented_tree_seq/classboost_1_1container_1_1segmented__tree__seq.html)
