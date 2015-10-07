@@ -1,6 +1,6 @@
 # What is segmented_tree_seq?
 
-The segmented_tree_seq container supports the interfaces of vector and deque while supporting efficient random access insert and erase with a low memory overhead.
+The segmented_tree_seq container supports the interfaces of vector and deque while offering efficient random access insert and erase with a low memory overhead.
 h
 # When should I use segmented_tree_seq?
 
