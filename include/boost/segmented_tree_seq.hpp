@@ -2,8 +2,8 @@
 // Software License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy
 // at http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef BOOST_CONTAINER_SEGMENTED_TREE_SEQ
-#define BOOST_CONTAINER_SEGMENTED_TREE_SEQ
+#ifndef BOOST_SEGMENTED_TREE_SEQ
+#define BOOST_SEGMENTED_TREE_SEQ
 
 #include "segmented_tree_seq_fwd.hpp"
 
@@ -22,9 +22,8 @@
 #endif
 
 namespace boost {
-namespace container {
 namespace segmented_tree_seq_detail {
-#ifndef BOOST_CONTAINER_DOXYGEN_INVOKED
+#ifndef BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
 namespace is_nothrow_swappable_impl {
 using std::swap;
 
@@ -39,12 +38,12 @@ template <typename T>
 struct is_nothrow_swappable
     : std::integral_constant<bool, is_nothrow_swappable_impl::test<T>::value> {
 };
-#endif  // BOOST_CONTAINER_DOXYGEN_INVOKED
+#endif  // BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
 
 template <typename T, typename VoidPointer, typename SizeType,
           std::size_t segment_target, std::size_t base_target>
 struct static_traits_t {
-#ifndef BOOST_CONTAINER_DOXYGEN_INVOKED
+#ifndef BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
   // forward declarations
   struct node_base;
   struct node_data;
@@ -615,7 +614,7 @@ struct static_traits_t {
       ++child_ht;
     }
   }
-#endif  // BOOST_CONTAINER_DOXYGEN_INVOKED
+#endif  // BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
 
   /// \brief A template class used for const and non-const iterators for
   /// segmented_tree_seq.
@@ -625,7 +624,7 @@ struct static_traits_t {
   template <typename Pointer, typename Reference>
   class iterator_t {
     template <typename, typename, std::size_t, std::size_t>
-    friend class boost::container::segmented_tree_seq;
+    friend class boost::segmented_tree_seq;
 
     template <typename, typename>
     friend class iterator_t;
@@ -3270,6 +3269,5 @@ void swap(
   a.swap(b);
 }
 }
-}
 
-#endif  // #ifndef BOOST_CONTAINER_SEGMENTED_TREE_SEQ
+#endif  // #ifndef BOOST_SEGMENTED_TREE_SEQ
