@@ -1,0 +1,91 @@
+[library Boost.SegmentedTreeSeq
+    [quickbook 1.6]
+    [version 1.0]
+    [copyright 2014-2015 Chris Clearwater]
+    [category Containers]
+    [license
+        Distributed under the Boost Software License, Version 1.0.
+        (See accompanying file LICENSE_1_0.txt or copy at
+        [@http://www.boost.org/LICENSE_1_0.txt])
+    ]
+]
+
+[section Motivation]
+
+The standard library provides sequence containers that offer efficient insertion
+at at the end (`std::vector`), efficient insertition at the front and the end
+(`std::deque`), but offers no solution for efficient insertion anywhere in a
+container.
+
+Boost.SegmentedTreeSeq was designed to fill this use case.
+
+[endsect]
+
+[section Getting started]
+
+[classref boost::segmented_tree_seq] supports the interfaces of `std::vector`
+and `std::deque`, it can be used in the same way as these containers with a
+few exceptions:
+
+* The time complexities of all operations may differ.
+* The iterator invalidation rules may differ.
+* The exception safety guarantees may differ.
+* `reserve()` and `shrink_to_fit()` are missing.
+* The standard library requires users to obtain an iterator to the middle of 
+  a sequence container by using "container.begin() + offset", doing this with
+  [classref boost::segmented_tree_seq] is innefficient. Instead users should
+  use [memberref boost::segmented_tree_seq::nth].
+
+[section How to use]
+
+Boost.SegmentedTreeSeq is a header only library and it does not depend on any
+other Boost libraries. Simply include [headerref boost/segmented_tree_seq.hpp]
+to start using it.
+
+[endsect]
+
+[section Example needle in a haystack]
+
+ #include <algorithm>
+ #include <iostream>
+ #include <boost/segmented_tree_seq.hpp>
+
+ int main() {
+   boost::segmented_tree_seq<std::string> haystack(100000, "hay");
+   haystack.insert(haystack.nth(33333), "needle");
+   auto first = haystack.begin();
+   auto last = haystack.end();
+   auto it = std::find(first, last, "needle");
+   if (it != last) {
+     std::cout << "Found needle at index: " << haystack.index_of(it) << "\n";
+     haystack.erase(it);
+   }
+ }
+
+[endsect]
+[endsect]
+
+[section How it works]
+
+Boost.SegmentedTreeSeq is implemented using a counted
+[@https://en.wikipedia.org/wiki/B%2B_tree B+Tree]. Internally the tree consists
+of 3 types of nodes: segments, leaves, and branches. The bottom level of the
+tree is made up of segments. Segments are simply arrays of the container's
+value_type. They contain no metadata. Above this exists leaves. Leaves are index
+nodes and store a size and a pointer for each of its child segments. They also
+contain metadata of parent pointer, parent index and number of children. All
+levels above this are branches. Branches are the same as leaves but can contain
+either other branches or leaves. Because segments do not store metadata it is
+neccesary to store their parent pointer, parent index, and length in the
+iterators. As inserting/erasing/splitting/merging happens logarithmically as
+often as you travel up the tree, removing the metadata from the bottom level
+has proved to be a worthwhile optimization by removing the cache misses
+associated with loading and storing of this data.
+
+[endsect]
+
+[xinclude autodoc.xml]
+
+[section Space and Performance]
+
+[endsect]

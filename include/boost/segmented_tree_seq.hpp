@@ -23,7 +23,6 @@
 
 namespace boost {
 namespace segmented_tree_seq_detail {
-#ifndef BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
 namespace is_nothrow_swappable_impl {
 using std::swap;
 
@@ -38,12 +37,10 @@ template <typename T>
 struct is_nothrow_swappable
     : std::integral_constant<bool, is_nothrow_swappable_impl::test<T>::value> {
 };
-#endif  // BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
 
 template <typename T, typename VoidPointer, typename SizeType,
           std::size_t segment_target, std::size_t base_target>
 struct static_traits_t {
-#ifndef BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
   // forward declarations
   struct node_base;
   struct node_data;
@@ -52,8 +49,6 @@ struct static_traits_t {
   struct leaf_entry;
   struct iterator_entry;
   struct iterator_data;
-  template <typename, typename>
-  class iterator_t;
 
   using value_type = T;
   using void_pointer = VoidPointer;
@@ -614,364 +609,418 @@ struct static_traits_t {
       ++child_ht;
     }
   }
-#endif  // BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
-
-  /// \brief A template class used for const and non-const iterators for
-  /// segmented_tree_seq.
-  ///
-  /// \tparam Pointer A const or non-const pointer.
-  /// \tparam Reference A const or non-const reference.
-  template <typename Pointer, typename Reference>
-  class iterator_t {
-    template <typename, typename, std::size_t, std::size_t>
-    friend class boost::segmented_tree_seq;
-
-    template <typename, typename>
-    friend class iterator_t;
-
-   private:
-    iterator_data it_;
-    iterator_t(iterator_data it) : it_(it) {}
-
-   public:
-    /// \brief The iterator category type.
-    using iterator_category = std::random_access_iterator_tag;
-    /// \brief The value type.
-    using value_type = T;
-    /// \brief The difference type.
-    using difference_type =
-        typename std::pointer_traits<VoidPointer>::difference_type;
-    /// \brief The pointer type.
-    using pointer = Pointer;
-    /// \brief The iterator reference type.
-    using reference = Reference;
-
-    /// \brief Default constructs an iterator_t from another.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    iterator_t() = default;
-
-    /// \brief Copy constructs an iterator_t from other.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    iterator_t(iterator_t const &other) = default;
-
-    /// \brief Copy assigns from other.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    iterator_t &operator=(iterator_t const &other) = default;
-
-    /// \brief Copy constructs a const iterator from non-const iterator other.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    template <typename P, typename R,
-              typename = typename std::enable_if<
-                  std::is_convertible<P, pointer>::value>::type>
-    iterator_t(iterator_t<P, R> const &other) : it_(other.it_) {}
-
-    /// \brief Returns the index into the segment that the iterator points to.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    size_type index() const { return it_.entry.segment.index; }
-
-    /// \brief Returns the beginning of the segment that the iterator points to.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    pointer begin() const { return it_.entry.segment.pointer; }
-
-    /// \brief Returns the end of the segment that the iterator points to.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    pointer end() const { return begin() + it_.entry.segment.length; }
-
-    /// \brief Returns a pointer to the current element.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    pointer operator->() const { return begin() + index(); }
-
-    /// \brief Returns a reference to the current element.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    reference operator*() const { return begin()[index()]; }
-
-    /// \brief Move the iterator forward 1 element.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    iterator_t &operator++() {
-      move_next_iterator(it_);
-      return *this;
-    }
-
-    /// \brief Move the iterator backward 1 element.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    iterator_t &operator--() {
-      move_prev_iterator(it_);
-      return *this;
-    }
-
-    /// \brief Return a copy of the iterator moved forward 1 element.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    iterator_t operator++(int) {
-      auto copy = it_;
-      move_next_iterator(it_);
-      return copy;
-    }
-
-    /// \brief Return a copy of the iterator moved backward 1 element.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    iterator_t operator--(int) {
-      auto copy = it_;
-      move_prev_iterator(it_);
-      return copy;
-    }
-
-    /// \brief Move the iterator forward diff elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in the absolute value of diff.
-    iterator_t &operator+=(difference_type diff) {
-      move_iterator_count(it_, diff);
-      return *this;
-    }
-
-    /// \brief Move the iterator backward diff elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in the absolute value of diff.
-    iterator_t &operator-=(difference_type diff) {
-      move_iterator_count(it_, -diff);
-      return *this;
-    }
-
-    /// \brief Return a copy of the iterator moved forward diff elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in the absolute value of diff.
-    iterator_t operator+(difference_type diff) const {
-      auto copy = it_;
-      move_iterator_count(copy, diff);
-      return copy;
-    }
-
-    /// \brief Return a copy of the iterator moved backward diff elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in the absolute value of diff.
-    iterator_t operator-(difference_type diff) const {
-      auto copy = it_;
-      move_iterator_count(copy, -diff);
-      return copy;
-    }
-
-    /// \brief Return a distance between the specified iterator.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    difference_type operator-(iterator_t const &other) const {
-      return it_.pos > other.it_.pos
-                 ? static_cast<difference_type>(it_.pos - other.it_.pos)
-                 : -static_cast<difference_type>(other.it_.pos - it_.pos);
-    }
-
-    /// \brief Move the iterator to the last element of the previous segment.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t &move_before_segment() {
-      it_.pos -= it_.entry.segment.index + 1;
-      move_prev_leaf(it_.entry);
-      return *this;
-    }
-
-    /// \brief Move the iterator to the last element of the previous segment and
-    ///        then move backward count elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in count.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t &move_before_segment(size_type count) {
-      it_.pos -= it_.entry.segment.index + 1 - count;
-      move_prev_leaf_count(it_.entry, count);
-      return *this;
-    }
-
-    /// \brief Move the iterator to the first element of the next segment.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t &move_after_segment() {
-      it_.pos += it_.entry.segment.length - it_.entry.segment.index;
-      move_next_leaf(it_.entry);
-      return *this;
-    }
-
-    /// \brief Move the iterator to the first element of the next segment and
-    ///        then move forward count elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in count.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t &move_after_segment(size_type count) {
-      it_.pos += it_.entry.segment.length - it_.entry.segment.index + count;
-      move_next_leaf_count(it_.entry, count);
-      return *this;
-    }
-
-    /// \brief Return a copy of the iterator moved to the last element of the
-    ///        previous segment.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t before_segment() const {
-      auto copy = it_;
-      move_before_segment(copy);
-      return copy;
-    }
-
-    /// \brief Return a copy of the iterator moved to the last element of the
-    ///        previous segment and then move backward count elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in count.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t after_segment() const {
-      auto copy = it_;
-      move_after_segment(copy);
-      return copy;
-    }
-
-    /// \brief Return a copy of the iterator moved to the last element of the
-    ///        previous segment.
-    ///
-    /// \par Complexity
-    ///   Constant amortized.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t before_segment(size_type count) const {
-      auto copy = it_;
-      move_before_segment_count(copy, count);
-      return copy;
-    }
-
-    /// \brief Return a copy of the iterator to the first element of the next
-    ///        segment and then move forward count elements.
-    ///
-    /// \par Complexity
-    ///   Logarithmic amortized in count.
-    ///
-    /// \note
-    ///   Non-standard extension.
-    iterator_t after_segment(size_type count) const {
-      auto copy = it_;
-      move_after_segment_count(copy, count);
-      return copy;
-    }
-
-    /// \brief Return false if both iterators point to the same element. Return
-    ///        true otherwise.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    bool operator!=(iterator_t const &other) const {
-      return it_.pos != other.it_.pos;
-    }
-
-    /// \brief Return true if both iterators point to the same element. Return
-    ///        false otherwise.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    bool operator==(iterator_t const &other) const {
-      return it_.pos == other.it_.pos;
-    }
-
-    /// \brief Return true if *this points to an element before other. Return
-    ///        false otherwise.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    bool operator<(iterator_t const &other) const {
-      return it_.pos < other.it_.pos;
-    }
-
-    /// \brief Return true if *this points to an element after other. Return
-    ///        false otherwise.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    bool operator>(iterator_t const &other) const {
-      return it_.pos > other.it_.pos;
-    }
-
-    /// \brief Return true if *this points to the same element or before other.
-    ///        Return false otherwise.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    bool operator<=(iterator_t const &other) const {
-      return it_.pos <= other.it_.pos;
-    }
-
-    /// \brief Return true if *this points to the same element or after other.
-    ///        Return false otherwise.
-    ///
-    /// \par Complexity
-    ///   Constant.
-    bool operator>=(iterator_t const &other) const {
-      return it_.pos >= other.it_.pos;
-    }
-  };
 };
 }
 
-/// \brief A segmented_tree_seq is a sequence container that provides efficient
-///        random access insert and erase.
+/// A template class used for const and non-const iterators for
+/// segmented_tree_seq.
 ///
-/// \tparam T The type of object to be stored
+/// \tparam Pointer A const or non-const pointer.
+/// \tparam Reference A const or non-const reference.
+template <typename StaticTraits, typename Pointer, typename Reference>
+class segmented_tree_seq_iterator {
+  template <typename, typename, std::size_t, std::size_t>
+  friend class boost::segmented_tree_seq;
+
+ private:
+  template <typename, typename, typename>
+  friend class segmented_tree_seq_iterator;
+  using static_traits = StaticTraits;
+  using iterator_data = typename static_traits::iterator_data;
+  iterator_data it_;
+  segmented_tree_seq_iterator(iterator_data it) : it_(it) {}
+
+ public:
+  /// The iterator category type.
+  using iterator_category = std::random_access_iterator_tag;
+  /// The value type.
+  using value_type = typename static_traits::value_type;
+  /// The size type.
+  using size_type = typename static_traits::size_type;
+  /// The difference type.
+  using difference_type = typename static_traits::difference_type;
+  /// The pointer type.
+  using pointer = Pointer;
+  /// The iterator reference type.
+  using reference = Reference;
+
+  /// \par Effects
+  ///   Default constructs an iterator from another.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  segmented_tree_seq_iterator() = default;
+
+  /// \par Effects
+  ///   Copy constructs an iterator from other.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  segmented_tree_seq_iterator(segmented_tree_seq_iterator const &other) =
+      default;
+
+  /// \par Effects
+  ///   Copy assigns from other.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  segmented_tree_seq_iterator &operator=(
+      segmented_tree_seq_iterator const &other) = default;
+
+  /// \par Effects
+  ///   Copy constructs a const iterator from non-const iterator other.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  template <typename P, typename R,
+            typename = typename std::enable_if<
+                std::is_convertible<P, pointer>::value>::type>
+  segmented_tree_seq_iterator(
+      segmented_tree_seq_iterator<static_traits, P, R> const &other)
+      : it_(other.it_) {}
+
+  /// \par Returns
+  ///   The index into the segment that the iterator points to.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  ///
+  /// \par Note
+  ///   Non-standard extension.
+  size_type index() const { return it_.entry.segment.index; }
+
+  /// \par Returns
+  ///   The beginning of the segment that the iterator points to.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  ///
+  /// \par Note
+  ///   Non-standard extension.
+  pointer begin() const { return it_.entry.segment.pointer; }
+
+  /// \par Returns
+  ///  The end of the segment that the iterator points to.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  ///
+  /// \par Note
+  ///   Non-standard extension.
+  pointer end() const { return begin() + it_.entry.segment.length; }
+
+  /// \par Returns
+  ///   A pointer to the current element.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  pointer operator->() const { return begin() + index(); }
+
+  /// \par Returns
+  ///   A reference to the current element.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  reference operator*() const { return begin()[index()]; }
+
+  /// \par Effects
+  ///   Move the iterator forward 1 element.
+  ///
+  /// \par Returns
+  ///   A reference to *this.
+  ///
+  /// \par Complexity
+  ///   Constant amortized.
+  segmented_tree_seq_iterator &operator++() {
+    static_traits::move_next_iterator(it_);
+    return *this;
+  }
+
+  /// \par Effects
+  ///   Move the iterator backward 1 element.
+  ///
+  /// \par Returns
+  ///   A reference to *this.
+  ///
+  /// \par Complexity
+  ///   Constant amortized.
+  segmented_tree_seq_iterator &operator--() {
+    static_traits::move_prev_iterator(it_);
+    return *this;
+  }
+
+  /// \par Returns
+  ///   A copy of the iterator moved forward 1 element.
+  ///
+  /// \par Complexity
+  ///   Constant amortized.
+  segmented_tree_seq_iterator operator++(int) {
+    auto copy = it_;
+    static_traits::move_next_iterator(it_);
+    return copy;
+  }
+
+  /// \par Returns
+  ///   A copy of the iterator moved backward 1 element.
+  ///
+  /// \par Complexity
+  ///   Constant amortized.
+  segmented_tree_seq_iterator operator--(int) {
+    auto copy = it_;
+    static_traits::move_prev_iterator(it_);
+    return copy;
+  }
+
+  /// \par Effects
+  ///   Move the iterator forward diff elements.
+  ///
+  /// \par Returns
+  ///   A reference to *this.
+  ///
+  /// \par Complexity
+  ///   Logarithmic amortized in the absolute value of diff.
+  segmented_tree_seq_iterator &operator+=(difference_type diff) {
+    static_traits::move_iterator_count(it_, diff);
+    return *this;
+  }
+
+  /// \par Effects
+  ///   Move the iterator backward diff elements.
+  ///
+  /// \par Returns
+  ///   A reference to *this.
+  ///
+  /// \par Complexity
+  ///   Logarithmic amortized in the absolute value of diff.
+  segmented_tree_seq_iterator &operator-=(difference_type diff) {
+    static_traits::move_iterator_count(it_, -diff);
+    return *this;
+  }
+
+  /// \par Returns
+  ///   A copy of the iterator moved forward diff elements.
+  ///
+  /// \par Complexity
+  ///   Logarithmic amortized in the absolute value of diff.
+  segmented_tree_seq_iterator operator+(difference_type diff) const {
+    auto copy = it_;
+    static_traits::move_iterator_count(copy, diff);
+    return copy;
+  }
+
+  /// \par Returns
+  ///   A copy of the iterator moved backward diff elements.
+  ///
+  /// \par Complexity
+  ///   Logarithmic amortized in the absolute value of diff.
+  segmented_tree_seq_iterator operator-(difference_type diff) const {
+    auto copy = it_;
+    static_traits::move_iterator_count(copy, -diff);
+    return copy;
+  }
+
+  /// \par Returns
+  ///   A distance between the specified iterator.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  difference_type operator-(segmented_tree_seq_iterator const &other) const {
+    return it_.pos > other.it_.pos
+               ? static_cast<difference_type>(it_.pos - other.it_.pos)
+               : -static_cast<difference_type>(other.it_.pos - it_.pos);
+  }
+
+  /// \par Effects
+  ///   Move the iterator to the last element of the previous segment.
+  ///
+  /// \par Returns
+  ///   A reference to *this.
+  ///
+  /// \par Complexity
+  ///   Constant amortized.
+  ///
+  /// \par Note
+  ///   Non-standard extension.
+  segmented_tree_seq_iterator &move_before_segment() {
+    it_.pos -= it_.entry.segment.index + 1;
+    move_prev_leaf(it_.entry);
+    return *this;
+  }
+
+  /// \par Effects
+  ///   Move the iterator to the last element of the previous segment and then
+  ///   move backward count elements.
+  ///
+  /// \par Returns
+  ///   A reference to *this.
+  ///
+  /// \par Complexity
+  ///   Logarithmic amortized in count.
+  ///
+  /// \par Note
+  ///   Non-standard extension.
+  segmented_tree_seq_iterator &move_before_segment(size_type count) {
+    it_.pos -= it_.entry.segment.index + 1 - count;
+    move_prev_leaf_count(it_.entry, count);
+    return *this;
+  }
+
+  /// \par Effects
+  ///   Move the iterator to the first element of the next segment.
+  ///
+  /// \par Returns
+  ///   A reference to *this.
+  ///
+  /// \par Complexity
+  ///   Constant amortized.
+  ///
+  /// \par Note
+  ///   Non-standard extension.
+  segmented_tree_seq_iterator &move_after_segment() {
+    it_.pos += it_.entry.segment.length - it_.entry.segment.index;
+    move_next_leaf(it_.entry);
+    return *this;
+  }
+
+  /// \par Effects
+  ///   Move the iterator to the first element of the next segment and then move
+  ///   forward count elements.
+  ///
+  /// \par Complexity
+  ///   Logarithmic amortized in count.
+  ///
+  /// \par Note
+  ///   Non-standard extension.
+  segmented_tree_seq_iterator &move_after_segment(size_type count) {
+    it_.pos += it_.entry.segment.length - it_.entry.segment.index + count;
+    move_next_leaf_count(it_.entry, count);
+    return *this;
+  }
+
+  /// \par Returns
+  ///   A copy of the iterator moved to the last element of the previous
+  ///   segment.
+  ///
+  /// \par Complexity
+  ///   Constant amortized.
+  ///
+  /// \par Note
+  ///   Non-standard extension.
+  segmented_tree_seq_iterator before_segment() const {
+    auto copy = it_;
+    move_before_segment(copy);
+    return copy;
+  }
+
+  /// \par Returns
+  ///   A copy of the iterator moved to the last element of the previous segment
+  ///   and then move backward count elements.
+  ///
+  /// \par Complexity
+  ///   Logarithmic amortized in count.
+  ///
+  /// \par Note
+  ///   Non-standard extension.
+  segmented_tree_seq_iterator after_segment() const {
+    auto copy = it_;
+    move_after_segment(copy);
+    return copy;
+  }
+
+  /// \par Returns
+  ///   A copy of the iterator moved to the last element of the previous
+  ///   segment.
+  ///
+  /// \par Complexity
+  ///   Constant amortized.
+  ///
+  /// \par Note
+  ///   Non-standard extension.
+  segmented_tree_seq_iterator before_segment(size_type count) const {
+    auto copy = it_;
+    move_before_segment_count(copy, count);
+    return copy;
+  }
+
+  /// \par Returns
+  ///   A copy of the iterator to the first element of the next segment and then
+  ///   move forward count elements.
+  ///
+  /// \par Complexity
+  ///   Logarithmic amortized in count.
+  ///
+  /// \par Note
+  ///   Non-standard extension.
+  segmented_tree_seq_iterator after_segment(size_type count) const {
+    auto copy = it_;
+    move_after_segment_count(copy, count);
+    return copy;
+  }
+
+  /// \par Returns
+  ///   False if both iterators point to the same element. True otherwise.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  bool operator!=(segmented_tree_seq_iterator const &other) const {
+    return it_.pos != other.it_.pos;
+  }
+
+  /// \par Returns
+  ///   True if both iterators point to the same element. False otherwise.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  bool operator==(segmented_tree_seq_iterator const &other) const {
+    return it_.pos == other.it_.pos;
+  }
+
+  /// \par Returns
+  ///   True if *this points to an element before other. False otherwise.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  bool operator<(segmented_tree_seq_iterator const &other) const {
+    return it_.pos < other.it_.pos;
+  }
+
+  /// \par Returns
+  ///   True if *this points to an element after other. False otherwise.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  bool operator>(segmented_tree_seq_iterator const &other) const {
+    return it_.pos > other.it_.pos;
+  }
+
+  /// \par Returns
+  ///   True if *this points to the same element or before other. False
+  ///   otherwise.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  bool operator<=(segmented_tree_seq_iterator const &other) const {
+    return it_.pos <= other.it_.pos;
+  }
+
+  /// \par Returns
+  ///   True if *this points to the same element or after other. False
+  ///   otherwise.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  bool operator>=(segmented_tree_seq_iterator const &other) const {
+    return it_.pos >= other.it_.pos;
+  }
+};
+
+/// A segmented_tree_seq is a sequence container that provides efficient random
+/// access insert and erase.
+///
+/// \tparam T The type of the element to be stored
 /// \tparam Allocator The type of the allocator used for all memory management
-/// \tparam segment_target Size in bytes to try to use for object nodes
-/// \tparam base_target Size in bytes to try to use for index nodes
+/// \tparam segment_target The size in bytes to try to use for element nodes
+/// \tparam base_target The size in bytes to try to use for index nodes
 template <typename T, typename Allocator, std::size_t segment_target,
           std::size_t base_target>
 class segmented_tree_seq {
@@ -988,9 +1037,6 @@ class segmented_tree_seq {
   using iterator_data = typename static_traits::iterator_data;
   using iterator_entry = typename static_traits::iterator_entry;
   using leaf_entry = typename static_traits::leaf_entry;
-  template <typename Pointer, typename Reference>
-  using iterator_t =
-      typename static_traits::template iterator_t<Pointer, Reference>;
 
   using node_allocator =
       typename element_traits::template rebind_alloc<node_type>;
@@ -1000,32 +1046,34 @@ class segmented_tree_seq {
   static constexpr bool is_trivial_ = std::is_trivial<T>::value;
 
  public:
-  /// \brief The type of elements stored in the container.
+  /// The type of elements stored in the container.
   using value_type = typename element_traits::value_type;
-  /// \brief The allocator type used by the container.
+  /// The allocator type used by the container.
   using allocator_type = Allocator;
-  /// \brief The unsigned integral type used by the container.
+  /// The unsigned integral type used by the container.
   using size_type = typename element_traits::size_type;
-  /// \brief The pointers difference type.
+  /// The pointers difference type.
   using difference_type = typename element_traits::difference_type;
-  /// \brief The value reference type.
+  /// The value reference type.
   using reference = value_type &;
-  /// \brief The value const reference type.
+  /// The value const reference type.
   using const_reference = value_type const &;
-  /// \brief The pointer type.
+  /// The pointer type.
   using pointer = typename element_traits::pointer;
-  /// \brief The const pointer type.
+  /// The const pointer type.
   using const_pointer = typename element_traits::const_pointer;
-  /// \brief The iterator type.
-  using iterator = iterator_t<pointer, T &>;
-  /// \brief The const iterator type.
-  using const_iterator = iterator_t<const_pointer, T const &>;
-  /// \brief The reverse iterator type.
+  /// The iterator type.
+  using iterator = segmented_tree_seq_iterator<static_traits, pointer, T &>;
+  /// The const iterator type.
+  using const_iterator =
+      segmented_tree_seq_iterator<static_traits, const_pointer, T const &>;
+  /// The reverse iterator type.
   using reverse_iterator = std::reverse_iterator<iterator>;
-  /// \brief The const reverse iterator.
+  /// The const reverse iterator.
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
  private:
+#ifndef BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
   // private data
   std::tuple<void_pointer, size_type, size_type, allocator_type, node_allocator>
       data_;
@@ -1277,8 +1325,8 @@ class segmented_tree_seq {
       auto last = length;
 
       while (to != last) {
-        destroy_element(pointer, to);
         construct_element(pointer, to, std::move(pointer[from]));
+        destroy_element(pointer, from);
         ++from;
         ++to;
       }
@@ -1967,16 +2015,19 @@ class segmented_tree_seq {
   void verify_iterator(Args &&...) {}
 #endif
 
+#endif  // #ifndef BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
  public:
   // public interface
-  /// \brief Constructs an empty sequence using the specified allocator.
+  /// \par Effects
+  ///   Constructs an empty sequence using the specified allocator.
   ///
   /// \par Complexity
   ///   Constant.
   explicit segmented_tree_seq(Allocator const &alloc)
       : data_{nullptr, 0, 0, alloc, alloc} {}
 
-  /// \brief Default constructs an empty sequence.
+  /// \par Effects
+  ///   Default constructs an empty sequence.
   ///
   /// \par Complexity
   ///   Constant.
@@ -1984,8 +2035,9 @@ class segmented_tree_seq {
       std::is_nothrow_default_constructible<allocator_type>::value)
       : segmented_tree_seq{Allocator()} {}
 
-  /// \brief Constructs a count size sequence using the specified allocator,
-  ///        each element copy constructed from value.
+  /// \par Effects
+  ///   Constructs a count size sequence using the specified allocator, each
+  ///   element copy constructed from value.
   ///
   /// \par Complexity
   ///   NlogN, where N is count.
@@ -1995,8 +2047,9 @@ class segmented_tree_seq {
     insert(end(), count, value);
   }
 
-  /// \brief Constructs a count size sequence using the specified allocator,
-  ///        each element default constructed.
+  /// \par Effects
+  ///   Constructs a count size sequence using the specified allocator, each
+  ///   element default constructed.
   ///
   /// \par Complexity
   ///   NlogN, where N is count.
@@ -2006,8 +2059,9 @@ class segmented_tree_seq {
     insert(end(), count, value_type{});
   }
 
-  /// \brief Constructs an empty sequence using the specified allocator, and
-  ///        inserts elements from the range [first, last).
+  /// \par Effects
+  ///   Constructs an empty sequence using the specified allocator, and inserts
+  ///   elements from the range [first, last).
   ///
   /// \par Complexity
   ///   NlogN, where N is the size of the range.
@@ -2019,7 +2073,8 @@ class segmented_tree_seq {
     insert(end(), first, last);
   }
 
-  /// \brief Copy constructs a sequence.
+  /// \par Effects
+  ///   Copy constructs a sequence.
   ///
   /// \par Complexity
   ///   NlogN, where N is other.size().
@@ -2030,7 +2085,8 @@ class segmented_tree_seq {
     insert(end(), other.begin(), other.end());
   }
 
-  /// \brief Copy constructs a sequence using the specified allocator.
+  /// \par Effects
+  ///   Copy constructs a sequence using the specified allocator.
   ///
   /// \par Complexity
   ///   NlogN, where N is other.size().
@@ -2039,7 +2095,8 @@ class segmented_tree_seq {
     insert(end(), other.begin(), other.end());
   }
 
-  /// \brief Move constructs a sequence.
+  /// \par Effects
+  ///   Move constructs a sequence.
   ///
   /// \par Complexity
   ///   Constant.
@@ -2049,7 +2106,8 @@ class segmented_tree_seq {
     steal(other);
   }
 
-  /// \brief Move constructs a sequence using the specified allocator.
+  /// \par Effects
+  ///   Move constructs a sequence using the specified allocator.
   ///
   /// \par Complexity
   ///   Constant if alloc compares equal to other's allocator. NlogN, where N is
@@ -2063,8 +2121,9 @@ class segmented_tree_seq {
              std::make_move_iterator(other.end()));
   }
 
-  /// \brief Constructs an empty sequence using the specified allocator, and
-  ///        inserts elements from init.
+  /// \par Effects
+  ///   Constructs an empty sequence using the specified allocator, and inserts
+  ///   elements from init.
   ///
   /// \par Complexity
   ///   NlogN, where N is init.size().
@@ -2074,13 +2133,18 @@ class segmented_tree_seq {
     insert(end(), init.begin(), init.end());
   }
 
-  /// \brief Destructs the sequence releasing all memory.
+  /// \par Effects
+  ///   Destructs the sequence releasing all memory.
   ///
   /// \par Complexity
   ///   Linear in size().
   ~segmented_tree_seq() { purge(); }
 
-  /// \brief Copy assigns a sequence.
+  /// \par Effects
+  ///   Copy assigns a sequence.
+  ///
+  /// \par Returns
+  ///   A reference to *this.
   ///
   /// \par Complexity
   ///   Linear in the minimum of size() and other.size(), plus MlogN, where M is
@@ -2104,7 +2168,11 @@ class segmented_tree_seq {
     return *this;
   }
 
-  /// \brief Move assigns a sequence.
+  /// \par Effects
+  ///   Move assigns a sequence.
+  ///
+  /// \par Returns
+  ///   A reference to *this.
   ///
   /// \par Complexity
   ///   Linear in size() if the allocator propagates on move assignment or the
@@ -2140,7 +2208,11 @@ class segmented_tree_seq {
     return *this;
   }
 
-  /// \brief Assigns the sequence to count elements copy constructed from value.
+  /// \par Effects
+  ///   Assigns the sequence to count elements copy constructed from value.
+  ///
+  /// \par Returns
+  ///   A reference to *this.
   ///
   /// \par Complexity
   ///   Linear in the minimum of size() and ilist.size(), plus MlogN, where M is
@@ -2157,8 +2229,8 @@ class segmented_tree_seq {
     return *this;
   }
 
-  /// \brief Assigns the sequence to count elements copy constructed from
-  ///        value.
+  /// \par Effects
+  ///   Assigns the sequence to count elements copy constructed from value.
   ///
   /// \par Complexity
   ///   Linear in the minimum of size() and count, plus MlogN, where M is the
@@ -2190,8 +2262,9 @@ class segmented_tree_seq {
     }
   }
 
-  /// \brief Assigns the sequence to the elements copy constructed from the
-  ///        range [first, last).
+  /// \par Effects
+  ///   Assigns the sequence to the elements copy constructed from the range
+  ///   [first, last).
   ///
   /// \par Complexity
   ///   Linear in the minimum of size() and the size of the range, plus MlogN,
@@ -2225,8 +2298,8 @@ class segmented_tree_seq {
     }
   }
 
-  /// \brief Assigns the sequence to the elements of the specified
-  ///        initializer_list.
+  /// \par Effects
+  ///   Assigns the sequence to the elements of the specified initializer_list.
   ///
   /// \par Complexity
   ///   Linear in the minimum of size() and ilist.size(), plus MlogN, where M is
@@ -2242,7 +2315,8 @@ class segmented_tree_seq {
     assign(ilist.begin(), ilist.end());
   }
 
-  /// \brief Returns a copy of the allocator for the sequence.
+  /// \par Returns
+  ///   A copy of the allocator for the sequence.
   ///
   /// \par Complexity
   ///   Constant.
@@ -2256,7 +2330,8 @@ class segmented_tree_seq {
     return get_element_allocator();
   }
 
-  /// \brief Returns a reference for the object located at the index pos.
+  /// \par Returns
+  ///   A reference for the element located at the index pos.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2272,8 +2347,8 @@ class segmented_tree_seq {
     return (*this)[pos];
   }
 
-  /// \brief Returns a const_reference for the object located at the specified
-  ///        index pos.
+  /// \par Returns
+  ///   A const_reference for the element located at the specified index pos.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2289,8 +2364,8 @@ class segmented_tree_seq {
     return (*this)[pos];
   }
 
-  /// \brief Returns a reference for the object located at the specified index
-  ///        pos.
+  /// \par Returns
+  ///   A reference for the element located at the specified index pos.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2305,8 +2380,8 @@ class segmented_tree_seq {
     return *it;
   }
 
-  /// \brief Returns a const_reference for the object located at the specified
-  ///        index pos.
+  /// \par Returns
+  ///   A const_reference for the element located at the specified index pos.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2321,7 +2396,8 @@ class segmented_tree_seq {
     return *it;
   }
 
-  /// \brief Returns a reference for the object located at the index 0.
+  /// \par Returns
+  ///   A reference for the element located at the index 0.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2333,7 +2409,8 @@ class segmented_tree_seq {
   ///   Strong.
   reference front() { return *begin(); }
 
-  /// \brief Returns a const_reference for the object located at the index 0.
+  /// \par Returns
+  ///   A const_reference for the element located at the index 0.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2345,7 +2422,8 @@ class segmented_tree_seq {
   ///   Strong.
   const_reference front() const { return *begin(); }
 
-  /// \brief Returns a reference for the object located at the index size() - 1.
+  /// \par Returns
+  ///   A reference for the element located at the index size() - 1.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2357,8 +2435,8 @@ class segmented_tree_seq {
   ///   Strong.
   reference back() { return *penultimate(); }
 
-  /// \brief Returns a const_reference for the object located at the index
-  ///        size() - 1.
+  /// \par Returns
+  ///   A const_reference for the element located at the index size() - 1.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2370,7 +2448,8 @@ class segmented_tree_seq {
   ///   Strong.
   const_reference back() const { return *penultimate(); }
 
-  /// \brief Returns an iterator for the index 0.
+  /// \par Returns
+  ///   An iterator for the index 0.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2382,7 +2461,8 @@ class segmented_tree_seq {
   ///   No-throw.
   iterator begin() noexcept { return find_first(); }
 
-  /// \brief Returns a const_iterator for the index 0.
+  /// \par Returns
+  ///   A const_iterator for the index 0.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2394,7 +2474,8 @@ class segmented_tree_seq {
   ///   No-throw.
   const_iterator begin() const noexcept { return find_first(); }
 
-  /// \brief Returns a const_iterator for the index 0.
+  /// \par Returns
+  ///   A const_iterator for the index 0.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2406,7 +2487,8 @@ class segmented_tree_seq {
   ///   No-throw.
   const_iterator cbegin() const noexcept { return find_first(); }
 
-  /// \brief Returns an iterator to the index size() - 1
+  /// \par Returns
+  ///   An iterator to the index size() - 1
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2417,11 +2499,12 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   No-throw.
   ///
-  /// \note
+  /// \par Note
   ///   Non-standard extension.
   iterator penultimate() noexcept { return find_last(); }
 
-  /// \brief Returns a const_iterator to the index size() - 1
+  /// \par Returns
+  ///   A const_iterator to the index size() - 1
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2432,11 +2515,12 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   No-throw.
   ///
-  /// \note
+  /// \par Note
   ///   Non-standard extension.
   const_iterator penultimate() const noexcept { return find_last(); }
 
-  /// \brief Returns a const_iterator to the index size() - 1
+  /// \par Returns
+  ///   A const_iterator to the index size() - 1
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2447,11 +2531,12 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   No-throw.
   ///
-  /// \note
+  /// \par Note
   ///   Non-standard extension.
   const_iterator cpenultimate() const noexcept { return find_last(); }
 
-  /// \brief Returns an iterator for the index size().
+  /// \par Returns
+  ///   An iterator for the index size().
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2463,7 +2548,8 @@ class segmented_tree_seq {
   ///   No-throw.
   iterator end() noexcept { return find_end(); }
 
-  /// \brief Returns a const_iterator for the index size().
+  /// \par Returns
+  ///   A const_iterator for the index size().
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2475,7 +2561,8 @@ class segmented_tree_seq {
   ///   No-throw.
   const_iterator end() const noexcept { return find_end(); }
 
-  /// \brief Returns a const_iterator for the index size().
+  /// \par Returns
+  ///   A const_iterator for the index size().
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2487,7 +2574,8 @@ class segmented_tree_seq {
   ///   No-throw.
   const_iterator cend() const noexcept { return find_end(); }
 
-  /// \brief Returns a reverse_iterator for the index size().
+  /// \par Returns
+  ///   A reverse_iterator for the index size().
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2499,7 +2587,8 @@ class segmented_tree_seq {
   ///   No-throw.
   reverse_iterator rbegin() noexcept { return reverse_iterator{end()}; }
 
-  /// \brief Returns a const_reverse_iterator for the index size().
+  /// \par Returns
+  ///   A const_reverse_iterator for the index size().
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2513,7 +2602,8 @@ class segmented_tree_seq {
     return const_reverse_iterator{end()};
   }
 
-  /// \brief Returns a const_reverse_iterator for the index size().
+  /// \par Returns
+  ///   A const_reverse_iterator for the index size().
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2527,7 +2617,8 @@ class segmented_tree_seq {
     return const_reverse_iterator{end()};
   }
 
-  /// \brief Returns a reverse_iterator for the index 0.
+  /// \par Returns
+  ///   A reverse_iterator for the index 0.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2539,7 +2630,8 @@ class segmented_tree_seq {
   ///   No-throw.
   reverse_iterator rend() noexcept { return reverse_iterator{begin()}; }
 
-  /// \brief Returns a const_reverse_iterator for the index 0.
+  /// \par Returns
+  ///   A const_reverse_iterator for the index 0.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2553,7 +2645,8 @@ class segmented_tree_seq {
     return const_reverse_iterator{begin()};
   }
 
-  /// \brief Returns a const_reverse_iterator for the index 0.
+  /// \par Returns
+  ///   A const_reverse_iterator for the index 0.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2567,7 +2660,8 @@ class segmented_tree_seq {
     return const_reverse_iterator{begin()};
   }
 
-  /// \brief Returns an iterator for the index pos.
+  /// \par Returns
+  ///   An iterator for the index pos.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2578,10 +2672,10 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   No-throw.
   ///
-  /// \note
+  /// \par Note
   ///   Non-standard extension.
   ///
-  /// \note
+  /// \par Note
   ///   This member function is more efficient than calling begin() and
   ///   advancing.
   iterator nth(size_type pos) noexcept {
@@ -2589,7 +2683,8 @@ class segmented_tree_seq {
     return find_index(pos);
   }
 
-  /// \brief Returns a const_iterator for the index pos.
+  /// \par Returns
+  ///   A const_iterator for the index pos.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2600,10 +2695,10 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   No-throw.
   ///
-  /// \note
+  /// \par Note
   ///   Non-standard extension.
   ///
-  /// \note
+  /// \par Note
   ///   This member function is more efficient than calling begin() and
   ///   advancing.
   const_iterator nth(size_type pos) const noexcept {
@@ -2611,7 +2706,8 @@ class segmented_tree_seq {
     return find_index(pos);
   }
 
-  /// \brief Returns the index of the specified iterator.
+  /// \par Returns
+  ///   The index of the specified iterator.
   ///
   /// \par Complexity
   ///   Constant.
@@ -2622,11 +2718,12 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   No-throw.
   ///
-  /// \note
+  /// \par Note
   ///   Non-standard extension.
   size_type index_of(iterator pos) noexcept { return pos.it_.pos; }
 
-  /// \brief Returns the index of the specified const_iterator.
+  /// \par Returns
+  ///   The index of the specified const_iterator.
   ///
   /// \par Complexity
   ///   Constant.
@@ -2637,11 +2734,12 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   No-throw.
   ///
-  /// \note
+  /// \par Note
   ///   Non-standard extension.
   size_type index_of(const_iterator pos) const noexcept { return pos.it_.pos; }
 
-  /// \brief Returns true if the sequence is empty, false otherwise.
+  /// \par Returns
+  ///   True if the sequence is empty. False otherwise.
   ///
   /// \par Complexity
   ///   Constant.
@@ -2653,7 +2751,8 @@ class segmented_tree_seq {
   ///   No-throw.
   bool empty() const noexcept { return get_size() == 0; }
 
-  /// \brief Returns the count of elements stored in the sequence.
+  /// \par Returns
+  ///   The count of elements stored in the sequence.
   ///
   /// \par Complexity
   ///   Constant.
@@ -2665,7 +2764,8 @@ class segmented_tree_seq {
   ///   No-throw.
   size_type size() const noexcept { return get_size(); }
 
-  /// \brief Returns the height of the tree.
+  /// \par Returns
+  ///   The height of the tree.
   ///
   /// \par Complexity
   ///   Constant.
@@ -2676,12 +2776,12 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   No-throw.
   ///
-  /// \note
+  /// \par Note
   ///   Non-standard extension.
   size_type height() const noexcept { return get_height(); }
 
-  /// \brief Returns the maximum count of elements able to be stored in the
-  ///        sequence.
+  /// \par Returns
+  ///   The maximum count of elements able to be stored in the sequence.
   ///
   /// \par Complexity
   ///   Constant.
@@ -2695,7 +2795,8 @@ class segmented_tree_seq {
     return (std::numeric_limits<size_type>::max)();
   }
 
-  /// \brief Removes all elements from the sequence.
+  /// \par Effects
+  ///   Removes all elements from the sequence.
   ///
   /// \par Complexity
   ///   Linear in size().
@@ -2712,7 +2813,11 @@ class segmented_tree_seq {
     get_size() = 0;
   }
 
-  /// \brief Copy constructs an object at the specified position.
+  /// \par Effects
+  ///   Copy constructs an element at the specified position.
+  ///
+  /// \par Returns
+  ///   An iterator to the inserted element.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2726,7 +2831,11 @@ class segmented_tree_seq {
     return emplace(pos, value);
   }
 
-  /// \brief Move construct an object at the specified position.
+  /// \par Effects
+  ///   Move constructs an element at the specified position.
+  ///
+  /// \par Returns
+  ///   An iterator to the inserted element.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2740,7 +2849,12 @@ class segmented_tree_seq {
     return emplace(pos, std::move(value));
   }
 
-  /// \brief Copy construct count elements at the specified position.
+  /// \par Effects
+  ///   Copy constructs count elements at the specified position.
+  ///
+  /// \par Returns
+  ///   An iterator to the first inserted element if count != 0. A copy of pos
+  ///   otherwise.
   ///
   /// \par Complexity
   ///   MlogN, where M is count, and N is the maximum of size() and count.
@@ -2759,8 +2873,13 @@ class segmented_tree_seq {
     return pos.it_;
   }
 
-  /// \brief Copy constructs all elements in the range [first, last) at the
-  ///        specified position.
+  /// \par Effects
+  ///   Copy constructs all elements in the range [first, last) at the specified
+  ///   position.
+  ///
+  /// \par Returns
+  ///   An iterator to the first inserted element if first != last. A copy of
+  ///   pos otherwise.
   ///
   /// \par Complexity
   ///   MlogN, where M is the size of the range, and N is the maximum of size()
@@ -2785,8 +2904,13 @@ class segmented_tree_seq {
     return pos.it_;
   }
 
-  /// \brief Copy constructs all elements in the specified initializer_list at
-  ///        the specified position.
+  /// \par Effects
+  ///   Copy constructs all elements in the specified initializer_list at the
+  ///   specified position.
+  ///
+  /// \par Returns
+  ///   An iterator to the first inserted element if ilist.size() != 0. A copy
+  ///   of pos otherwise.
   ///
   /// \par Complexity
   ///   MlogN, where M is ilist.size(), and N is the maximum of size() and
@@ -2801,7 +2925,11 @@ class segmented_tree_seq {
     return insert(pos, ilist.begin(), ilist.end());
   }
 
-  /// \brief Forward constructs an object at the specified position.
+  /// \par Effects
+  ///   Forward constructs an element at the specified position.
+  ///
+  /// \par Returns
+  ///   An iterator to the inserted element.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2826,7 +2954,11 @@ class segmented_tree_seq {
     return it;
   }
 
-  /// \brief Remove the object at the specified position from the sequence.
+  /// \par Effects
+  ///   Remove the element at the specified position from the sequence.
+  ///
+  /// \par Returns
+  ///   An iterator to the element following the removed element.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2842,7 +2974,11 @@ class segmented_tree_seq {
     return it;
   }
 
-  /// \brief Remove all elements in the range [first, last) from the sequence.
+  /// \par Effects
+  ///   Remove all elements in the range [first, last) from the sequence.
+  ///
+  /// \par Returns
+  ///   An iterator to the element following the last removed element.
   ///
   /// \par Complexity
   ///   MlogN, where M is the size of the range, and N is size().
@@ -2860,7 +2996,8 @@ class segmented_tree_seq {
     return last.it_;
   }
 
-  /// \brief Copy constructs an object at end().
+  /// \par Effects
+  ///   Copy constructs an element at end().
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2872,7 +3009,8 @@ class segmented_tree_seq {
   ///   Strong.
   void push_back(T const &value) { emplace_back(value); }
 
-  /// \brief Move constructs an object at end().
+  /// \par Effects
+  ///   Move constructs an element at end().
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2884,7 +3022,8 @@ class segmented_tree_seq {
   ///   Strong.
   void push_back(T &&value) { emplace_back(std::move(value)); }
 
-  /// \brief Forward constructs an object at end().
+  /// \par Effects
+  ///   Forward constructs an element at end().
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2899,7 +3038,8 @@ class segmented_tree_seq {
     emplace(end(), std::forward<Args>(args)...);
   }
 
-  /// \brief Removes the object at end() - 1.
+  /// \par Effects
+  ///   Removes the element at end() - 1.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2911,7 +3051,8 @@ class segmented_tree_seq {
   ///   Strong.
   void pop_back() { erase(penultimate()); }
 
-  /// \brief Copy constructs an object at begin().
+  /// \par Effects
+  ///   Copy constructs an element at begin().
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2923,7 +3064,8 @@ class segmented_tree_seq {
   ///   Strong.
   void push_front(const T &value) { emplace_front(value); }
 
-  /// \brief Move constructs an object at begin().
+  /// \par Effects
+  ///   Move constructs an element at begin().
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2935,7 +3077,8 @@ class segmented_tree_seq {
   ///   Strong.
   void push_front(T &&value) { emplace_front(std::move(value)); }
 
-  /// \brief Forward constructs an object at begin().
+  /// \par Effects
+  ///   Forward constructs an element at begin().
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2950,7 +3093,8 @@ class segmented_tree_seq {
     emplace(begin(), std::forward<Args>(args)...);
   }
 
-  /// \brief Removes the object at begin().
+  /// \par Effects
+  ///   Removes the element at begin().
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -2962,8 +3106,9 @@ class segmented_tree_seq {
   ///   Strong.
   void pop_front() { erase(begin()); }
 
-  /// \brief Resizes the seqeuence to the specified size, default construct any
-  ///        elements above the current size.
+  /// \par Effects
+  ///   Resizes the seqeuence to the specified size, default constructing any
+  ///   elements above the current size.
   ///
   /// \par Complexity
   ///   MlogN, where M is the difference of size() and count, and N is the max
@@ -2976,8 +3121,9 @@ class segmented_tree_seq {
   ///   Strong.
   void resize(size_type count) { resize(count, {}); }
 
-  /// \brief Resizes the seqeuence to the specified size, copy construct any
-  ///        elements from value above the current size.
+  /// \par Effects
+  ///   Resizes the seqeuence to the specified size, copy constructing any
+  ///   elements from value above the current size.
   ///
   /// \par Complexity
   ///   MlogN, where M is the difference of size() and count, and N is the max
@@ -2999,7 +3145,8 @@ class segmented_tree_seq {
       insert(last, count, value);
   }
 
-  /// \brief Swaps the contents *this with the specified sequence.
+  /// \par Effects
+  ///   Swaps the contents *this with the specified sequence.
   ///
   /// \par Complexity
   ///   Constant.
@@ -3046,7 +3193,8 @@ class segmented_tree_seq {
   //  first,
   //              const_iterator last);
 
-  /// \brief Removes all elements matching the specified value.
+  /// \par Effects
+  ///   Removes all elements matching the specified value.
   ///
   /// \par Complexity
   ///   Logarithmic in size().
@@ -3060,7 +3208,8 @@ class segmented_tree_seq {
     erase(std::remove(begin(), end(), value), end());
   }
 
-  /// \brief Removes all elements matching the specified predicate.
+  /// \par Effects
+  ///   Removes all elements matching the specified predicate.
   ///
   /// \par Complexity
   ///   Linear in size().
@@ -3075,7 +3224,8 @@ class segmented_tree_seq {
     erase(std::remove_if(begin(), end(), p), end());
   }
 
-  /// \brief Reverses the sequence.
+  /// \par Effects
+  ///   Reverses the sequence.
   ///
   /// \par Complexity
   ///   Linear in size().
@@ -3087,7 +3237,8 @@ class segmented_tree_seq {
   ///   Basic.
   void reverse() { std::reverse(begin(), end()); }
 
-  /// \brief Removes all consecutive duplicate elements from the sequence.
+  /// \par Effects
+  ///   Removes all consecutive duplicate elements from the sequence.
   ///
   /// \par Complexity
   ///   Linear in size().
@@ -3099,8 +3250,9 @@ class segmented_tree_seq {
   ///   Basic.
   void unique() { unique(std::equal_to<value_type>{}); }
 
-  /// \brief Removes all consecutive duplicate elements from the
-  ///        sequence using the specified predicate.
+  /// \par Effects
+  ///   Removes all consecutive duplicate elements from the sequence using the
+  ///   specified predicate.
   ///
   /// \par Complexity
   ///   Linear in size().
@@ -3115,7 +3267,8 @@ class segmented_tree_seq {
     erase(std::unique(begin(), end(), p), end());
   }
 
-  /// \brief Stable sorts the sequence.
+  /// \par Effects
+  ///   Stable sorts the sequence.
   ///
   /// \par Complexity
   ///   NlogN, where N is size().
@@ -3127,7 +3280,8 @@ class segmented_tree_seq {
   ///   Basic.
   void sort() { sort(std::less<value_type>{}); }
 
-  /// \brief Stable sort the sequence using the specified predicate.
+  /// \par Effects
+  ///   Stable sort the sequence using the specified predicate.
   ///
   /// \par Complexity
   ///    NlogN, where N is size().
@@ -3145,8 +3299,9 @@ class segmented_tree_seq {
 
 // free functions
 
-/// \brief Returns true if both sequences are of the same length and have each
-///        element in both sequences are equal. Returns false otherwise.
+/// \par Returns
+///   True if both sequences are of the same length and have each element in
+///   both sequences are equal. False otherwise.
 ///
 /// \par Complexity
 ///    Linear in size().
@@ -3163,8 +3318,9 @@ bool operator==(segmented_tree_seq<T, Alloc, Args...> &lhs,
          std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 
-/// \brief Returns false if both sequences are of the same length and have each
-///        element in both sequences are equal. Returns true otherwise.
+/// \par Returns
+///   False if both sequences are of the same length and have each element in
+///   both sequences are equal. True otherwise.
 ///
 /// \par Complexity
 ///   Linear in size().
@@ -3180,8 +3336,9 @@ bool operator!=(segmented_tree_seq<T, Alloc, Args...> &lhs,
   return !(lhs == rhs);
 }
 
-/// \brief Returns true if the first sequence is lexicographically less than the
-///        second. Returns false otherwise.
+/// \par Returns
+///   True if the first sequence is lexicographically less than the second.
+///   False otherwise.
 ///
 /// \par Complexity
 ///   Linear in size().
@@ -3198,8 +3355,9 @@ bool operator<(segmented_tree_seq<T, Alloc, Args...> &lhs,
                                       rhs.end());
 }
 
-/// \brief Returns true if the first sequence is equal or lexicographically less
-///        than the second. Returns false otherwise.
+/// \par Returns
+///   True if the first sequence is equal or lexicographically less than the
+///   second. False otherwise.
 ///
 /// \par Complexity
 ///   Linear in size().
@@ -3215,8 +3373,9 @@ bool operator<=(segmented_tree_seq<T, Alloc, Args...> &lhs,
   return !(rhs < lhs);
 }
 
-/// \brief Returns true if the first sequence is lexicographically greater than
-///        the second. Returns false otherwise.
+/// \par Returns
+///   True if the first sequence is lexicographically greater than the second.
+///   False otherwise.
 ///
 /// \par Complexity
 ///   Linear in size().
@@ -3232,8 +3391,9 @@ bool operator>(segmented_tree_seq<T, Alloc, Args...> &lhs,
   return rhs < lhs;
 }
 
-/// \brief Returns true if the first sequence is lexicographically greater or
-///        equal to the second. Returns false otherwise.
+/// \par Returns
+///   True if the first sequence is lexicographically greater or equal to the
+///   second. False otherwise.
 ///
 /// \par Complexity
 ///   Linear in size().
@@ -3249,7 +3409,8 @@ bool operator>=(segmented_tree_seq<T, Alloc> &lhs,
   return !(lhs < rhs);
 }
 
-/// \brief Swaps the contents of the sequences.
+/// \par Effects
+///   Swaps the contents of the sequences.
 ///
 /// \par Complexity
 ///   Constant.

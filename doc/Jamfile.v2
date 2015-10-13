@@ -1,0 +1,33 @@
+# Copyright Chris Clearwater 2014-2015. 
+# Use, modification, and distribution are subject to the Boost Software
+# License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+
+using quickbook ;
+import boostbook : boostbook ;
+import doxygen ;
+
+doxygen autodoc
+   :
+      [ glob ../include/boost/segmented_tree_seq.hpp ]
+      [ glob ../include/boost/segmented_tree_seq_fwd.hpp ]
+   :
+      <doxygen:param>HIDE_UNDOC_MEMBERS=YES
+      <doxygen:param>HIDE_UNDOC_MEMBERS=YES
+      <doxygen:param>HIDE_UNDOC_CLASSES=YES
+      <doxygen:param>EXTRACT_PRIVATE=NO
+      <doxygen:param>ENABLE_PREPROCESSING=YES
+      <doxygen:param>PREDEFINED=\"BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED\"
+#      <xsl:param>"boost.doxygen.reftitle=Boost.SegmentedTreeSeq Header Reference"
+   ;
+
+xml segmented_tree_seq : segmented_tree_seq.qbk : <dependency>autodoc ;
+boostbook standalone
+    :
+        segmented_tree_seq
+    :
+        <xsl:param>boost.root=http://www.boost.org/doc/libs/1_59_0
+#        <xsl:param>boost.root=../../../..
+        <format>pdf:<xsl:param>boost.url.prefix=http://www.boost.org/doc/libs/release/doc/html
+    ;
+
