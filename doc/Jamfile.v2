@@ -20,7 +20,9 @@ boostbook standalone
     segmented_tree_seq
   :
     <xsl:param>boost.root=http://www.boost.org/doc/libs/1_59_0
-    <format>pdf:<xsl:param>boost.url.prefix=http://www.boost.org/doc/libs/release/doc/html
+#    <xsl:param>html.stylesheet=boostbook.css
   ;
 
 install svg_install : [ glob images/*.svg ] : <location>html/images ;
+#install css-install : ../../../doc/src/boostbook.css : <location>html ;
+
