@@ -1,0 +1,479 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Class template segmented_tree_seq_iterator</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
+<link rel="up" href="../boost_segmentedtreeseq/reference.html#header.boost.segmented_tree_seq_hpp" title="Header &lt;boost/segmented_tree_seq.hpp&gt;">
+<link rel="prev" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">
+<link rel="next" href="operator__.html" title="Function template operator==">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="http://www.boost.org/doc/libs/1_59_0/boost.png"></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/index.html">Home</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="segmented_tree_seq.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../boost_segmentedtreeseq/reference.html#header.boost.segmented_tree_seq_hpp"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="operator__.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="refentry">
+<a name="boost.segment_idm140001167028672"></a><div class="titlepage"></div>
+<div class="refnamediv">
+<h2><span class="refentrytitle">Class template segmented_tree_seq_iterator</span></h2>
+<p>boost::segmented_tree_seq_iterator</p>
+</div>
+<h2 xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv-title">Synopsis</h2>
+<div xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv"><pre class="synopsis"><span class="comment">// In header: &lt;<a class="link" href="../boost_segmentedtreeseq/reference.html#header.boost.segmented_tree_seq_hpp" title="Header &lt;boost/segmented_tree_seq.hpp&gt;">boost/segmented_tree_seq.hpp</a>&gt;
+
+</span><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> StaticTraits<span class="special">,</span> <span class="keyword">typename</span> Pointer<span class="special">,</span> <span class="keyword">typename</span> Reference<span class="special">&gt;</span> 
+<span class="keyword">class</span> <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">{</span>
+<span class="keyword">public</span><span class="special">:</span>
+  <span class="comment">// types</span>
+  <span class="keyword">typedef</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">random_access_iterator_tag</span>         <a name="boost.segment_idm140001167028672.iterator_category"></a><span class="identifier">iterator_category</span><span class="special">;</span>  <span class="comment">// The iterator category type. </span>
+  <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="identifier">static_traits</span><span class="special">::</span><span class="identifier">value_type</span>      <a name="boost.segment_idm140001167028672.value_type"></a><span class="identifier">value_type</span><span class="special">;</span>         <span class="comment">// The value type. </span>
+  <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="identifier">static_traits</span><span class="special">::</span><span class="identifier">size_type</span>       <a name="boost.segment_idm140001167028672.size_type"></a><span class="identifier">size_type</span><span class="special">;</span>          <span class="comment">// The size type. </span>
+  <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="identifier">static_traits</span><span class="special">::</span><span class="identifier">difference_type</span> <a name="boost.segment_idm140001167028672.difference_type"></a><span class="identifier">difference_type</span><span class="special">;</span>    <span class="comment">// The difference type. </span>
+  <span class="keyword">typedef</span> <span class="identifier">Pointer</span>                                 <a name="boost.segment_idm140001167028672.pointer"></a><span class="identifier">pointer</span><span class="special">;</span>            <span class="comment">// The pointer type. </span>
+  <span class="keyword">typedef</span> <span class="identifier">Reference</span>                               <a name="boost.segment_idm140001167028672.reference"></a><span class="identifier">reference</span><span class="special">;</span>          <span class="comment">// The iterator reference type. </span>
+
+  <span class="comment">// <a class="link" href="segment_idm140001167028672.html#boost.segment_idm140001167028672construct-copy-destruct">construct/copy/destruct</a></span>
+  <a class="link" href="segment_idm140001167028672.html#idm140001167017776-bb"><span class="identifier">segmented_tree_seq_iterator</span></a><span class="special">(</span><span class="identifier">iterator_data</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html#idm140001166910016-bb"><span class="identifier">segmented_tree_seq_iterator</span></a><span class="special">(</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html#idm140001166907728-bb"><span class="identifier">segmented_tree_seq_iterator</span></a><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> P<span class="special">,</span> <span class="keyword">typename</span> R<span class="special">,</span> 
+           <span class="keyword">typename</span>  <span class="special">=</span> <span class="keyword">typename</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">enable_if</span><span class="special">&lt;</span>                <span class="identifier">std</span><span class="special">::</span><span class="identifier">is_convertible</span><span class="special">&lt;</span><span class="identifier">P</span><span class="special">,</span> <span class="identifier">pointer</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">type</span><span class="special">&gt;</span> 
+    <a class="link" href="segment_idm140001167028672.html#idm140001166900880-bb"><span class="identifier">segmented_tree_seq_iterator</span></a><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a><span class="special">&lt;</span> <span class="identifier">static_traits</span><span class="special">,</span> <span class="identifier">P</span><span class="special">,</span> <span class="identifier">R</span> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> 
+  <a class="link" href="segment_idm140001167028672.html#idm140001166904560-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
+
+  <span class="comment">// <a class="link" href="segment_idm140001167028672.html#idm140001167016896-bb">public member functions</a></span>
+  <span class="identifier">size_type</span> <a class="link" href="segment_idm140001167028672.html#idm140001167016400-bb"><span class="identifier">index</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">pointer</span> <a class="link" href="segment_idm140001167028672.html#idm140001167012848-bb"><span class="identifier">begin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">pointer</span> <a class="link" href="segment_idm140001167028672.html#idm140001167009216-bb"><span class="identifier">end</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">pointer</span> <a class="link" href="segment_idm140001167028672.html#idm140001167005664-bb"><span class="keyword">operator</span><span class="special">-&gt;</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">reference</span> <a class="link" href="segment_idm140001167028672.html#idm140001167002880-bb"><span class="keyword">operator</span><span class="special">*</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a class="link" href="segment_idm140001167028672.html#idm140001167000096-bb"><span class="keyword">operator</span><span class="special">++</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a class="link" href="segment_idm140001167028672.html#idm140001166996528-bb"><span class="keyword">operator</span><span class="special">--</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a class="link" href="segment_idm140001167028672.html#idm140001166992960-bb"><span class="keyword">operator</span><span class="special">++</span></a><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a class="link" href="segment_idm140001167028672.html#idm140001166989664-bb"><span class="keyword">operator</span><span class="special">--</span></a><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a class="link" href="segment_idm140001167028672.html#idm140001166986368-bb"><span class="keyword">operator</span><span class="special">+=</span></a><span class="special">(</span><span class="identifier">difference_type</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a class="link" href="segment_idm140001167028672.html#idm140001166982176-bb"><span class="keyword">operator</span><span class="special">-=</span></a><span class="special">(</span><span class="identifier">difference_type</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a class="link" href="segment_idm140001167028672.html#idm140001166977984-bb"><span class="keyword">operator</span><span class="special">+</span></a><span class="special">(</span><span class="identifier">difference_type</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a class="link" href="segment_idm140001167028672.html#idm140001166974448-bb"><span class="keyword">operator</span><span class="special">-</span></a><span class="special">(</span><span class="identifier">difference_type</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">difference_type</span> <a class="link" href="segment_idm140001167028672.html#idm140001166970912-bb"><span class="keyword">operator</span><span class="special">-</span></a><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a class="link" href="segment_idm140001167028672.html#idm140001166967248-bb"><span class="identifier">move_before_segment</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a class="link" href="segment_idm140001167028672.html#idm140001166962832-bb"><span class="identifier">move_before_segment</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a class="link" href="segment_idm140001167028672.html#idm140001166957760-bb"><span class="identifier">move_after_segment</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a class="link" href="segment_idm140001167028672.html#idm140001166953344-bb"><span class="identifier">move_after_segment</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a class="link" href="segment_idm140001167028672.html#idm140001166949040-bb"><span class="identifier">before_segment</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a class="link" href="segment_idm140001167028672.html#idm140001166945264-bb"><span class="identifier">after_segment</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a class="link" href="segment_idm140001167028672.html#idm140001166941456-bb"><span class="identifier">before_segment</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a class="link" href="segment_idm140001167028672.html#idm140001166937056-bb"><span class="identifier">after_segment</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">bool</span> <a class="link" href="segment_idm140001167028672.html#idm140001166932640-bb"><span class="keyword">operator</span><span class="special">!=</span></a><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">bool</span> <a class="link" href="segment_idm140001167028672.html#idm140001166928896-bb"><span class="keyword">operator</span><span class="special">==</span></a><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">bool</span> <a class="link" href="segment_idm140001167028672.html#idm140001166925152-bb"><span class="keyword">operator</span><span class="special">&lt;</span></a><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">bool</span> <a class="link" href="segment_idm140001167028672.html#idm140001166921408-bb"><span class="keyword">operator</span><span class="special">&gt;</span></a><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">bool</span> <a class="link" href="segment_idm140001167028672.html#idm140001166917664-bb"><span class="keyword">operator</span><span class="special">&lt;=</span></a><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">bool</span> <a class="link" href="segment_idm140001167028672.html#idm140001166913904-bb"><span class="keyword">operator</span><span class="special">&gt;=</span></a><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+<span class="special">}</span><span class="special">;</span></pre></div>
+<div class="refsect1">
+<a name="idm140719259794320"></a><h2>Description</h2>
+<p>A template class used for const and non-const iterators for <a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a>.</p>
+<p>
+</p>
+<div class="refsect2">
+<a name="idm140719259792432"></a><h3>Template Parameters</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><pre class="literallayout"><span class="keyword">typename</span> StaticTraits</pre></li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">typename</span> Pointer</pre>
+<p>A const or non-const pointer. </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">typename</span> Reference</pre>
+<p>A const or non-const reference. </p>
+</li>
+</ol></div>
+</div>
+<div class="refsect2">
+<a name="idm140719259785584"></a><h3>
+<a name="boost.segment_idm140001167028672construct-copy-destruct"></a><code class="computeroutput">segmented_tree_seq_iterator</code> 
+        public
+       construct/copy/destruct</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><pre class="literallayout"><a name="idm140001167017776-bb"></a><span class="identifier">segmented_tree_seq_iterator</span><span class="special">(</span><span class="identifier">iterator_data</span> it<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem">
+<pre class="literallayout"><a name="idm140001166910016-bb"></a><span class="identifier">segmented_tree_seq_iterator</span><span class="special">(</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Default constructs an iterator from another.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a name="idm140001166907728-bb"></a><span class="identifier">segmented_tree_seq_iterator</span><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span> other<span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Copy constructs an iterator from other.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> P<span class="special">,</span> <span class="keyword">typename</span> R<span class="special">,</span> 
+         <span class="keyword">typename</span>  <span class="special">=</span> <span class="keyword">typename</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">enable_if</span><span class="special">&lt;</span>                <span class="identifier">std</span><span class="special">::</span><span class="identifier">is_convertible</span><span class="special">&lt;</span><span class="identifier">P</span><span class="special">,</span> <span class="identifier">pointer</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">type</span><span class="special">&gt;</span> 
+  <a name="idm140001166900880-bb"></a><span class="identifier">segmented_tree_seq_iterator</span><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a><span class="special">&lt;</span> <span class="identifier">static_traits</span><span class="special">,</span> <span class="identifier">P</span><span class="special">,</span> <span class="identifier">R</span> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Copy constructs a const iterator from non-const iterator other.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> 
+<a name="idm140001166904560-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span> other<span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Copy assigns from other.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+</ol></div>
+</div>
+<div class="refsect2">
+<a name="idm140719259724064"></a><h3>
+<a name="idm140001167016896-bb"></a><code class="computeroutput">segmented_tree_seq_iterator</code> public member functions</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">size_type</span> <a name="idm140001167016400-bb"></a><span class="identifier">index</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>The index into the segment that the iterator points to.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">pointer</span> <a name="idm140001167012848-bb"></a><span class="identifier">begin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>The beginning of the segment that the iterator points to.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">pointer</span> <a name="idm140001167009216-bb"></a><span class="identifier">end</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>The end of the segment that the iterator points to.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">pointer</span> <a name="idm140001167005664-bb"></a><span class="keyword">operator</span><span class="special">-&gt;</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A pointer to the current element.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">reference</span> <a name="idm140001167002880-bb"></a><span class="keyword">operator</span><span class="special">*</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A reference to the current element.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a name="idm140001167000096-bb"></a><span class="keyword">operator</span><span class="special">++</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move the iterator forward 1 element.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>A reference to *this.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant amortized. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a name="idm140001166996528-bb"></a><span class="keyword">operator</span><span class="special">--</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move the iterator backward 1 element.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>A reference to *this.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant amortized. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a name="idm140001166992960-bb"></a><span class="keyword">operator</span><span class="special">++</span><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A copy of the iterator moved forward 1 element.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant amortized. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a name="idm140001166989664-bb"></a><span class="keyword">operator</span><span class="special">--</span><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A copy of the iterator moved backward 1 element.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant amortized. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a name="idm140001166986368-bb"></a><span class="keyword">operator</span><span class="special">+=</span><span class="special">(</span><span class="identifier">difference_type</span> diff<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move the iterator forward diff elements.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>A reference to *this.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic amortized in the absolute value of diff. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a name="idm140001166982176-bb"></a><span class="keyword">operator</span><span class="special">-=</span><span class="special">(</span><span class="identifier">difference_type</span> diff<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move the iterator backward diff elements.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>A reference to *this.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic amortized in the absolute value of diff. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a name="idm140001166977984-bb"></a><span class="keyword">operator</span><span class="special">+</span><span class="special">(</span><span class="identifier">difference_type</span> diff<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A copy of the iterator moved forward diff elements.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic amortized in the absolute value of diff. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a name="idm140001166974448-bb"></a><span class="keyword">operator</span><span class="special">-</span><span class="special">(</span><span class="identifier">difference_type</span> diff<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A copy of the iterator moved backward diff elements.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic amortized in the absolute value of diff. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">difference_type</span> <a name="idm140001166970912-bb"></a><span class="keyword">operator</span><span class="special">-</span><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span> other<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A distance between the specified iterator.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a name="idm140001166967248-bb"></a><span class="identifier">move_before_segment</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move the iterator to the last element of the previous segment.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>A reference to *this.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant amortized.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a name="idm140001166962832-bb"></a><span class="identifier">move_before_segment</span><span class="special">(</span><span class="identifier">size_type</span> count<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move the iterator to the last element of the previous segment and then move backward count elements.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>A reference to *this.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic amortized in count.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a name="idm140001166957760-bb"></a><span class="identifier">move_after_segment</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move the iterator to the first element of the next segment.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>A reference to *this.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant amortized.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="special">&amp;</span> <a name="idm140001166953344-bb"></a><span class="identifier">move_after_segment</span><span class="special">(</span><span class="identifier">size_type</span> count<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move the iterator to the first element of the next segment and then move forward count elements.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic amortized in count.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a name="idm140001166949040-bb"></a><span class="identifier">before_segment</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A copy of the iterator moved to the last element of the previous segment.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant amortized.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a name="idm140001166945264-bb"></a><span class="identifier">after_segment</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A copy of the iterator moved to the last element of the previous segment and then move backward count elements.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic amortized in count.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a name="idm140001166941456-bb"></a><span class="identifier">before_segment</span><span class="special">(</span><span class="identifier">size_type</span> count<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A copy of the iterator moved to the last element of the previous segment.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant amortized.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <a name="idm140001166937056-bb"></a><span class="identifier">after_segment</span><span class="special">(</span><span class="identifier">size_type</span> count<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A copy of the iterator to the first element of the next segment and then move forward count elements.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic amortized in count.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">bool</span> <a name="idm140001166932640-bb"></a><span class="keyword">operator</span><span class="special">!=</span><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span> other<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>False if both iterators point to the same element. True otherwise.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">bool</span> <a name="idm140001166928896-bb"></a><span class="keyword">operator</span><span class="special">==</span><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span> other<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>True if both iterators point to the same element. False otherwise.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">bool</span> <a name="idm140001166925152-bb"></a><span class="keyword">operator</span><span class="special">&lt;</span><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span> other<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>True if *this points to an element before other. False otherwise.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">bool</span> <a name="idm140001166921408-bb"></a><span class="keyword">operator</span><span class="special">&gt;</span><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span> other<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>True if *this points to an element after other. False otherwise.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">bool</span> <a name="idm140001166917664-bb"></a><span class="keyword">operator</span><span class="special">&lt;=</span><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span> other<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>True if *this points to the same element or before other. False otherwise.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">bool</span> <a name="idm140001166913904-bb"></a><span class="keyword">operator</span><span class="special">&gt;=</span><span class="special">(</span><a class="link" href="segment_idm140001167028672.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a> <span class="keyword">const</span> <span class="special">&amp;</span> other<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>True if *this points to the same element or after other. False otherwise.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2014, 2015 Chris Clearwater<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="segmented_tree_seq.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../boost_segmentedtreeseq/reference.html#header.boost.segmented_tree_seq_hpp"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="operator__.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
