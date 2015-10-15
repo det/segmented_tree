@@ -1,0 +1,148 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Implementation</title>
+<link rel="stylesheet" href="http://www.boost.org/doc/libs/1_59_0/doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
+<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
+<link rel="prev" href="getting_started.html" title="Getting started">
+<link rel="next" href="reference.html" title="Reference">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="http://www.boost.org/doc/libs/1_59_0/boost.png"></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/index.html">Home</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="getting_started.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="reference.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="boost_segmentedtreeseq.implementation"></a><a class="link" href="implementation.html" title="Implementation">Implementation</a>
+</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="implementation.html#boost_segmentedtreeseq.implementation.representation">Representation</a></span></dt>
+<dt><span class="section"><a href="implementation.html#boost_segmentedtreeseq.implementation.searching">Searching</a></span></dt>
+<dt><span class="section"><a href="implementation.html#boost_segmentedtreeseq.implementation.inserting">Inserting</a></span></dt>
+<dt><span class="section"><a href="implementation.html#boost_segmentedtreeseq.implementation.erasing">Erasing</a></span></dt>
+</dl></div>
+<p>
+      Boost.SegmentedTreeSeq is implemented using a counted <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_top">B+Tree</a>.
+    </p>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boost_segmentedtreeseq.implementation.representation"></a><a class="link" href="implementation.html#boost_segmentedtreeseq.implementation.representation" title="Representation">Representation</a>
+</h3></div></div></div>
+<p>
+        Internally the tree consists of segments and index_nodes:
+      </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">index_node</span> <span class="special">{</span>
+  <span class="identifier">index_node</span> <span class="special">*</span><span class="identifier">parent_pointer</span><span class="special">;</span>
+  <span class="identifier">std</span><span class="special">::</span><span class="identifier">uint16_t</span> <span class="identifier">parent_index_</span><span class="special">;</span>
+  <span class="identifier">std</span><span class="special">::</span><span class="identifier">uint16_t</span> <span class="identifier">length_</span><span class="special">;</span>
+  <span class="identifier">std</span><span class="special">::</span><span class="identifier">array</span><span class="special">&lt;</span><span class="identifier">size_type</span><span class="special">,</span> <span class="identifier">base_max</span><span class="special">&gt;</span> <span class="identifier">sizes</span><span class="special">;</span>
+  <span class="identifier">std</span><span class="special">::</span><span class="identifier">array</span><span class="special">&lt;</span><span class="keyword">void</span> <span class="special">*,</span> <span class="identifier">base_max</span><span class="special">&gt;</span> <span class="identifier">pointers</span><span class="special">;</span>
+<span class="special">}</span>
+
+<span class="keyword">using</span> <span class="identifier">segment</span> <span class="special">=</span> <span class="identifier">value_type</span> <span class="special">*;</span> <span class="comment">// Of size segment_max.</span>
+</pre>
+<p>
+        An index_node of height greater than 2 always contains other index_nodes
+        as children. An index_node of height 2 always contains segments as chidlren.
+        A segment is always of height 1 and is simply an array of value_type. Height
+        0 is the empty tree.
+      </p>
+<p>
+        The size array stores the recursive size of all its children.
+      </p>
+<p>
+        The segmented_tree_seq container looks like this:
+      </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">segmented_tree_seq</span> <span class="special">{</span>
+  <span class="identifier">size_type</span> <span class="identifier">height</span><span class="special">;</span>
+  <span class="identifier">size_type</span> <span class="identifier">size</span><span class="special">;</span>
+  <span class="keyword">void</span> <span class="special">*</span> <span class="identifier">root</span><span class="special">;</span>
+<span class="special">};</span>
+</pre>
+<p>
+        The height of the tree can be used to determine what type root points to.
+      </p>
+<p>
+        Iterators look like this:
+      </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">iterator</span> <span class="special">{</span>
+  <span class="identifier">segment</span> <span class="identifier">segment</span><span class="special">;</span>
+  <span class="identifier">size_type</span> <span class="identifier">segment_index</span><span class="special">;</span>
+  <span class="identifier">size_type</span> <span class="identifier">segment_length</span><span class="special">;</span>
+  <span class="identifier">index_node</span> <span class="special">*</span><span class="identifier">parent</span><span class="special">;</span>
+  <span class="identifier">index_node</span> <span class="special">*</span><span class="identifier">parent_index</span>
+  <span class="identifier">size_type</span> <span class="identifier">position</span><span class="special">;</span>
+<span class="special">};</span>
+</pre>
+<p>
+        Storing the position enables constant time comparison between iterators.
+        This is possible because any destructive operation that would invalidate
+        the position invalidates all iterators anyways. Additionally, a segment's
+        metadata is stored here instead of the segment as an optimization. This is
+        worthwhile because segments are mutated exponentially more often than any
+        node above it and cache misses are reduced.
+      </p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boost_segmentedtreeseq.implementation.searching"></a><a class="link" href="implementation.html#boost_segmentedtreeseq.implementation.searching" title="Searching">Searching</a>
+</h3></div></div></div>
+<p>
+        All searches start from the root of the tree. To find a given index in the
+        tree you start from the root and perform linear searches on each index_node
+        and walk down the tree until you reach a segment at height 1.
+      </p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boost_segmentedtreeseq.implementation.inserting"></a><a class="link" href="implementation.html#boost_segmentedtreeseq.implementation.inserting" title="Inserting">Inserting</a>
+</h3></div></div></div>
+<p>
+        If the segment pointed to by the iterator is not full then insert the element
+        in segment and walk up the tree updating sizes. If the segement is full then
+        split the segment into two and insert the new segment into the parent index_node.
+        The index_node repeats this process. If the root is passed then create a
+        new root index_node containing two children and increase the height.
+      </p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boost_segmentedtreeseq.implementation.erasing"></a><a class="link" href="implementation.html#boost_segmentedtreeseq.implementation.erasing" title="Erasing">Erasing</a>
+</h3></div></div></div>
+<p>
+        If the segment pointed to by the iterator is not at its minimum value then
+        remove the element from the segment and walk up the tree updating sizes.
+        If the segement is at its minimum size then try to steal an element from
+        a sibling. If this succeeds then walk up the tree updating sizes. Otherwise,
+        merge the segment with a neighbor and remove the neighbor from the parent
+        index_node. The index_node repeats this process. If a root index_node of
+        length 2 is hit, then make the remaning child the new root and decrease the
+        height.
+      </p>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2014, 2015 Chris Clearwater<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="getting_started.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="reference.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

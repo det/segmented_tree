@@ -1,89 +1,87 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.10"/>
-<title>segmented_tree_seq: Main Page</title>
-<link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="dynsections.js"></script>
-<link href="search/search.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="search/searchdata.js"></script>
-<script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(document).ready(function() { init_search(); });
-</script>
-<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0</title>
+<link rel="stylesheet" href="http://www.boost.org/doc/libs/1_59_0/doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
+<link rel="next" href="boost_segmentedtreeseq/getting_started.html" title="Getting started">
 </head>
-<body>
-<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-<div id="titlearea">
-<table cellspacing="0" cellpadding="0">
- <tbody>
- <tr style="height: 56px;">
-  <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">segmented_tree_seq
-   </div>
-  </td>
- </tr>
- </tbody>
-</table>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="http://www.boost.org/doc/libs/1_59_0/boost.png"></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/index.html">Home</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav"><a accesskey="n" href="boost_segmentedtreeseq/getting_started.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a></div>
+<div class="chapter">
+<div class="titlepage"><div>
+<div><h2 class="title">
+<a name="boost_segmentedtreeseq"></a>Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0</h2></div>
+<div><p class="copyright">Copyright &#169; 2014, 2015 Chris Clearwater</p></div>
+<div><div class="legalnotice">
+<a name="boost_segmentedtreeseq.legal"></a><p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></div>
+</div></div>
+<div class="toc">
+<p><b>Table of Contents</b></p>
+<dl class="toc">
+<dt><span class="section"><a href="index.html#boost_segmentedtreeseq.motivation">Motivation</a></span></dt>
+<dt><span class="section"><a href="boost_segmentedtreeseq/getting_started.html">Getting started</a></span></dt>
+<dd><dl>
+<dt><span class="section"><a href="boost_segmentedtreeseq/getting_started.html#boost_segmentedtreeseq.getting_started.how_to_use">How
+      to use</a></span></dt>
+<dt><span class="section"><a href="boost_segmentedtreeseq/getting_started.html#boost_segmentedtreeseq.getting_started.example_needle_in_a_haystack">Example
+      needle in a haystack</a></span></dt>
+</dl></dd>
+<dt><span class="section"><a href="boost_segmentedtreeseq/implementation.html">Implementation</a></span></dt>
+<dd><dl>
+<dt><span class="section"><a href="boost_segmentedtreeseq/implementation.html#boost_segmentedtreeseq.implementation.representation">Representation</a></span></dt>
+<dt><span class="section"><a href="boost_segmentedtreeseq/implementation.html#boost_segmentedtreeseq.implementation.searching">Searching</a></span></dt>
+<dt><span class="section"><a href="boost_segmentedtreeseq/implementation.html#boost_segmentedtreeseq.implementation.inserting">Inserting</a></span></dt>
+<dt><span class="section"><a href="boost_segmentedtreeseq/implementation.html#boost_segmentedtreeseq.implementation.erasing">Erasing</a></span></dt>
+</dl></dd>
+<dt><span class="section"><a href="boost_segmentedtreeseq/reference.html">Reference</a></span></dt>
+<dd><dl><dt><span class="section"><a href="boost_segmentedtreeseq/reference.html#header.boost.segmented_tree_seq_hpp">Header &lt;boost/segmented_tree_seq.hpp&gt;</a></span></dt></dl></dd>
+<dt><span class="section"><a href="boost_segmentedtreeseq/performance.html">Performance</a></span></dt>
+</dl>
 </div>
-<!-- end header part -->
-<!-- Generated by Doxygen 1.8.10 -->
-<script type="text/javascript">
-var searchBox = new SearchBox("searchBox", "search",false,'Search');
-</script>
-  <div id="navrow1" class="tabs">
-    <ul class="tablist">
-      <li class="current"><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li><a href="files.html"><span>Files</span></a></li>
-      <li>
-        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <img id="MSearchSelect" src="search/mag_sel.png"
-               onmouseover="return searchBox.OnSearchSelectShow()"
-               onmouseout="return searchBox.OnSearchSelectHide()"
-               alt=""/>
-          <input type="text" id="MSearchField" value="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
-          </span>
-        </div>
-      </li>
-    </ul>
-  </div>
-</div><!-- top -->
-<!-- window showing the filter options -->
-<div id="MSearchSelectWindow"
-     onmouseover="return searchBox.OnSearchSelectShow()"
-     onmouseout="return searchBox.OnSearchSelectHide()"
-     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="boost_segmentedtreeseq.motivation"></a><a class="link" href="index.html#boost_segmentedtreeseq.motivation" title="Motivation">Motivation</a>
+</h2></div></div></div>
+<p>
+      The standard library provides sequence containers that offer efficient insertion
+      at at the end (<code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span></code>), efficient insertition at the front
+      and the end (<code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">deque</span></code>), but offers no solution for efficient
+      insertion anywhere in a container.
+    </p>
+<p>
+      Boost.SegmentedTreeSeq was designed to fill this use case.
+    </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+        Boost.SegmentedTreeSeq is not currently a part of Boost.
+      </p></td></tr>
+</table></div>
 </div>
-
-<!-- iframe showing the search results (closed by default) -->
-<div id="MSearchResultsWindow">
-<iframe src="javascript:void(0)" frameborder="0" 
-        name="MSearchResults" id="MSearchResults">
-</iframe>
 </div>
-
-<div class="header">
-  <div class="headertitle">
-<div class="title">segmented_tree_seq Documentation</div>  </div>
-</div><!--header-->
-<div class="contents">
-</div><!-- contents -->
-<!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.10
-</small></address>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"><p><small>Last revised: October 15, 2015 at 00:28:43 GMT</small></p></td>
+<td align="right"><div class="copyright-footer"></div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav"><a accesskey="n" href="boost_segmentedtreeseq/getting_started.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a></div>
 </body>
 </html>

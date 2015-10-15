@@ -1,0 +1,1343 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Class template segmented_tree_seq</title>
+<link rel="stylesheet" href="http://www.boost.org/doc/libs/1_59_0/doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
+<link rel="up" href="../boost_segmentedtreeseq/reference.html#header.boost.segmented_tree_seq_hpp" title="Header &lt;boost/segmented_tree_seq.hpp&gt;">
+<link rel="prev" href="../boost_segmentedtreeseq/reference.html" title="Reference">
+<link rel="next" href="segment_idm139696572826160.html" title="Class template segmented_tree_seq_iterator">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="http://www.boost.org/doc/libs/1_59_0/boost.png"></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/index.html">Home</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../boost_segmentedtreeseq/reference.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../boost_segmentedtreeseq/reference.html#header.boost.segmented_tree_seq_hpp"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="segment_idm139696572826160.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="refentry">
+<a name="boost.segmented_tree_seq"></a><div class="titlepage"></div>
+<div class="refnamediv">
+<h2><span class="refentrytitle">Class template segmented_tree_seq</span></h2>
+<p>boost::segmented_tree_seq</p>
+</div>
+<h2 xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv-title">Synopsis</h2>
+<div xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv"><pre class="synopsis"><span class="comment">// In header: &lt;<a class="link" href="../boost_segmentedtreeseq/reference.html#header.boost.segmented_tree_seq_hpp" title="Header &lt;boost/segmented_tree_seq.hpp&gt;">boost/segmented_tree_seq.hpp</a>&gt;
+
+</span><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">,</span> <span class="keyword">typename</span> Allocator<span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> segment_target<span class="special">,</span> 
+         <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> base_target<span class="special">&gt;</span> 
+<span class="keyword">class</span> <a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">{</span>
+<span class="keyword">public</span><span class="special">:</span>
+  <span class="comment">// types</span>
+  <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="identifier">element_traits</span><span class="special">::</span><span class="identifier">value_type</span>                                    <a name="boost.segmented_tree_seq.value_type"></a><span class="identifier">value_type</span><span class="special">;</span>              <span class="comment">// The type of elements stored in the container. </span>
+  <span class="keyword">typedef</span> <span class="identifier">Allocator</span>                                                              <a name="boost.segmented_tree_seq.allocator_type"></a><span class="identifier">allocator_type</span><span class="special">;</span>          <span class="comment">// The allocator type used by the container. </span>
+  <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="identifier">element_traits</span><span class="special">::</span><span class="identifier">size_type</span>                                     <a name="boost.segmented_tree_seq.size_type"></a><span class="identifier">size_type</span><span class="special">;</span>               <span class="comment">// The unsigned integral type used by the container. </span>
+  <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="identifier">element_traits</span><span class="special">::</span><span class="identifier">difference_type</span>                               <a name="boost.segmented_tree_seq.difference_type"></a><span class="identifier">difference_type</span><span class="special">;</span>         <span class="comment">// The pointers difference type. </span>
+  <span class="keyword">typedef</span> <span class="identifier">value_type</span> <span class="special">&amp;</span>                                                           <a name="boost.segmented_tree_seq.reference"></a><span class="identifier">reference</span><span class="special">;</span>               <span class="comment">// The value reference type. </span>
+  <span class="keyword">typedef</span> <span class="identifier">value_type</span> <span class="keyword">const</span> <span class="special">&amp;</span>                                                     <a name="boost.segmented_tree_seq.const_reference"></a><span class="identifier">const_reference</span><span class="special">;</span>         <span class="comment">// The value const reference type. </span>
+  <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="identifier">element_traits</span><span class="special">::</span><span class="identifier">pointer</span>                                       <a name="boost.segmented_tree_seq.pointer"></a><span class="identifier">pointer</span><span class="special">;</span>                 <span class="comment">// The pointer type. </span>
+  <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="identifier">element_traits</span><span class="special">::</span><span class="identifier">const_pointer</span>                                 <a name="boost.segmented_tree_seq.const_pointer"></a><span class="identifier">const_pointer</span><span class="special">;</span>           <span class="comment">// The const pointer type. </span>
+  <span class="keyword">typedef</span> <a class="link" href="segment_idm139696572826160.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a><span class="special">&lt;</span> <span class="identifier">static_traits</span><span class="special">,</span> <span class="identifier">pointer</span><span class="special">,</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="special">&gt;</span>             <a name="boost.segmented_tree_seq.iterator"></a><span class="identifier">iterator</span><span class="special">;</span>                <span class="comment">// The iterator type. </span>
+  <span class="keyword">typedef</span> <a class="link" href="segment_idm139696572826160.html" title="Class template segmented_tree_seq_iterator">segmented_tree_seq_iterator</a><span class="special">&lt;</span> <span class="identifier">static_traits</span><span class="special">,</span> <span class="identifier">const_pointer</span><span class="special">,</span> <span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="special">&gt;</span> <a name="boost.segmented_tree_seq.const_iterator"></a><span class="identifier">const_iterator</span><span class="special">;</span>          <span class="comment">// The const iterator type. </span>
+  <span class="keyword">typedef</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">reverse_iterator</span><span class="special">&lt;</span> <span class="identifier">iterator</span> <span class="special">&gt;</span>                                      <a name="boost.segmented_tree_seq.reverse_iterator"></a><span class="identifier">reverse_iterator</span><span class="special">;</span>        <span class="comment">// The reverse iterator type. </span>
+  <span class="keyword">typedef</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">reverse_iterator</span><span class="special">&lt;</span> <span class="identifier">const_iterator</span> <span class="special">&gt;</span>                                <a name="boost.segmented_tree_seq.const_reverse_iterator"></a><span class="identifier">const_reverse_iterator</span><span class="special">;</span>  <span class="comment">// The const reverse iterator. </span>
+
+  <span class="comment">// <a class="link" href="segmented_tree_seq.html#boost.segmented_tree_seqconstruct-copy-destruct">construct/copy/destruct</a></span>
+  <span class="keyword">explicit</span> <a class="link" href="segmented_tree_seq.html#idm139696572883520-bb"><span class="identifier">segmented_tree_seq</span></a><span class="special">(</span><span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">explicit</span> <a class="link" href="segmented_tree_seq.html#idm139696572880528-bb"><span class="identifier">segmented_tree_seq</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">(</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">is_nothrow_default_constructible</span><span class="special">&lt;</span> <span class="identifier">allocator_type</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segmented_tree_seq.html#idm139696572877904-bb"><span class="identifier">segmented_tree_seq</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="special">=</span> <span class="identifier">Allocator</span><span class="special">(</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">explicit</span> <a class="link" href="segmented_tree_seq.html#idm139696572873600-bb"><span class="identifier">segmented_tree_seq</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="special">=</span> <span class="identifier">Allocator</span><span class="special">(</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> InputIt<span class="special">,</span> 
+           <span class="keyword">typename</span>  <span class="special">=</span> <span class="keyword">typename</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">iterator_traits</span><span class="special">&lt;</span><span class="identifier">InputIt</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">pointer</span><span class="special">&gt;</span> 
+    <a class="link" href="segmented_tree_seq.html#idm139696572869696-bb"><span class="identifier">segmented_tree_seq</span></a><span class="special">(</span><span class="identifier">InputIt</span><span class="special">,</span> <span class="identifier">InputIt</span><span class="special">,</span> <span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="special">=</span> <span class="identifier">Allocator</span><span class="special">(</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segmented_tree_seq.html#idm139696572863888-bb"><span class="identifier">segmented_tree_seq</span></a><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segmented_tree_seq.html#idm139696572860960-bb"><span class="identifier">segmented_tree_seq</span></a><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segmented_tree_seq.html#idm139696572857328-bb"><span class="identifier">segmented_tree_seq</span></a><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;&amp;</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">(</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">is_nothrow_move_constructible</span><span class="special">&lt;</span> <span class="identifier">allocator_type</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segmented_tree_seq.html#idm139696572854080-bb"><span class="identifier">segmented_tree_seq</span></a><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;&amp;</span><span class="special">,</span> <span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segmented_tree_seq.html#idm139696572850336-bb"><span class="identifier">segmented_tree_seq</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">initializer_list</span><span class="special">&lt;</span> <span class="identifier">T</span> <span class="special">&gt;</span><span class="special">,</span> 
+                     <span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="special">=</span> <span class="identifier">Allocator</span><span class="special">(</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;</span> <a class="link" href="segmented_tree_seq.html#idm139696572844624-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;</span> 
+  <a class="link" href="segmented_tree_seq.html#idm139696572838704-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;&amp;</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">(</span> <span class="identifier">allocator_type</span><span class="special">::</span><span class="identifier">propagate_on_container_move_assignment</span><span class="special">::</span><span class="identifier">value</span> <span class="special">&amp;&amp;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">is_nothrow_move_assignable</span><span class="special">&lt;</span> <span class="identifier">allocator_type</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;</span> <a class="link" href="segmented_tree_seq.html#idm139696572831904-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">initializer_list</span><span class="special">&lt;</span> <span class="identifier">T</span> <span class="special">&gt;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="segmented_tree_seq.html#idm139696572846672-bb"><span class="special">~</span><span class="identifier">segmented_tree_seq</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+
+  <span class="comment">// <a class="link" href="segmented_tree_seq.html#idm139696579150224-bb">public member functions</a></span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696579149664-bb"><span class="identifier">assign</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> InputIt<span class="special">,</span> 
+           <span class="keyword">typename</span>  <span class="special">=</span> <span class="keyword">typename</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">iterator_traits</span><span class="special">&lt;</span><span class="identifier">InputIt</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">pointer</span><span class="special">&gt;</span> 
+    <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696579143616-bb"><span class="identifier">assign</span></a><span class="special">(</span><span class="identifier">InputIt</span><span class="special">,</span> <span class="identifier">InputIt</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696579135856-bb"><span class="identifier">assign</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">initializer_list</span><span class="special">&lt;</span> <span class="identifier">T</span> <span class="special">&gt;</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">allocator_type</span> <a class="link" href="segmented_tree_seq.html#idm139696573180048-bb"><span class="identifier">get_allocator</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">reference</span> <a class="link" href="segmented_tree_seq.html#idm139696573175728-bb"><span class="identifier">at</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">const_reference</span> <a class="link" href="segmented_tree_seq.html#idm139696573171024-bb"><span class="identifier">at</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">reference</span> <a class="link" href="segmented_tree_seq.html#idm139696573166080-bb"><span class="keyword">operator</span><span class="special">[</span><span class="special">]</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">const_reference</span> <a class="link" href="segmented_tree_seq.html#idm139696573161376-bb"><span class="keyword">operator</span><span class="special">[</span><span class="special">]</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">reference</span> <a class="link" href="segmented_tree_seq.html#idm139696573156352-bb"><span class="identifier">front</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">const_reference</span> <a class="link" href="segmented_tree_seq.html#idm139696573152272-bb"><span class="identifier">front</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">reference</span> <a class="link" href="segmented_tree_seq.html#idm139696573147872-bb"><span class="identifier">back</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">const_reference</span> <a class="link" href="segmented_tree_seq.html#idm139696573143712-bb"><span class="identifier">back</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573139312-bb"><span class="identifier">begin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573134992-bb"><span class="identifier">begin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573130672-bb"><span class="identifier">cbegin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573126352-bb"><span class="identifier">penultimate</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573121264-bb"><span class="identifier">penultimate</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573116176-bb"><span class="identifier">cpenultimate</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573111088-bb"><span class="identifier">end</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573106768-bb"><span class="identifier">end</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573102448-bb"><span class="identifier">cend</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">reverse_iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573098128-bb"><span class="identifier">rbegin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">const_reverse_iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573093808-bb"><span class="identifier">rbegin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">const_reverse_iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573089488-bb"><span class="identifier">crbegin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">reverse_iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573085168-bb"><span class="identifier">rend</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">const_reverse_iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573080848-bb"><span class="identifier">rend</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">const_reverse_iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573076528-bb"><span class="identifier">crend</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573072208-bb"><span class="identifier">nth</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573065632-bb"><span class="identifier">nth</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">size_type</span> <a class="link" href="segmented_tree_seq.html#idm139696573059056-bb"><span class="identifier">index_of</span></a><span class="special">(</span><span class="identifier">iterator</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">size_type</span> <a class="link" href="segmented_tree_seq.html#idm139696573053344-bb"><span class="identifier">index_of</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="keyword">bool</span> <a class="link" href="segmented_tree_seq.html#idm139696573047632-bb"><span class="identifier">empty</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">size_type</span> <a class="link" href="segmented_tree_seq.html#idm139696573043312-bb"><span class="identifier">size</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">size_type</span> <a class="link" href="segmented_tree_seq.html#idm139696573038992-bb"><span class="identifier">height</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">size_type</span> <a class="link" href="segmented_tree_seq.html#idm139696573033904-bb"><span class="identifier">max_size</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696573029504-bb"><span class="identifier">clear</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573025184-bb"><span class="identifier">insert</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573019088-bb"><span class="identifier">insert</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573012992-bb"><span class="identifier">insert</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> InputIt<span class="special">,</span> 
+           <span class="keyword">typename</span>  <span class="special">=</span> <span class="keyword">typename</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">iterator_traits</span><span class="special">&lt;</span><span class="identifier">InputIt</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">pointer</span><span class="special">&gt;</span> 
+    <span class="identifier">iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696573006016-bb"><span class="identifier">insert</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">InputIt</span><span class="special">,</span> <span class="identifier">InputIt</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696572997488-bb"><span class="identifier">insert</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">initializer_list</span><span class="special">&lt;</span> <span class="identifier">T</span> <span class="special">&gt;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span><span class="special">...</span> Args<span class="special">&gt;</span> <span class="identifier">iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696572991072-bb"><span class="identifier">emplace</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">Args</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696572983888-bb"><span class="identifier">erase</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="segmented_tree_seq.html#idm139696572978256-bb"><span class="identifier">erase</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572971920-bb"><span class="identifier">push_back</span></a><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572967216-bb"><span class="identifier">push_back</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span><span class="special">...</span> Args<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572962512-bb"><span class="identifier">emplace_back</span></a><span class="special">(</span><span class="identifier">Args</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572956800-bb"><span class="identifier">pop_back</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572952720-bb"><span class="identifier">push_front</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572948016-bb"><span class="identifier">push_front</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span><span class="special">...</span> Args<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572943312-bb"><span class="identifier">emplace_front</span></a><span class="special">(</span><span class="identifier">Args</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572937600-bb"><span class="identifier">pop_front</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572933520-bb"><span class="identifier">resize</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572928592-bb"><span class="identifier">resize</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="identifier">value_type</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572923024-bb"><span class="identifier">swap</span></a><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">(</span> <span class="special">!</span><span class="identifier">element_traits</span><span class="special">::</span><span class="identifier">propagate_on_container_swap</span><span class="special">::</span><span class="identifier">value</span><span class="special">||</span> <span class="identifier">segmented_tree_seq_detail</span><span class="special">::</span><span class="identifier">is_nothrow_swappable</span><span class="special">&lt;</span> <span class="identifier">allocator_type</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572917392-bb"><span class="identifier">remove</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UnaryPredicate<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572912688-bb"><span class="identifier">remove_if</span></a><span class="special">(</span><span class="identifier">UnaryPredicate</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572907232-bb"><span class="identifier">reverse</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572903072-bb"><span class="identifier">unique</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> BinaryPredicate<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572898912-bb"><span class="identifier">unique</span></a><span class="special">(</span><span class="identifier">BinaryPredicate</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572893344-bb"><span class="identifier">sort</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Compare<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="segmented_tree_seq.html#idm139696572889184-bb"><span class="identifier">sort</span></a><span class="special">(</span><span class="identifier">Compare</span><span class="special">)</span><span class="special">;</span>
+<span class="special">}</span><span class="special">;</span></pre></div>
+<div class="refsect1">
+<a name="idm140437104112832"></a><h2>Description</h2>
+<p>A <a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> is a sequence container that provides efficient random access insert and erase.</p>
+<p>
+</p>
+<div class="refsect2">
+<a name="idm140437104111312"></a><h3>Template Parameters</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">typename</span> T</pre>
+<p>The type of the element to be stored </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">typename</span> Allocator</pre>
+<p>The type of the allocator used for all memory management </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> segment_target</pre>
+<p>The size in bytes to try to use for element nodes </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> base_target</pre>
+<p>The size in bytes to try to use for index nodes </p>
+</li>
+</ol></div>
+</div>
+<div class="refsect2">
+<a name="idm140437104100320"></a><h3>
+<a name="boost.segmented_tree_seqconstruct-copy-destruct"></a><code class="computeroutput">segmented_tree_seq</code> 
+        public
+       construct/copy/destruct</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idm139696572883520-bb"></a><span class="identifier">segmented_tree_seq</span><span class="special">(</span><span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span> alloc<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Constructs an empty sequence using the specified allocator.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idm139696572880528-bb"></a><span class="identifier">segmented_tree_seq</span><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">(</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">is_nothrow_default_constructible</span><span class="special">&lt;</span> <span class="identifier">allocator_type</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">)</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Default constructs an empty sequence.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a name="idm139696572877904-bb"></a><span class="identifier">segmented_tree_seq</span><span class="special">(</span><span class="identifier">size_type</span> count<span class="special">,</span> <span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> value<span class="special">,</span> 
+                   <span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span> alloc <span class="special">=</span> <span class="identifier">Allocator</span><span class="special">(</span><span class="special">)</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Constructs a count size sequence using the specified allocator, each element copy constructed from value.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>NlogN, where N is count. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idm139696572873600-bb"></a><span class="identifier">segmented_tree_seq</span><span class="special">(</span><span class="identifier">size_type</span> count<span class="special">,</span> 
+                            <span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span> alloc <span class="special">=</span> <span class="identifier">Allocator</span><span class="special">(</span><span class="special">)</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Constructs a count size sequence using the specified allocator, each element default constructed.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>NlogN, where N is count. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> InputIt<span class="special">,</span> 
+         <span class="keyword">typename</span>  <span class="special">=</span> <span class="keyword">typename</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">iterator_traits</span><span class="special">&lt;</span><span class="identifier">InputIt</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">pointer</span><span class="special">&gt;</span> 
+  <a name="idm139696572869696-bb"></a><span class="identifier">segmented_tree_seq</span><span class="special">(</span><span class="identifier">InputIt</span> first<span class="special">,</span> <span class="identifier">InputIt</span> last<span class="special">,</span> 
+                     <span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span> alloc <span class="special">=</span> <span class="identifier">Allocator</span><span class="special">(</span><span class="special">)</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Constructs an empty sequence using the specified allocator, and inserts elements from the range [first, last).</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>NlogN, where N is the size of the range. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a name="idm139696572863888-bb"></a><span class="identifier">segmented_tree_seq</span><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="keyword">const</span> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Copy constructs a sequence.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>NlogN, where N is other.size(). </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a name="idm139696572860960-bb"></a><span class="identifier">segmented_tree_seq</span><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="keyword">const</span> <span class="special">&amp;</span> other<span class="special">,</span> <span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span> alloc<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Copy constructs a sequence using the specified allocator.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>NlogN, where N is other.size(). </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a name="idm139696572857328-bb"></a><span class="identifier">segmented_tree_seq</span><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;&amp;</span> other<span class="special">)</span> <span class="keyword">noexcept</span><span class="special">(</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">is_nothrow_move_constructible</span><span class="special">&lt;</span> <span class="identifier">allocator_type</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">)</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move constructs a sequence.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a name="idm139696572854080-bb"></a><span class="identifier">segmented_tree_seq</span><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;&amp;</span> other<span class="special">,</span> <span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span> alloc<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move constructs a sequence using the specified allocator.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant if alloc compares equal to other's allocator. NlogN, where N is other.size() otherwise. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a name="idm139696572850336-bb"></a><span class="identifier">segmented_tree_seq</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">initializer_list</span><span class="special">&lt;</span> <span class="identifier">T</span> <span class="special">&gt;</span> init<span class="special">,</span> 
+                   <span class="identifier">Allocator</span> <span class="keyword">const</span> <span class="special">&amp;</span> alloc <span class="special">=</span> <span class="identifier">Allocator</span><span class="special">(</span><span class="special">)</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Constructs an empty sequence using the specified allocator, and inserts elements from init.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>NlogN, where N is init.size(). </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;</span> <a name="idm139696572844624-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="keyword">const</span> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Copy assigns a sequence.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>A reference to *this.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Linear in the minimum of size() and other.size(), plus MlogN, where M is the difference of size() and other.size(), and N is the maximum of size() and other.size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;</span> 
+<a name="idm139696572838704-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;&amp;</span> other<span class="special">)</span> <span class="keyword">noexcept</span><span class="special">(</span> <span class="identifier">allocator_type</span><span class="special">::</span><span class="identifier">propagate_on_container_move_assignment</span><span class="special">::</span><span class="identifier">value</span> <span class="special">&amp;&amp;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">is_nothrow_move_assignable</span><span class="special">&lt;</span> <span class="identifier">allocator_type</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">)</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move assigns a sequence.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>A reference to *this.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Linear in size() if the allocator propagates on move assignment or the sequence's allocator compares equal to other's allocator. Linear in the minimum of size() and other.size(), plus MlogN, where M is the difference of size() and other.size(), and N is the maximum of size() and other.size() otherwise.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>No iterators are invalidated if the allocator propagates on move assignment or the sequence's allocator compares equal to other's allocator. Invalidates all iterators otherwise.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw if the allocator propagates on move assignment or the sequence's allocator compares equal to other's allocator. Basic otherwise. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;</span> <a name="idm139696572831904-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">initializer_list</span><span class="special">&lt;</span> <span class="identifier">T</span> <span class="special">&gt;</span> ilist<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Assigns the sequence to count elements copy constructed from value.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>A reference to *this.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Linear in the minimum of size() and ilist.size(), plus MlogN, where M is the difference of size() and ilist.size(), and N is the maximum of size() and ilist.size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><a name="idm139696572846672-bb"></a><span class="special">~</span><span class="identifier">segmented_tree_seq</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Destructs the sequence releasing all memory.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Linear in size(). </p>
+<p>
+</p>
+</li>
+</ol></div>
+</div>
+<div class="refsect2">
+<a name="idm140437103935664"></a><h3>
+<a name="idm139696579150224-bb"></a><code class="computeroutput">segmented_tree_seq</code> public member functions</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696579149664-bb"></a><span class="identifier">assign</span><span class="special">(</span><span class="identifier">size_type</span> count<span class="special">,</span> <span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> value<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Assigns the sequence to count elements copy constructed from value.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Linear in the minimum of size() and count, plus MlogN, where M is the difference of size() and count, and N is the maximum of size() and count.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> InputIt<span class="special">,</span> 
+         <span class="keyword">typename</span>  <span class="special">=</span> <span class="keyword">typename</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">iterator_traits</span><span class="special">&lt;</span><span class="identifier">InputIt</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">pointer</span><span class="special">&gt;</span> 
+  <span class="keyword">void</span> <a name="idm139696579143616-bb"></a><span class="identifier">assign</span><span class="special">(</span><span class="identifier">InputIt</span> source_first<span class="special">,</span> <span class="identifier">InputIt</span> source_last<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Assigns the sequence to the elements copy constructed from the range [first, last).</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Linear in the minimum of size() and the size of the range, plus MlogN, where M is the difference of size() and the size of the range, and N is the maximum of size() and the size of the range.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696579135856-bb"></a><span class="identifier">assign</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">initializer_list</span><span class="special">&lt;</span> <span class="identifier">T</span> <span class="special">&gt;</span> ilist<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Assigns the sequence to the elements of the specified initializer_list.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Linear in the minimum of size() and ilist.size(), plus MlogN, where M is the difference of size() and ilist.size(), and N is the maximum of size() and ilist.size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">allocator_type</span> <a name="idm139696573180048-bb"></a><span class="identifier">get_allocator</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A copy of the allocator for the sequence.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">reference</span> <a name="idm139696573175728-bb"></a><span class="identifier">at</span><span class="special">(</span><span class="identifier">size_type</span> pos<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A reference for the element located at the index pos.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_reference</span> <a name="idm139696573171024-bb"></a><span class="identifier">at</span><span class="special">(</span><span class="identifier">size_type</span> pos<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_reference for the element located at the specified index pos.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">reference</span> <a name="idm139696573166080-bb"></a><span class="keyword">operator</span><span class="special">[</span><span class="special">]</span><span class="special">(</span><span class="identifier">size_type</span> pos<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A reference for the element located at the specified index pos.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_reference</span> <a name="idm139696573161376-bb"></a><span class="keyword">operator</span><span class="special">[</span><span class="special">]</span><span class="special">(</span><span class="identifier">size_type</span> pos<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_reference for the element located at the specified index pos.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">reference</span> <a name="idm139696573156352-bb"></a><span class="identifier">front</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A reference for the element located at the index 0.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_reference</span> <a name="idm139696573152272-bb"></a><span class="identifier">front</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_reference for the element located at the index 0.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">reference</span> <a name="idm139696573147872-bb"></a><span class="identifier">back</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A reference for the element located at the index size() - 1.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_reference</span> <a name="idm139696573143712-bb"></a><span class="identifier">back</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_reference for the element located at the index size() - 1.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idm139696573139312-bb"></a><span class="identifier">begin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>An iterator for the index 0.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idm139696573134992-bb"></a><span class="identifier">begin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_iterator for the index 0.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idm139696573130672-bb"></a><span class="identifier">cbegin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_iterator for the index 0.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idm139696573126352-bb"></a><span class="identifier">penultimate</span><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>An iterator to the index size() - 1</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idm139696573121264-bb"></a><span class="identifier">penultimate</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_iterator to the index size() - 1</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idm139696573116176-bb"></a><span class="identifier">cpenultimate</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_iterator to the index size() - 1</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idm139696573111088-bb"></a><span class="identifier">end</span><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>An iterator for the index size().</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idm139696573106768-bb"></a><span class="identifier">end</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_iterator for the index size().</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idm139696573102448-bb"></a><span class="identifier">cend</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_iterator for the index size().</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">reverse_iterator</span> <a name="idm139696573098128-bb"></a><span class="identifier">rbegin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A reverse_iterator for the index size().</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_reverse_iterator</span> <a name="idm139696573093808-bb"></a><span class="identifier">rbegin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_reverse_iterator for the index size().</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_reverse_iterator</span> <a name="idm139696573089488-bb"></a><span class="identifier">crbegin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_reverse_iterator for the index size().</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">reverse_iterator</span> <a name="idm139696573085168-bb"></a><span class="identifier">rend</span><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A reverse_iterator for the index 0.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_reverse_iterator</span> <a name="idm139696573080848-bb"></a><span class="identifier">rend</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_reverse_iterator for the index 0.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_reverse_iterator</span> <a name="idm139696573076528-bb"></a><span class="identifier">crend</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_reverse_iterator for the index 0.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idm139696573072208-bb"></a><span class="identifier">nth</span><span class="special">(</span><span class="identifier">size_type</span> pos<span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>An iterator for the index pos.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>This member function is more efficient than calling begin() and advancing. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idm139696573065632-bb"></a><span class="identifier">nth</span><span class="special">(</span><span class="identifier">size_type</span> pos<span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>A const_iterator for the index pos.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>This member function is more efficient than calling begin() and advancing. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">size_type</span> <a name="idm139696573059056-bb"></a><span class="identifier">index_of</span><span class="special">(</span><span class="identifier">iterator</span> pos<span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>The index of the specified iterator.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">size_type</span> <a name="idm139696573053344-bb"></a><span class="identifier">index_of</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>The index of the specified const_iterator.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">bool</span> <a name="idm139696573047632-bb"></a><span class="identifier">empty</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>True if the sequence is empty. False otherwise.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">size_type</span> <a name="idm139696573043312-bb"></a><span class="identifier">size</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>The count of elements stored in the sequence.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">size_type</span> <a name="idm139696573038992-bb"></a><span class="identifier">height</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>The height of the tree.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw.</p>
+<p>
+</p>
+<p><b>Note.&#160;</b>Non-standard extension. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">size_type</span> <a name="idm139696573033904-bb"></a><span class="identifier">max_size</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Returns.&#160;</b>The maximum count of elements able to be stored in the sequence.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696573029504-bb"></a><span class="identifier">clear</span><span class="special">(</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Removes all elements from the sequence.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Linear in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idm139696573025184-bb"></a><span class="identifier">insert</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">,</span> <span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> value<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Copy constructs an element at the specified position.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>An iterator to the inserted element.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idm139696573019088-bb"></a><span class="identifier">insert</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">,</span> <span class="identifier">T</span> <span class="special">&amp;&amp;</span> value<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move constructs an element at the specified position.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>An iterator to the inserted element.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idm139696573012992-bb"></a><span class="identifier">insert</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">,</span> <span class="identifier">size_type</span> count<span class="special">,</span> <span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> value<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Copy constructs count elements at the specified position.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>An iterator to the first inserted element if count != 0. A copy of pos otherwise.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>MlogN, where M is count, and N is the maximum of size() and count.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> InputIt<span class="special">,</span> 
+         <span class="keyword">typename</span>  <span class="special">=</span> <span class="keyword">typename</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">iterator_traits</span><span class="special">&lt;</span><span class="identifier">InputIt</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">pointer</span><span class="special">&gt;</span> 
+  <span class="identifier">iterator</span> <a name="idm139696573006016-bb"></a><span class="identifier">insert</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">,</span> <span class="identifier">InputIt</span> first<span class="special">,</span> <span class="identifier">InputIt</span> last<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Copy constructs all elements in the range [first, last) at the specified position.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>An iterator to the first inserted element if first != last. A copy of pos otherwise.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>MlogN, where M is the size of the range, and N is the maximum of size() and the size of the range.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idm139696572997488-bb"></a><span class="identifier">insert</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">initializer_list</span><span class="special">&lt;</span> <span class="identifier">T</span> <span class="special">&gt;</span> ilist<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Copy constructs all elements in the specified initializer_list at the specified position.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>An iterator to the first inserted element if ilist.size() != 0. A copy of pos otherwise.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>MlogN, where M is ilist.size(), and N is the maximum of size() and ilist.size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span><span class="special">...</span> Args<span class="special">&gt;</span> <span class="identifier">iterator</span> <a name="idm139696572991072-bb"></a><span class="identifier">emplace</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">,</span> <span class="identifier">Args</span> <span class="special">&amp;&amp;</span><span class="special">...</span> args<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Forward constructs an element at the specified position.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>An iterator to the inserted element.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idm139696572983888-bb"></a><span class="identifier">erase</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Remove the element at the specified position from the sequence.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>An iterator to the element following the removed element.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idm139696572978256-bb"></a><span class="identifier">erase</span><span class="special">(</span><span class="identifier">const_iterator</span> first<span class="special">,</span> <span class="identifier">const_iterator</span> last<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Remove all elements in the range [first, last) from the sequence.</p>
+<p>
+</p>
+<p><b>Returns.&#160;</b>An iterator to the element following the last removed element.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>MlogN, where M is the size of the range, and N is size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696572971920-bb"></a><span class="identifier">push_back</span><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> value<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Copy constructs an element at end().</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696572967216-bb"></a><span class="identifier">push_back</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> value<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move constructs an element at end().</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span><span class="special">...</span> Args<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idm139696572962512-bb"></a><span class="identifier">emplace_back</span><span class="special">(</span><span class="identifier">Args</span> <span class="special">&amp;&amp;</span><span class="special">...</span> args<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Forward constructs an element at end().</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696572956800-bb"></a><span class="identifier">pop_back</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Removes the element at end() - 1.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696572952720-bb"></a><span class="identifier">push_front</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> value<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Copy constructs an element at begin().</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696572948016-bb"></a><span class="identifier">push_front</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> value<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Move constructs an element at begin().</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span><span class="special">...</span> Args<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idm139696572943312-bb"></a><span class="identifier">emplace_front</span><span class="special">(</span><span class="identifier">Args</span> <span class="special">&amp;&amp;</span><span class="special">...</span> args<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Forward constructs an element at begin().</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696572937600-bb"></a><span class="identifier">pop_front</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Removes the element at begin().</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696572933520-bb"></a><span class="identifier">resize</span><span class="special">(</span><span class="identifier">size_type</span> count<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Resizes the seqeuence to the specified size, default constructing any elements above the current size.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>MlogN, where M is the difference of size() and count, and N is the max of size() and count.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Strong. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696572928592-bb"></a><span class="identifier">resize</span><span class="special">(</span><span class="identifier">size_type</span> count<span class="special">,</span> <span class="identifier">value_type</span> <span class="keyword">const</span> <span class="special">&amp;</span> value<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Resizes the seqeuence to the specified size, copy constructing any elements from value above the current size.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>MlogN, where M is the difference of size() and count, and N is the max of size() and count.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696572923024-bb"></a><span class="identifier">swap</span><span class="special">(</span><a class="link" href="segmented_tree_seq.html" title="Class template segmented_tree_seq">segmented_tree_seq</a> <span class="special">&amp;</span> other<span class="special">)</span> <span class="keyword">noexcept</span><span class="special">(</span> <span class="special">!</span><span class="identifier">element_traits</span><span class="special">::</span><span class="identifier">propagate_on_container_swap</span><span class="special">::</span><span class="identifier">value</span><span class="special">||</span> <span class="identifier">segmented_tree_seq_detail</span><span class="special">::</span><span class="identifier">is_nothrow_swappable</span><span class="special">&lt;</span> <span class="identifier">allocator_type</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">)</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Swaps the contents *this with the specified sequence.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Constant.</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Every iterator referring to an element in one container before the swap shall refer to the same element in the other container after the swap.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>No-throw if the allocator propagates on swap or the allocator doesn't throw on swap. Strong otherwise. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696572917392-bb"></a><span class="identifier">remove</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> value<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Removes all elements matching the specified value.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Logarithmic in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UnaryPredicate<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idm139696572912688-bb"></a><span class="identifier">remove_if</span><span class="special">(</span><span class="identifier">UnaryPredicate</span> p<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Removes all elements matching the specified predicate.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Linear in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696572907232-bb"></a><span class="identifier">reverse</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Reverses the sequence.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Linear in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated, but reflect the change in ordering.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696572903072-bb"></a><span class="identifier">unique</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Removes all consecutive duplicate elements from the sequence.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Linear in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> BinaryPredicate<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idm139696572898912-bb"></a><span class="identifier">unique</span><span class="special">(</span><span class="identifier">BinaryPredicate</span> p<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Removes all consecutive duplicate elements from the sequence using the specified predicate.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>Linear in size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Invalidates all iterators.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="idm139696572893344-bb"></a><span class="identifier">sort</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Stable sorts the sequence.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>NlogN, where N is size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated, but reflect the change in ordering.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Compare<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idm139696572889184-bb"></a><span class="identifier">sort</span><span class="special">(</span><span class="identifier">Compare</span> comp<span class="special">)</span><span class="special">;</span></pre>
+<p><b>Effects.&#160;</b>Stable sort the sequence using the specified predicate.</p>
+<p>
+</p>
+<p><b>Complexity.&#160;</b>NlogN, where N is size().</p>
+<p>
+</p>
+<p><b>Iterator invalidation.&#160;</b>Iterators are not invalidated, but reflect the change in ordering.</p>
+<p>
+</p>
+<p><b>Exception safety.&#160;</b>Basic. </p>
+<p>
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2014, 2015 Chris Clearwater<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../boost_segmentedtreeseq/reference.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../boost_segmentedtreeseq/reference.html#header.boost.segmented_tree_seq_hpp"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="segment_idm139696572826160.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

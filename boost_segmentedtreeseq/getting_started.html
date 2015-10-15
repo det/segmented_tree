@@ -1,0 +1,110 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Getting started</title>
+<link rel="stylesheet" href="http://www.boost.org/doc/libs/1_59_0/doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
+<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
+<link rel="prev" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
+<link rel="next" href="implementation.html" title="Implementation">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="http://www.boost.org/doc/libs/1_59_0/boost.png"></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/index.html">Home</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="implementation.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="boost_segmentedtreeseq.getting_started"></a><a class="link" href="getting_started.html" title="Getting started">Getting started</a>
+</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="getting_started.html#boost_segmentedtreeseq.getting_started.how_to_use">How
+      to use</a></span></dt>
+<dt><span class="section"><a href="getting_started.html#boost_segmentedtreeseq.getting_started.example_needle_in_a_haystack">Example
+      needle in a haystack</a></span></dt>
+</dl></div>
+<p>
+      The <code class="computeroutput"><a class="link" href="../boost/segmented_tree_seq.html" title="Class template segmented_tree_seq">boost::segmented_tree_seq</a></code>
+      container supports the interfaces of <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span></code>
+      and <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">deque</span></code>, it can be used in the same way as
+      these containers with a few exceptions:
+    </p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+          The time complexities of all operations may differ.
+        </li>
+<li class="listitem">
+          The iterator invalidation rules may differ.
+        </li>
+<li class="listitem">
+          The exception safety guarantees may differ.
+        </li>
+<li class="listitem">
+          <code class="computeroutput"><span class="identifier">reserve</span><span class="special">()</span></code>
+          and <code class="computeroutput"><span class="identifier">shrink_to_fit</span><span class="special">()</span></code>
+          are missing.
+        </li>
+<li class="listitem">
+          The standard library requires users to obtain an iterator to the middle
+          of a sequence container by using "container.begin() + offset",
+          doing this with <code class="computeroutput"><a class="link" href="../boost/segmented_tree_seq.html" title="Class template segmented_tree_seq">boost::segmented_tree_seq</a></code>
+          is innefficient. Instead users should use <code class="computeroutput"><a class="link" href="../boost/segmented_tree_seq.html#idm139696573072208-bb">boost::segmented_tree_seq::nth</a></code>.
+        </li>
+</ul></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boost_segmentedtreeseq.getting_started.how_to_use"></a><a class="link" href="getting_started.html#boost_segmentedtreeseq.getting_started.how_to_use" title="How to use">How
+      to use</a>
+</h3></div></div></div>
+<p>
+        Boost.SegmentedTreeSeq is a header only C++11 library and it does not depend
+        on any other Boost libraries. Simply include <code class="computeroutput"><a class="link" href="reference.html#header.boost.segmented_tree_seq_hpp" title="Header &lt;boost/segmented_tree_seq.hpp&gt;">boost/segmented_tree_seq.hpp</a></code>
+        to start using it.
+      </p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boost_segmentedtreeseq.getting_started.example_needle_in_a_haystack"></a><a class="link" href="getting_started.html#boost_segmentedtreeseq.getting_started.example_needle_in_a_haystack" title="Example needle in a haystack">Example
+      needle in a haystack</a>
+</h3></div></div></div>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">algorithm</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">segmented_tree_seq</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">()</span> <span class="special">{</span>
+  <span class="identifier">boost</span><span class="special">::</span><span class="identifier">segmented_tree_seq</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">string</span><span class="special">&gt;</span> <span class="identifier">haystack</span><span class="special">(</span><span class="number">100000</span><span class="special">,</span> <span class="string">"hay"</span><span class="special">);</span>
+  <span class="identifier">haystack</span><span class="special">.</span><span class="identifier">insert</span><span class="special">(</span><span class="identifier">haystack</span><span class="special">.</span><span class="identifier">nth</span><span class="special">(</span><span class="number">33333</span><span class="special">),</span> <span class="string">"needle"</span><span class="special">);</span>
+  <span class="keyword">auto</span> <span class="identifier">first</span> <span class="special">=</span> <span class="identifier">haystack</span><span class="special">.</span><span class="identifier">begin</span><span class="special">();</span>
+  <span class="keyword">auto</span> <span class="identifier">last</span> <span class="special">=</span> <span class="identifier">haystack</span><span class="special">.</span><span class="identifier">end</span><span class="special">();</span>
+  <span class="keyword">auto</span> <span class="identifier">it</span> <span class="special">=</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">find</span><span class="special">(</span><span class="identifier">first</span><span class="special">,</span> <span class="identifier">last</span><span class="special">,</span> <span class="string">"needle"</span><span class="special">);</span>
+  <span class="keyword">if</span> <span class="special">(</span><span class="identifier">it</span> <span class="special">!=</span> <span class="identifier">last</span><span class="special">)</span> <span class="special">{</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Found needle at index: "</span> <span class="special">&lt;&lt;</span> <span class="identifier">haystack</span><span class="special">.</span><span class="identifier">index_of</span><span class="special">(</span><span class="identifier">it</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="string">"\n"</span><span class="special">;</span>
+    <span class="identifier">haystack</span><span class="special">.</span><span class="identifier">erase</span><span class="special">(</span><span class="identifier">it</span><span class="special">);</span>
+  <span class="special">}</span>
+<span class="special">}</span>
+</pre>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2014, 2015 Chris Clearwater<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="implementation.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
