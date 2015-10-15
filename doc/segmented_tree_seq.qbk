@@ -19,13 +19,15 @@ container.
 
 Boost.SegmentedTreeSeq was designed to fill this use case.
 
+[note Boost.SegmentedTreeSeq is not currently a part of Boost.]
+
 [endsect]
 
 [section Getting started]
 
-[classref boost::segmented_tree_seq] supports the interfaces of `std::vector`
-and `std::deque`, it can be used in the same way as these containers with a
-few exceptions:
+The [classref boost::segmented_tree_seq] container supports the interfaces of
+`std::vector` and `std::deque`, it can be used in the same way as these
+containers with a few exceptions:
 
 * The time complexities of all operations may differ.
 * The iterator invalidation rules may differ.
@@ -38,54 +40,145 @@ few exceptions:
 
 [section How to use]
 
-Boost.SegmentedTreeSeq is a header only library and it does not depend on any
-other Boost libraries. Simply include [headerref boost/segmented_tree_seq.hpp]
-to start using it.
+Boost.SegmentedTreeSeq is a header only C++11 library and it does not depend on
+any other Boost libraries. Simply include [headerref
+boost/segmented_tree_seq.hpp] to start using it.
 
 [endsect]
 
 [section Example needle in a haystack]
 
- #include <algorithm>
- #include <iostream>
- #include <boost/segmented_tree_seq.hpp>
+  #include <algorithm>
+  #include <iostream>
+  #include <boost/segmented_tree_seq.hpp>
 
- int main() {
-   boost::segmented_tree_seq<std::string> haystack(100000, "hay");
-   haystack.insert(haystack.nth(33333), "needle");
-   auto first = haystack.begin();
-   auto last = haystack.end();
-   auto it = std::find(first, last, "needle");
-   if (it != last) {
-     std::cout << "Found needle at index: " << haystack.index_of(it) << "\n";
-     haystack.erase(it);
-   }
- }
+  int main() {
+    boost::segmented_tree_seq<std::string> haystack(100000, "hay");
+    haystack.insert(haystack.nth(33333), "needle");
+    auto first = haystack.begin();
+    auto last = haystack.end();
+    auto it = std::find(first, last, "needle");
+    if (it != last) {
+      std::cout << "Found needle at index: " << haystack.index_of(it) << "\n";
+      haystack.erase(it);
+    }
+  }
 
 [endsect]
 [endsect]
 
-[section How it works]
+[section Implementation]
 
 Boost.SegmentedTreeSeq is implemented using a counted
-[@https://en.wikipedia.org/wiki/B%2B_tree B+Tree]. Internally the tree consists
-of 3 types of nodes: segments, leaves, and branches. The bottom level of the
-tree is made up of segments. Segments are simply arrays of the container's
-value_type. They contain no metadata. Above this exists leaves. Leaves are index
-nodes and store a size and a pointer for each of its child segments. They also
-contain metadata of parent pointer, parent index and number of children. All
-levels above this are branches. Branches are the same as leaves but can contain
-either other branches or leaves. Because segments do not store metadata it is
-neccesary to store their parent pointer, parent index, and length in the
-iterators. As inserting/erasing/splitting/merging happens logarithmically as
-often as you travel up the tree, removing the metadata from the bottom level
-has proved to be a worthwhile optimization by removing the cache misses
-associated with loading and storing of this data.
+[@https://en.wikipedia.org/wiki/B%2B_tree B+Tree].
 
+[section Representation]
+
+Internally the tree consists of segments and index_nodes:
+
+  struct index_node {
+    index_node *parent_pointer;
+    std::uint16_t parent_index_;
+    std::uint16_t length_;
+    std::array<size_type, base_max> sizes;
+    std::array<void *, base_max> pointers;
+  }
+
+  using segment = value_type *; // Of size segment_max.
+
+An index_node of height greater than 2 always contains other index_nodes as
+children. An index_node of height 2 always contains segments as chidlren. A
+segment is always of height 1 and is simply an array of value_type. Height 0 is
+the empty tree.
+
+The size array stores the recursive size of all its children.
+
+The segmented_tree_seq container looks like this:
+
+  struct segmented_tree_seq {
+    size_type height;
+    size_type size;
+    void * root;
+  };
+
+The height of the tree can be used to determine what type root points to.
+
+Iterators look like this:
+
+  struct iterator {
+    segment segment;
+    size_type segment_index;
+    size_type segment_length;
+    index_node *parent;
+    index_node *parent_index
+    size_type position;
+  };
+
+Storing the position enables constant time comparison between iterators. This
+is possible because any destructive operation that would invalidate the position
+invalidates all iterators anyways. Additionally, a segment's metadata is stored
+here instead of the segment as an optimization. This is worthwhile because
+segments are mutated exponentially more often than any node above it and cache
+misses are reduced.
+
+[endsect]
+
+[section Searching]
+
+All searches start from the root of the tree. To find a given index in the tree
+you start from the root and perform linear searches on each index_node and walk
+down the tree until you reach a segment at height 1.
+
+[endsect]
+
+[section Inserting]
+
+If the segment pointed to by the iterator is not full then insert the element
+in segment and walk up the tree updating sizes. If the segement is full then
+split the segment into two and insert the new segment into the parent
+index_node. The index_node repeats this process. If the root is passed then
+create a new root index_node containing two children and increase the height.
+
+[endsect]
+
+[section Erasing]
+
+If the segment pointed to by the iterator is not at its minimum value then
+remove the element from the segment and walk up the tree updating sizes. If the
+segement is at its minimum size then try to steal an element from a sibling. If
+this succeeds then walk up the tree updating sizes. Otherwise, merge the segment
+with a neighbor and remove the neighbor from the parent index_node. The
+index_node repeats this process. If a root index_node of length 2 is hit, then
+make the remaning child the new root and decrease the height.
+
+[endsect]
 [endsect]
 
 [xinclude autodoc.xml]
 
-[section Space and Performance]
+[section Performance]
+
+The following images show the results of randomly inserting, randomly erasing, and
+iterating over different containers. They come in two flavors, single (1 element
+at a time), and range (many elements at a time). It can be seen that
+segmented_tree_seq generally has the fastest random access insert and erase of
+single elements. It also has the fastest iterators among containers with
+efficient random access insert and erase. However, btree_seq currently wins by a
+large margin for range insert and erase. All graphs are logairthmic scale on the
+y axis.
+
+[$../images/insert_values-single-8.svg]
+[$../images/accumulate_forward-single-8.svg]
+[$../images/erase_values-single-8.svg]
+[$../images/insert_values-single-64.svg]
+[$../images/erase_values-single-64.svg]
+[$../images/accumulate_forward-single-64.svg]
+[$../images/insert_values-range-8.svg]
+[$../images/erase_values-range-8.svg]
+[$../images/accumulate_forward-range-8.svg]
+[$../images/insert_values-range-64.svg]
+[$../images/erase_values-range-64.svg]
+[$../images/accumulate_forward-range-64.svg]
 
 [endsect]
+

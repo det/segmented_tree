@@ -32,11 +32,11 @@ int bench_range(int argc, char **argv) {
 
   auto data = make_insert_data_range<T>(count, size, seed);
   Container<T> container;
-  bench("insert values", [&] { insert_values_range(container, data); });
+  bench("Insert values", [&] { insert_values_range(container, data); });
   std::vector<T> inserted{container.begin(), container.end()};
   verify(checksum, make_checksum(inserted));
   bench_iterator(container, inserted);
-  bench("erase values", [&] { erase_values_range(container, data); });
+  bench("Erase values", [&] { erase_values_range(container, data); });
   verify(std::size_t{1}, container.size());
   verify(data.ordered[0], container[0]);
   return EXIT_SUCCESS;

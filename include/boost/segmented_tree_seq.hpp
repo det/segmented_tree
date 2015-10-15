@@ -22,6 +22,8 @@
 #endif
 
 namespace boost {
+
+#ifndef BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
 namespace segmented_tree_seq_detail {
 namespace is_nothrow_swappable_impl {
 using std::swap;
@@ -611,6 +613,7 @@ struct static_traits_t {
   }
 };
 }
+#endif // #ifndef BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
 
 /// A template class used for const and non-const iterators for
 /// segmented_tree_seq.

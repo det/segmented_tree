@@ -30,11 +30,11 @@ int bench_single(int argc, char **argv) {
 
   auto data = make_insert_data_single<T>(count, seed);
   Container<T> container;
-  bench("insert values", [&] { insert_values_single(container, data); });
+  bench("Insert values", [&] { insert_values_single(container, data); });
   std::vector<T> inserted{container.begin(), container.end()};
   verify(checksum, make_checksum(inserted));
   bench_iterator(container, inserted);
-  bench("erase values", [&] { erase_values_single(container, data); });
+  bench("Erase values", [&] { erase_values_single(container, data); });
   verify(container.size(), std::size_t{1});
   verify(container[0], data.ordered[0]);
   return EXIT_SUCCESS;

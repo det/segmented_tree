@@ -42,8 +42,7 @@ auto bench(char const *description, F f) -> typename std::result_of<F()>::type {
     auto stop = Clock::now();
     auto ns = std::chrono::duration_cast<Ns>(stop - start);
     auto ms = ns.count() / 1000000.0;
-    std::cout << std::fixed << std::setw(15) << std::setfill(' ')
-              << std::setprecision(6) << ms << "ms " << description << "\n";
+    std::cout << description << "," << ms << "\n";
   });
   return f();
 }
@@ -116,51 +115,51 @@ std::uint64_t accumulate_backward_by(T const &container, std::size_t distance) {
 
 template <typename Container, typename T>
 void bench_iterator(Container const &container, std::vector<T> const &data) {
-  verify(accumulate_forward(data), bench("accumulate forward", [&] {
+  verify(accumulate_forward(data), bench("Accumulate forward", [&] {
     return accumulate_forward(container);
   }));
 
-  verify(accumulate_forward_by(data, 1), bench("accumulate forward by 1", [&] {
+  verify(accumulate_forward_by(data, 1), bench("Accumulate forward by 1", [&] {
     return accumulate_forward_by(container, 1);
   }));
 
   verify(accumulate_forward_by(data, 10),
-         bench("accumulate forward by 10",
+         bench("Accumulate forward by 10",
                [&] { return accumulate_forward_by(container, 10); }));
 
   verify(accumulate_forward_by(data, 100),
-         bench("accumulate forward by 100",
+         bench("Accumulate forward by 100",
                [&] { return accumulate_forward_by(container, 100); }));
 
   verify(accumulate_forward_by(data, 1000),
-         bench("accumulate forward by 1000",
+         bench("Accumulate forward by 1000",
                [&] { return accumulate_forward_by(container, 1000); }));
 
   verify(accumulate_forward_by(data, 10000),
-         bench("accumulate forward by 10000",
+         bench("Accumulate forward by 10000",
                [&] { return accumulate_forward_by(container, 10000); }));
 
-  verify(accumulate_backward(data), bench("accumulate backward", [&] {
+  verify(accumulate_backward(data), bench("Accumulate backward", [&] {
     return accumulate_backward(container);
   }));
 
   verify(accumulate_backward_by(data, 1),
-         bench("accumulate backward by 1",
+         bench("Accumulate backward by 1",
                [&] { return accumulate_backward_by(container, 1); }));
 
   verify(accumulate_backward_by(data, 10),
-         bench("accumulate backward by 10",
+         bench("Accumulate backward by 10",
                [&] { return accumulate_backward_by(container, 10); }));
 
   verify(accumulate_backward_by(data, 100),
-         bench("accumulate backward by 100",
+         bench("Accumulate backward by 100",
                [&] { return accumulate_backward_by(container, 100); }));
 
   verify(accumulate_backward_by(data, 1000),
-         bench("accumulate backward by 1000",
+         bench("Accumulate backward by 1000",
                [&] { return accumulate_backward_by(container, 1000); }));
 
   verify(accumulate_backward_by(data, 10000),
-         bench("accumulate backward by 10000",
+         bench("Accumulate backward by 10000",
                [&] { return accumulate_backward_by(container, 10000); }));
 }
