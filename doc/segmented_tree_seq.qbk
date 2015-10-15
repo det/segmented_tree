@@ -167,18 +167,18 @@ efficient random access insert and erase. However, btree_seq currently wins by a
 large margin for range insert and erase. All graphs are logairthmic scale on the
 y axis.
 
-[$../images/insert_values-single-8.svg]
-[$../images/accumulate_forward-single-8.svg]
-[$../images/erase_values-single-8.svg]
-[$../images/insert_values-single-64.svg]
-[$../images/erase_values-single-64.svg]
-[$../images/accumulate_forward-single-64.svg]
-[$../images/insert_values-range-8.svg]
-[$../images/erase_values-range-8.svg]
-[$../images/accumulate_forward-range-8.svg]
-[$../images/insert_values-range-64.svg]
-[$../images/erase_values-range-64.svg]
-[$../images/accumulate_forward-range-64.svg]
+[$images/insert_values-single-8.svg]
+[$images/accumulate_forward-single-8.svg]
+[$images/erase_values-single-8.svg]
+[$images/insert_values-single-64.svg]
+[$images/erase_values-single-64.svg]
+[$images/accumulate_forward-single-64.svg]
+[$images/insert_values-range-8.svg]
+[$images/erase_values-range-8.svg]
+[$images/accumulate_forward-range-8.svg]
+[$images/insert_values-range-64.svg]
+[$images/erase_values-range-64.svg]
+[$images/accumulate_forward-range-64.svg]
 
 [endsect]
 
