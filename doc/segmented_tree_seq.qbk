@@ -14,8 +14,7 @@
 
 The standard library provides sequence containers that offer efficient insertion
 at at the end (`std::vector`), efficient insertition at the front and the end
-(`std::deque`), but offers no solution for efficient insertion anywhere in a
-container.
+(`std::deque`), but offers no solution for efficient random access insertion.
 
 Boost.SegmentedTreeSeq was designed to fill this use case.
 
@@ -35,7 +34,7 @@ containers with a few exceptions:
 * `reserve()` and `shrink_to_fit()` are missing.
 * The standard library requires users to obtain an iterator to the middle of 
   a sequence container by using "container.begin() + offset", doing this with
-  [classref boost::segmented_tree_seq] is innefficient. Instead users should
+  [classref boost::segmented_tree_seq] is inefficient. Instead users should
   use [memberref boost::segmented_tree_seq::nth].
 
 [section How to use]
@@ -158,9 +157,9 @@ make the remaning child the new root and decrease the height.
 
 [section Performance]
 
-The following images show the results of randomly inserting, randomly erasing, and
-iterating over different containers. They come in two flavors, single (1 element
-at a time), and range (many elements at a time). It can be seen that
+The following images show the results of randomly inserting, randomly erasing,
+and iterating over different containers. They come in two flavors, single (1
+element at a time), and range (many elements at a time). It can be seen that
 segmented_tree_seq generally has the fastest random access insert and erase of
 single elements. It also has the fastest iterators among containers with
 efficient random access insert and erase. However, btree_seq currently wins by a
