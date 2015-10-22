@@ -163,11 +163,11 @@ struct static_traits_t {
                                           size_type pos) {
     while (true) {
       size_type index = 0;
-      while (true) {
-        auto size = pointer->sizes[index];
-        if (pos < size) break;
+      auto size = pointer->sizes[0];
+      while (pos >= size) {
         pos -= size;
         ++index;
+        size = pointer->sizes[index];
       }
 
       auto child = cast_node(pointer->pointers[index]);
@@ -180,11 +180,11 @@ struct static_traits_t {
 
   static iterator_entry find_index_leaf(node_pointer pointer, size_type pos) {
     size_type index = 0;
-    while (true) {
-      auto size = pointer->sizes[index];
-      if (pos < size) break;
+    auto size = pointer->sizes[0];
+    while (pos >= size) {
       pos -= size;
       ++index;
+      size = pointer->sizes[index];
     }
 
     iterator_entry entry;
@@ -613,7 +613,7 @@ struct static_traits_t {
   }
 };
 }
-#endif // #ifndef BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
+#endif  // #ifndef BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
 
 /// A template class used for const and non-const iterators for
 /// segmented_tree_seq.
