@@ -2345,7 +2345,7 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Strong.
   reference at(size_type pos) {
-    if (pos > size())
+    if (pos >= size())
       throw std::out_of_range{"segmented_tree_seq at() out of bounds"};
     return (*this)[pos];
   }
@@ -2362,7 +2362,7 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Strong.
   const_reference at(size_type pos) const {
-    if (pos > size())
+    if (pos >= size())
       throw std::out_of_range{"segmented_tree_seq at() out of bounds"};
     return (*this)[pos];
   }
@@ -3145,7 +3145,7 @@ class segmented_tree_seq {
     if (count < sz)
       erase(nth(count), last);
     else
-      insert(last, count, value);
+      insert(last, count - sz, value);
   }
 
   /// \par Effects

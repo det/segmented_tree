@@ -94,7 +94,7 @@ def handle_sizes(size, kind, labels, args_list):
       best = {}
       for i in range(trials):
         pipe = subprocess.Popen(
-            ["%s/bench_%s_%s_%d" % (bin_dir, kind, container, size)] +
+            ["%s/%s_%s_%d" % (bin_dir, kind, container, size)] +
                 [str(i) for i in args],
             stdout = subprocess.PIPE, universal_newlines = True)
 

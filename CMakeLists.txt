@@ -3,7 +3,8 @@ project (segmented_tree_seq)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set (CMAKE_CXX_FLAGS "-std=c++11 -Weverything -Wno-c++98-compat \
-                        -Wno-c++98-compat-pedantic -Wno-padded")
+                        -Wno-c++98-compat-pedantic -Wno-padded \
+                        -Wno-disabled-macro-expansion -Wno-global-constructors")
   set (CMAKE_CXX_FLAGS_RELEASE "-O3 -flto")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   set (CMAKE_CXX_FLAGS "-std=c++11 -Wpedantic -Wall -Wextra \
@@ -17,9 +18,10 @@ endif ()
 
 
 find_package(Boost)
-
 include_directories (include)
 include_directories (SYSTEM submodule)
 include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
 add_subdirectory (include/boost)
 add_subdirectory (bench)
+add_subdirectory (common)
+add_subdirectory (test)

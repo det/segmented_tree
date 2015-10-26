@@ -1,0 +1,16 @@
+import testing ;
+
+project
+  : requirements
+    <toolset>gcc:<cxxflags>-std=c++11
+    <toolset>clang:<cxxflags>-std=c++11
+  ;
+
+test-suite "segmented_tree_seq"
+  :
+    [ run test_sequence.cpp /boost//unit_test_framework : : :
+        <define>TARGET_SIZE=0 : test_sequence_0 ]
+    [ run test_sequence.cpp /boost//unit_test_framework : : :
+        <define>TARGET_SIZE=512 : test_sequence_512 ]
+  ;
+
