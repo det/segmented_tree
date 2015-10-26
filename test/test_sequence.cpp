@@ -14,16 +14,6 @@ template <typename T, typename Alloc = std::allocator<T>>
 using seq = boost::segmented_tree_seq<T, Alloc, TARGET_SIZE>;
 using uint64_t = std::uint64_t;
 
-// template <typename T>
-// class tagged_allocator : public std::allocator<T> {
-// private:
-//  unsigned tag_;
-
-// public:
-//  tagged_allocator(unsigned tag = 0) : tag_{tag} {}
-//  unsigned tag() { return tag_; }
-//};
-
 template <typename T>
 class tagged_allocator {
  private:
