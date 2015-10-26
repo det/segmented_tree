@@ -14,15 +14,51 @@ template <typename T, typename Alloc = std::allocator<T>>
 using seq = boost::segmented_tree_seq<T, Alloc, TARGET_SIZE>;
 using uint64_t = std::uint64_t;
 
+// template <typename T>
+// class tagged_allocator : public std::allocator<T> {
+// private:
+//  unsigned tag_;
+
+// public:
+//  tagged_allocator(unsigned tag = 0) : tag_{tag} {}
+//  unsigned tag() { return tag_; }
+//};
+
 template <typename T>
-class test_allocator : public std::allocator<T> {
+class tagged_allocator {
  private:
-  unsigned u_;
+  unsigned tag_;
 
  public:
-  test_allocator(unsigned u) : u_{u} {}
-  unsigned get_u() { return u_; }
+  using value_type = T;
+  tagged_allocator(unsigned tag = 0) : tag_{tag} {}
+  template <class U>
+  tagged_allocator(const tagged_allocator<U> &) {}
+
+  T *allocate(std::size_t n) {
+    if (n <= std::numeric_limits<std::size_t>::max() / sizeof(T)) {
+      if (auto ptr = std::malloc(n * sizeof(T))) {
+        return static_cast<T *>(ptr);
+      }
+    }
+    throw std::bad_alloc();
+  }
+  void deallocate(T *ptr, std::size_t) { std::free(ptr); }
+
+  unsigned tag() { return tag_; }
 };
+
+template <typename T, typename U>
+inline bool operator==(const tagged_allocator<T> &,
+                       const tagged_allocator<U> &) {
+  return true;
+}
+
+template <typename T, typename U>
+inline bool operator!=(const tagged_allocator<T> &a,
+                       const tagged_allocator<U> &b) {
+  return !(a == b);
+}
 
 template <typename A, typename B>
 void check_contents(A const &a, std::initializer_list<B> b) {
@@ -37,9 +73,10 @@ void check_contents(A const &a) {
 }
 
 BOOST_AUTO_TEST_CASE(test_construct_alloc) {
-  test_allocator<uint64_t> alloc{12345};
-  seq<uint64_t, test_allocator<uint64_t>> c1{alloc};
+  tagged_allocator<uint64_t> alloc{12345};
+  seq<uint64_t, tagged_allocator<uint64_t>> c1{alloc};
   check_contents(c1);
+  BOOST_CHECK(c1.get_allocator().tag() == 12345);
 }
 
 BOOST_AUTO_TEST_CASE(test_construct_default) {
@@ -67,10 +104,11 @@ BOOST_AUTO_TEST_CASE(test_construct_copy) {
 
 BOOST_AUTO_TEST_CASE(test_construct_copy_alloc) {
   std::initializer_list<uint64_t> ilist{0, 1, 2, 3, 4};
-  seq<uint64_t> c1{ilist};
-  test_allocator<uint64_t> alloc{12345};
-  seq<uint64_t> c2{c1, alloc};
+  seq<uint64_t, tagged_allocator<uint64_t>> c1{ilist};
+  tagged_allocator<uint64_t> alloc{12345};
+  seq<uint64_t, tagged_allocator<uint64_t>> c2{c1, alloc};
   check_contents(c2, ilist);
+  BOOST_CHECK(c2.get_allocator().tag() == 12345);
 }
 
 BOOST_AUTO_TEST_CASE(test_construct_move) {
@@ -83,11 +121,12 @@ BOOST_AUTO_TEST_CASE(test_construct_move) {
 
 BOOST_AUTO_TEST_CASE(test_construct_move_alloc) {
   std::initializer_list<uint64_t> ilist{0, 1, 2, 3, 4};
-  seq<uint64_t> c1{ilist};
-  test_allocator<uint64_t> alloc{12345};
-  seq<uint64_t> c2{std::move(c1), alloc};
+  seq<uint64_t, tagged_allocator<uint64_t>> c1{ilist};
+  tagged_allocator<uint64_t> alloc{12345};
+  seq<uint64_t, tagged_allocator<uint64_t>> c2{std::move(c1), alloc};
   check_contents(c1);
   check_contents(c2, ilist);
+  BOOST_CHECK(c2.get_allocator().tag() == 12345);
 }
 
 BOOST_AUTO_TEST_CASE(test_construct_ilist) {
@@ -147,9 +186,9 @@ BOOST_AUTO_TEST_CASE(test_assign_ilist) {
 }
 
 BOOST_AUTO_TEST_CASE(test_get_allocator) {
-  test_allocator<uint64_t> alloc{12345};
-  seq<uint64_t, test_allocator<uint64_t>> c1{alloc};
-  BOOST_CHECK(c1.get_allocator().get_u() == 12345);
+  tagged_allocator<uint64_t> alloc{12345};
+  seq<uint64_t, tagged_allocator<uint64_t>> c1{alloc};
+  BOOST_CHECK(c1.get_allocator().tag() == 12345);
 }
 
 template <typename T>
@@ -630,6 +669,18 @@ class throwing_allocator {
     new (p) U(std::forward<Args>(args)...);
   }
 };
+
+template <typename T, typename U>
+inline bool operator==(const throwing_allocator<T> &,
+                       const throwing_allocator<U> &) {
+  return true;
+}
+
+template <typename T, typename U>
+inline bool operator!=(const throwing_allocator<T> &a,
+                       const throwing_allocator<U> &b) {
+  return !(a == b);
+}
 
 template <typename Container, typename T>
 void insert_single_retry(Container &container, insertion_data<T> const &data) {
