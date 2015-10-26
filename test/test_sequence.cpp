@@ -7,6 +7,7 @@
 #include "../common/range.hpp"
 #include "../common/iterator.hpp"
 
+#include <exception>
 #include <limits>
 
 template <typename T, typename Alloc = std::allocator<T>>
@@ -596,4 +597,73 @@ BOOST_AUTO_TEST_CASE(test_random_range) {
   test_range<uint64_t>(31ULL, 30752ULL, 1082972474ULL, 11846815057285548515ULL);
   test_range<uint64_t>(961ULL, 992ULL, 5659033ULL, 14482810490810820797ULL);
   test_range<uint64_t>(29791ULL, 32ULL, 3727649439ULL, 10804193997107502541ULL);
+}
+
+class retry_exception : std::exception {};
+
+template <typename T>
+class throwing_allocator {
+ private:
+  random_engine engine_;
+
+ public:
+  using value_type = T;
+
+  throwing_allocator() = default;
+  template <class U>
+  throwing_allocator(const throwing_allocator<U> &) {}
+
+  T *allocate(std::size_t n) {
+    if (engine_() % 4 == 0) throw retry_exception{};
+    if (n <= std::numeric_limits<std::size_t>::max() / sizeof(T)) {
+      if (auto ptr = std::malloc(n * sizeof(T))) {
+        return static_cast<T *>(ptr);
+      }
+    }
+    throw std::bad_alloc();
+  }
+  void deallocate(T *ptr, std::size_t) { std::free(ptr); }
+
+  template <typename U, typename... Args>
+  void construct(U *p, Args &&... args) {
+    if (engine_() % 4 == 0) throw retry_exception{};
+    new (p) U(std::forward<Args>(args)...);
+  }
+};
+
+template <typename Container, typename T>
+void insert_single_retry(Container &container, insertion_data<T> const &data) {
+  auto count = data.indexes.size();
+  reserve(container, count);
+  for (std::size_t i = 0; i != count; ++i) {
+    while (true) {
+      try {
+        container.insert(nth(container, data.indexes[i]), data.ordered[i]);
+        break;
+      } catch (retry_exception const &) {
+      }
+    }
+  }
+}
+
+template <typename T>
+void test_single_retry(std::size_t count, std::uint32_t seed,
+                       std::uint64_t checksum) {
+  auto data = make_insertion_data_single<T>(count, seed);
+  seq<T, throwing_allocator<T>> container;
+  insert_single_retry(container, data);
+  std::vector<T> inserted{container.begin(), container.end()};
+  BOOST_CHECK(checksum == make_checksum_unsigned(inserted));
+  test_iterator(container, inserted);
+  erase_single(container, data);
+  BOOST_CHECK(container.size() == std::size_t{1});
+  BOOST_CHECK(container[0] == data.ordered[0]);
+}
+
+BOOST_AUTO_TEST_CASE(test_random_single_retry) {
+  test_single_retry<uint64_t>(32ULL, 2397254571ULL, 4723602420748635361ULL);
+  test_single_retry<uint64_t>(992ULL, 463092544ULL, 12966777589746855639ULL);
+  test_single_retry<uint64_t>(30752ULL, 430452927ULL, 751509891372566603ULL);
+  test_single_retry<uint64_t>(953312ULL, 3109453262ULL,
+                              10176667110359292238ULL);
 }
