@@ -3175,26 +3175,55 @@ class segmented_tree_seq {
     swap(get_size(), other.get_size());
   }
 
-  //  TODO
-  //  void merge(segmented_tree_seq &other);
-  //  void merge(segmented_tree_seq &&other);
-  //  template <class Compare>
-  //  void merge(segmented_tree_seq &other, Compare comp);
-  //  template <class Compare>
-  //  void merge(segmented_tree_seq &&other, Compare comp);
+  void merge(segmented_tree_seq &other) {
+    merge(other, std::less<value_type>{});
+  }
 
-  //  void splice(const_iterator pos, segmented_tree_seq &other);
-  //  void splice(const_iterator pos, segmented_tree_seq &&other);
-  //  void splice(const_iterator pos, segmented_tree_seq &other, const_iterator
-  //  it);
-  //  void splice(const_iterator pos, segmented_tree_seq &&other, const_iterator
-  //  it);
-  //  void splice(const_iterator pos, segmented_tree_seq &other, const_iterator
-  //  first,
-  //              const_iterator last);
-  //  void splice(const_iterator pos, segmented_tree_seq &&other, const_iterator
-  //  first,
-  //              const_iterator last);
+  void merge(segmented_tree_seq &&other) { merge(other); }
+
+  template <class Compare>
+  void merge(segmented_tree_seq &other, Compare comp) {
+    auto sz = size();
+    splice(end(), other, other.begin(), other.end());
+    std::inplace_merge(begin(), nth(sz), end(), comp);
+  }
+
+  template <class Compare>
+  void merge(segmented_tree_seq &&other, Compare comp) {
+    merge(other, comp);
+  }
+
+  void splice(const_iterator pos, segmented_tree_seq &other) {
+    insert(pos, std::make_move_iterator(other.begin()),
+           std::make_move_iterator(other.end()));
+    other.clear();
+  }
+
+  void splice(const_iterator pos, segmented_tree_seq &&other) {
+    splice(pos, other);
+  }
+
+  void splice(const_iterator pos, segmented_tree_seq &other,
+              const_iterator it) {
+    insert(pos, std::move(*it));
+    other.erase(it);
+  }
+
+  void splice(const_iterator pos, segmented_tree_seq &&other,
+              const_iterator it) {
+    splice(pos, other, it);
+  }
+
+  void splice(const_iterator pos, segmented_tree_seq &other,
+              const_iterator first, const_iterator last) {
+    insert(pos, std::make_move_iterator(first), std::make_move_iterator(last));
+    other.erase(first, last);
+  }
+
+  void splice(const_iterator pos, segmented_tree_seq &&other,
+              const_iterator first, const_iterator last) {
+    splice(pos, other, first, last);
+  }
 
   /// \par Effects
   ///   Removes all elements matching the specified value.

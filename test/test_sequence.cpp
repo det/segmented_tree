@@ -513,6 +513,110 @@ BOOST_AUTO_TEST_CASE(test_swap_free) {
   check_contents(c2, a);
 }
 
+BOOST_AUTO_TEST_CASE(test_splice_lvalue) {
+  seq<uint64_t> c1{0, 1, 2, 3, 4};
+  seq<uint64_t> c2{5, 6, 7, 8, 9};
+  c1.splice(c1.nth(3), c2);
+  check_contents(c1, {0, 1, 2, 5, 6, 7, 8, 9, 3, 4});
+  check_contents(c2);
+
+  seq<std::string> c3{"zero", "one", "two", "three", "four"};
+  seq<std::string> c4{"five", "six", "seven", "eight", "nine"};
+  c3.splice(c3.nth(3), c4);
+  check_contents(c3, {"zero", "one", "two", "five", "six", "seven", "eight",
+                      "nine", "three", "four"});
+  check_contents(c4);
+}
+
+BOOST_AUTO_TEST_CASE(test_splice_rvalue) {
+  seq<uint64_t> c1{0, 1, 2, 3, 4};
+  seq<uint64_t> c2{5, 6, 7, 8, 9};
+  c1.splice(c1.nth(3), std::move(c2));
+  check_contents(c1, {0, 1, 2, 5, 6, 7, 8, 9, 3, 4});
+  check_contents(c2);
+
+  seq<std::string> c3{"zero", "one", "two", "three", "four"};
+  seq<std::string> c4{"five", "six", "seven", "eight", "nine"};
+  c3.splice(c3.nth(3), std::move(c4));
+  check_contents(c3, {"zero", "one", "two", "five", "six", "seven", "eight",
+                      "nine", "three", "four"});
+  check_contents(c4);
+}
+
+BOOST_AUTO_TEST_CASE(test_splice_single_lvalue) {
+  seq<uint64_t> c1{0, 1, 2, 3, 4};
+  seq<uint64_t> c2{5, 6, 7, 8, 9};
+  c1.splice(c1.nth(3), c2, c2.nth(3));
+  check_contents(c1, {0, 1, 2, 8, 3, 4});
+  check_contents(c2, {5, 6, 7, 9});
+
+  seq<std::string> c3{"zero", "one", "two", "three", "four"};
+  seq<std::string> c4{"five", "six", "seven", "eight", "nine"};
+  c3.splice(c3.nth(3), c4, c4.nth(3));
+  check_contents(c3, {"zero", "one", "two", "eight", "three", "four"});
+  check_contents(c4, {"five", "six", "seven", "nine"});
+}
+
+BOOST_AUTO_TEST_CASE(test_splice_single_rvalue) {
+  seq<uint64_t> c1{0, 1, 2, 3, 4};
+  seq<uint64_t> c2{5, 6, 7, 8, 9};
+  c1.splice(c1.nth(3), std::move(c2), c2.nth(3));
+  check_contents(c1, {0, 1, 2, 8, 3, 4});
+  check_contents(c2, {5, 6, 7, 9});
+
+  seq<std::string> c3{"zero", "one", "two", "three", "four"};
+  seq<std::string> c4{"five", "six", "seven", "eight", "nine"};
+  c3.splice(c3.nth(3), std::move(c4), c4.nth(3));
+  check_contents(c3, {"zero", "one", "two", "eight", "three", "four"});
+  check_contents(c4, {"five", "six", "seven", "nine"});
+}
+
+BOOST_AUTO_TEST_CASE(test_splice_range_lvalue) {
+  seq<uint64_t> c1{0, 1, 2, 3, 4};
+  seq<uint64_t> c2{5, 6, 7, 8, 9};
+  c1.splice(c1.nth(3), c2, c2.nth(1), c2.nth(4));
+  check_contents(c1, {0, 1, 2, 6, 7, 8, 3, 4});
+  check_contents(c2, {5, 9});
+
+  seq<std::string> c3{"zero", "one", "two", "three", "four"};
+  seq<std::string> c4{"five", "six", "seven", "eight", "nine"};
+  c3.splice(c3.nth(3), c4, c4.nth(1), c4.nth(4));
+  check_contents(
+      c3, {"zero", "one", "two", "six", "seven", "eight", "three", "four"});
+  check_contents(c4, {"five", "nine"});
+}
+
+BOOST_AUTO_TEST_CASE(test_splice_range_rvalue) {
+  seq<uint64_t> c1{0, 1, 2, 3, 4};
+  seq<uint64_t> c2{5, 6, 7, 8, 9};
+  c1.splice(c1.nth(3), std::move(c2), c2.nth(1), c2.nth(4));
+  check_contents(c1, {0, 1, 2, 6, 7, 8, 3, 4});
+  check_contents(c2, {5, 9});
+
+  seq<std::string> c3{"zero", "one", "two", "three", "four"};
+  seq<std::string> c4{"five", "six", "seven", "eight", "nine"};
+  c3.splice(c3.nth(3), std::move(c4), c4.nth(1), c4.nth(4));
+  check_contents(
+      c3, {"zero", "one", "two", "six", "seven", "eight", "three", "four"});
+  check_contents(c4, {"five", "nine"});
+}
+
+BOOST_AUTO_TEST_CASE(test_splice_merge_lvalue) {
+  seq<uint64_t> c1{0, 1, 2, 10, 20, 21, 30};
+  seq<uint64_t> c2{1, 3, 4, 5, 22, 29, 31};
+  c1.merge(c2);
+  check_contents(c1, {0, 1, 1, 2, 3, 4, 5, 10, 20, 21, 22, 29, 30, 31});
+  check_contents(c2);
+}
+
+BOOST_AUTO_TEST_CASE(test_splice_merge_rvalue) {
+  seq<uint64_t> c1{0, 1, 2, 10, 20, 21, 30};
+  seq<uint64_t> c2{1, 3, 4, 5, 22, 29, 31};
+  c1.merge(std::move(c2));
+  check_contents(c1, {0, 1, 1, 2, 3, 4, 5, 10, 20, 21, 22, 29, 30, 31});
+  check_contents(c2);
+}
+
 BOOST_AUTO_TEST_CASE(test_remove) {
   seq<uint64_t> c1{0, 1, 2, 3, 4, 4, 3, 2, 1, 0};
   c1.remove(2);
