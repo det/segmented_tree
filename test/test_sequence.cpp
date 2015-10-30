@@ -23,19 +23,18 @@ class tagged_allocator {
   using value_type = T;
   tagged_allocator(unsigned tag = 0) : tag_{tag} {}
   template <class U>
-  tagged_allocator(const tagged_allocator<U> &) {}
+  tagged_allocator(const tagged_allocator<U> &other) : tag_{other.tag()} {}
 
   T *allocate(std::size_t n) {
     if (n <= std::numeric_limits<std::size_t>::max() / sizeof(T)) {
-      if (auto ptr = std::malloc(n * sizeof(T))) {
-        return static_cast<T *>(ptr);
-      }
+      if (auto ptr = std::malloc(n * sizeof(T))) return static_cast<T *>(ptr);
     }
     throw std::bad_alloc();
   }
+
   void deallocate(T *ptr, std::size_t) { std::free(ptr); }
 
-  unsigned tag() { return tag_; }
+  unsigned tag() const { return tag_; }
 };
 
 template <typename T, typename U>
@@ -749,12 +748,11 @@ class throwing_allocator {
   T *allocate(std::size_t n) {
     if (engine_() % 4 == 0) throw retry_exception{};
     if (n <= std::numeric_limits<std::size_t>::max() / sizeof(T)) {
-      if (auto ptr = std::malloc(n * sizeof(T))) {
-        return static_cast<T *>(ptr);
-      }
+      if (auto ptr = std::malloc(n * sizeof(T))) return static_cast<T *>(ptr);
     }
     throw std::bad_alloc();
   }
+
   void deallocate(T *ptr, std::size_t) { std::free(ptr); }
 
   template <typename U, typename... Args>

@@ -3175,12 +3175,51 @@ class segmented_tree_seq {
     swap(get_size(), other.get_size());
   }
 
+  /// \par Effects
+  ///   Transfers all elements in the sorted other into the sorted *this so that
+  ///   all elements are in sorted order.
+  ///
+  /// \par Complexity
+  ///   Linear in size() + other.size() if enough temporary memory is available.
+  ///   NlogN, where N is the maximum of size() and other.size() otherwise.
+  ///
+  /// \par Iterator invalidation
+  ///   Invalidates all iterators in *this and other.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void merge(segmented_tree_seq &other) {
     merge(other, std::less<value_type>{});
   }
 
+  /// \par Effects
+  ///   Transfers all elements in the sorted other into the sorted *this so that
+  ///   all elements are in sorted order.
+  ///
+  /// \par Complexity
+  ///   Linear in size() + other.size() if enough temporary memory is available.
+  ///   NlogN, where N is the maximum of size() and other.size() otherwise.
+  ///
+  /// \par Iterator invalidation
+  ///   Invalidates all iterators in *this and other.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void merge(segmented_tree_seq &&other) { merge(other); }
 
+  /// \par Effects
+  ///   Transfers all elements in the sorted other into the sorted *this so that
+  ///   all elements are in sorted order using the specified compare functor.
+  ///
+  /// \par Complexity
+  ///   Linear in size() + other.size() if enough temporary memory is available.
+  ///   NlogN, where N is the maximum of size() and other.size() otherwise.
+  ///
+  /// \par Iterator invalidation
+  ///   Invalidates all iterators in *this and other.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   template <class Compare>
   void merge(segmented_tree_seq &other, Compare comp) {
     auto sz = size();
@@ -3188,38 +3227,123 @@ class segmented_tree_seq {
     std::inplace_merge(begin(), nth(sz), end(), comp);
   }
 
+  /// \par Effects
+  ///   Transfers all elements in the sorted other into the sorted *this so that
+  ///   all elements are in sorted order using the specified compare functor.
+  ///
+  /// \par Complexity
+  ///   Linear in size() + other.size() if enough temporary memory is available.
+  ///   NlogN, where N is the maximum of size() and other.size() otherwise.
+  ///
+  /// \par Iterator invalidation
+  ///   Invalidates all iterators in *this and other.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   template <class Compare>
   void merge(segmented_tree_seq &&other, Compare comp) {
     merge(other, comp);
   }
 
+  /// \par Effects
+  ///   Transfers all elements in other to the specified position.
+  ///
+  /// \par Complexity
+  ///   MlogN, where M is other.size(), and N is the maximum of size(), and
+  ///   other.size().
+  ///
+  /// \par Iterator invalidation
+  ///   Invalidates all iterators in *this and other.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void splice(const_iterator pos, segmented_tree_seq &other) {
     insert(pos, std::make_move_iterator(other.begin()),
            std::make_move_iterator(other.end()));
     other.clear();
   }
 
+  /// \par Effects
+  ///   Transfers all elements in other to the specified position.
+  ///
+  /// \par Complexity
+  ///   MlogN, where M is other.size(), and N is the maximum of size(), and
+  ///   other.size().
+  ///
+  /// \par Iterator invalidation
+  ///   Invalidates all iterators in *this and other.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void splice(const_iterator pos, segmented_tree_seq &&other) {
     splice(pos, other);
   }
 
+  /// \par Effects
+  ///   Transfers the element pointer to by it to the specified position.
+  ///
+  /// \par Complexity
+  ///   Logarithmic in the maximum of size() and other.size().
+  ///
+  /// \par Iterator invalidation
+  ///   Invalidates all iterators in *this and other.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void splice(const_iterator pos, segmented_tree_seq &other,
               const_iterator it) {
     insert(pos, std::move(*it));
     other.erase(it);
   }
 
+  /// \par Effects
+  ///   Transfers the element pointer to by it to the specified position.
+  ///
+  /// \par Complexity
+  ///   Logarithmic in the maximum of size() and other.size().
+  ///
+  /// \par Iterator invalidation
+  ///   Invalidates all iterators in *this and other.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void splice(const_iterator pos, segmented_tree_seq &&other,
               const_iterator it) {
     splice(pos, other, it);
   }
 
+  /// \par Effects
+  ///   Transfers all elements in the range [first, last) to the specified
+  ///   position.
+  ///
+  /// \par Complexity
+  ///   MlogN, where M is the size of the range, and N is the maximum of size(),
+  ///   other.size(), and the size of the range.
+  ///
+  /// \par Iterator invalidation
+  ///   Invalidates all iterators in *this and other.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void splice(const_iterator pos, segmented_tree_seq &other,
               const_iterator first, const_iterator last) {
     insert(pos, std::make_move_iterator(first), std::make_move_iterator(last));
     other.erase(first, last);
   }
 
+  /// \par Effects
+  ///   Transfers all elements in the range [first, last) to the specified
+  ///   position.
+  ///
+  /// \par Complexity
+  ///   MlogN, where M is the size of the range, and N is the maximum of size(),
+  ///   other.size(), and the size of the range.
+  ///
+  /// \par Iterator invalidation
+  ///   Invalidates all iterators in *this and other.
+  ///
+  /// \par Exception safety
+  ///   Basic.
   void splice(const_iterator pos, segmented_tree_seq &&other,
               const_iterator first, const_iterator last) {
     splice(pos, other, first, last);
@@ -3284,7 +3408,7 @@ class segmented_tree_seq {
 
   /// \par Effects
   ///   Removes all consecutive duplicate elements from the sequence using the
-  ///   specified predicate.
+  ///   specified equality functor.
   ///
   /// \par Complexity
   ///   Linear in size().
@@ -3313,7 +3437,7 @@ class segmented_tree_seq {
   void sort() { sort(std::less<value_type>{}); }
 
   /// \par Effects
-  ///   Stable sort the sequence using the specified predicate.
+  ///   Stable sort the sequence using the specified compare functor.
   ///
   /// \par Complexity
   ///    NlogN, where N is size().
