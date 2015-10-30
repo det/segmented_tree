@@ -3177,7 +3177,7 @@ class segmented_tree_seq {
 
   /// \par Effects
   ///   Transfers all elements in the sorted other into the sorted *this so that
-  ///   all elements are in sorted order.
+  ///   all elements are in stable sorted order.
   ///
   /// \par Complexity
   ///   Linear in size() + other.size() if enough temporary memory is available.
@@ -3194,7 +3194,7 @@ class segmented_tree_seq {
 
   /// \par Effects
   ///   Transfers all elements in the sorted other into the sorted *this so that
-  ///   all elements are in sorted order.
+  ///   all elements are in stable sorted order.
   ///
   /// \par Complexity
   ///   Linear in size() + other.size() if enough temporary memory is available.
@@ -3209,7 +3209,8 @@ class segmented_tree_seq {
 
   /// \par Effects
   ///   Transfers all elements in the sorted other into the sorted *this so that
-  ///   all elements are in sorted order using the specified compare functor.
+  ///   all elements are in stable sorted order using the specified compare
+  ///   functor.
   ///
   /// \par Complexity
   ///   Linear in size() + other.size() if enough temporary memory is available.
@@ -3229,7 +3230,8 @@ class segmented_tree_seq {
 
   /// \par Effects
   ///   Transfers all elements in the sorted other into the sorted *this so that
-  ///   all elements are in sorted order using the specified compare functor.
+  ///   all elements are in stable sorted order using the specified compare
+  ///   functor.
   ///
   /// \par Complexity
   ///   Linear in size() + other.size() if enough temporary memory is available.
