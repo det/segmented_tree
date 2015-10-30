@@ -731,7 +731,7 @@ BOOST_AUTO_TEST_CASE(test_random_range) {
   test_range<uint64_t>(29791ULL, 32ULL, 3727649439ULL, 10804193997107502541ULL);
 }
 
-class retry_exception : std::exception {};
+struct retry_exception {};
 
 template <typename T>
 class throwing_allocator {
