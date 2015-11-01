@@ -75,24 +75,41 @@ struct static_traits_t {
   };
 
   // constexpr
-  static constexpr auto segment_free = segment_target;
-  static constexpr auto node_size = sizeof(node_base);
-  static constexpr auto base_free =
-      node_size > base_target ? 0 : base_target - node_size;
-  static constexpr auto segment_fit = segment_free / sizeof(T);
-  static constexpr auto base_fit = base_free / sizeof(node_data);
-  static constexpr auto segment_max = segment_fit > 1 ? segment_fit : 1;
-  static constexpr auto base_max = base_fit > 3 ? base_fit : 3;
-  static constexpr auto segment_min = (segment_max + 1) / 2;
-  static constexpr auto base_min = (base_max + 1) / 2;
+  static constexpr std::size_t segment_free() { return segment_target; }
+
+  static constexpr std::size_t node_size() { return sizeof(node_base); }
+
+  static constexpr std::size_t base_free() {
+    return node_size() > base_target ? 0 : base_target - node_size();
+  }
+
+  static constexpr std::size_t segment_fit() {
+    return segment_free() / sizeof(T);
+  }
+
+  static constexpr std::size_t base_fit() {
+    return base_free() / sizeof(node_data);
+  }
+
+  static constexpr std::size_t segment_max() {
+    return segment_fit() > 1 ? segment_fit() : 1;
+  }
+
+  static constexpr std::size_t base_max() {
+    return base_fit() > 3 ? base_fit() : 3;
+  }
+
+  static constexpr std::size_t segment_min() { return (segment_max() + 1) / 2; }
+
+  static constexpr std::size_t base_min() { return (base_max() + 1) / 2; }
 
   // types
   struct node {
     node_pointer parent_pointer;
     std::uint16_t parent_index_;
     std::uint16_t length_;
-    std::array<size_type, base_max> sizes;
-    std::array<void_pointer, base_max> pointers;
+    std::array<size_type, base_max()> sizes;
+    std::array<void_pointer, base_max()> pointers;
 
     size_type parent_index() { return parent_index_; }
 
@@ -479,6 +496,11 @@ struct static_traits_t {
   }
 
   // move_next_count
+  static void move_next_iterator_count(iterator_data &it, size_type count) {
+    it.pos += count;
+    move_next_segment_count(it.entry, count);
+  }
+
   static void move_next_segment_count(iterator_entry &entry, size_type count) {
     auto index = entry.segment.index;
     auto length = entry.segment.length;
@@ -553,6 +575,11 @@ struct static_traits_t {
   }
 
   // move_prev_count
+  static void move_prev_iterator_count(iterator_data &it, size_type count) {
+    it.pos -= count;
+    move_prev_segment_count(it.entry, count);
+  }
+
   static void move_prev_segment_count(iterator_entry &entry, size_type count) {
     auto index = entry.segment.index;
 
@@ -725,6 +752,14 @@ class segmented_tree_seq_iterator {
   /// \par Complexity
   ///   Constant.
   reference operator*() const { return begin()[index()]; }
+
+  /// \par Returns
+  ///   A reference to the element diff positions away from the current
+  ///   position.
+  ///
+  /// \par Complexity
+  ///   Logarithmic amortized in the absolute value of diff.
+  reference operator[](difference_type diff) const { return *(*this + diff); }
 
   /// \par Effects
   ///   Move the iterator forward 1 element.
@@ -1015,6 +1050,16 @@ class segmented_tree_seq_iterator {
   bool operator>=(segmented_tree_seq_iterator const &other) const {
     return it_.pos >= other.it_.pos;
   }
+
+  /// \par Returns
+  ///   A copy of the iterator it moved forward diff elements.
+  ///
+  /// \par Complexity
+  ///   Logarithmic amortized in the absolute value of diff.
+  friend segmented_tree_seq_iterator operator+(difference_type diff,
+                                               segmented_tree_seq_iterator it) {
+    return it + diff;
+  }
 };
 
 /// A segmented_tree_seq is a sequence container that provides efficient random
@@ -1028,11 +1073,11 @@ template <typename T, typename Allocator, std::size_t segment_target,
           std::size_t base_target>
 class segmented_tree_seq {
  private:
+  // alias
   using element_traits = typename std::allocator_traits<Allocator>;
   using static_traits = segmented_tree_seq_detail::static_traits_t<
       T, typename element_traits::void_pointer,
       typename element_traits::size_type, segment_target, base_target>;
-
   using element_pointer = typename static_traits::element_pointer;
   using void_pointer = typename static_traits::void_pointer;
   using node_pointer = typename static_traits::node_pointer;
@@ -1040,13 +1085,13 @@ class segmented_tree_seq {
   using iterator_data = typename static_traits::iterator_data;
   using iterator_entry = typename static_traits::iterator_entry;
   using leaf_entry = typename static_traits::leaf_entry;
-
   using node_allocator =
       typename element_traits::template rebind_alloc<node_type>;
   using node_traits =
       typename element_traits::template rebind_traits<node_type>;
 
-  static constexpr bool is_trivial_ = std::is_trivial<T>::value;
+  // constexpr
+  static constexpr bool is_trivial() { return std::is_trivial<T>::value; }
 
  public:
   /// The type of elements stored in the container.
@@ -1115,7 +1160,7 @@ class segmented_tree_seq {
   // allocate
   element_pointer allocate_segment() {
     return element_traits::allocate(get_element_allocator(),
-                                    static_traits::segment_max);
+                                    static_traits::segment_max());
   }
 
   node_pointer allocate_node() {
@@ -1125,7 +1170,7 @@ class segmented_tree_seq {
   // deallocate
   void deallocate_segment(element_pointer pointer) {
     element_traits::deallocate(get_element_allocator(), pointer,
-                               static_traits::segment_max);
+                               static_traits::segment_max());
   }
 
   void deallocate_node(node_pointer pointer) {
@@ -1136,7 +1181,7 @@ class segmented_tree_seq {
   void purge() { purge_root(get_root(), get_size(), get_height()); }
 
   void purge_segment(element_pointer pointer, size_type sz) {
-    if (!is_trivial_)
+    if (!is_trivial())
       for (size_type i = 0, e = sz; i != e; ++i) destroy_element(pointer, i);
     deallocate_segment(pointer);
   }
@@ -1169,14 +1214,26 @@ class segmented_tree_seq {
   }
 
   // move_single
+  template <typename = void>
+  void move_single_element(element_pointer source, size_type source_index,
+                           element_pointer dest, size_type dest_index,
+                           std::true_type) {
+    dest[dest_index] = source[source_index];
+  }
+
+  template <typename = void>
+  void move_single_element(element_pointer source, size_type source_index,
+                           element_pointer dest, size_type dest_index,
+                           std::false_type) {
+    construct_element(dest, dest_index, std::move(source[source_index]));
+    destroy_element(source, source_index);
+  }
+
   size_type move_single_segment(element_pointer source, size_type source_index,
                                 element_pointer dest, size_type dest_index) {
-    if (is_trivial_)
-      dest[dest_index] = source[source_index];
-    else {
-      construct_element(dest, dest_index, std::move(source[source_index]));
-      destroy_element(source, source_index);
-    }
+    move_single_element(
+        source, source_index, dest, dest_index,
+        std::integral_constant<bool, std::is_trivial<value_type>::value>{});
     return 1;
   }
 
@@ -1203,7 +1260,7 @@ class segmented_tree_seq {
   size_type move_range_segment(element_pointer source, size_type source_index,
                                element_pointer dest, size_type dest_index,
                                size_type count) {
-    if (is_trivial_)
+    if (is_trivial())
       std::memcpy(std::addressof(dest[dest_index]),
                   std::addressof(source[source_index]), count * sizeof(T));
     else {
@@ -1267,7 +1324,7 @@ class segmented_tree_seq {
   // move_forward
   void move_forward_segment(element_pointer pointer, size_type length,
                             size_type index, size_type distance) {
-    if (is_trivial_)
+    if (is_trivial())
       std::memmove(std::addressof(pointer[index + distance]),
                    std::addressof(pointer[index]),
                    (length - index) * sizeof(T));
@@ -1318,7 +1375,7 @@ class segmented_tree_seq {
   // move_backward
   void move_backward_segment(element_pointer pointer, size_type length,
                              size_type index, size_type distance) {
-    if (is_trivial_)
+    if (is_trivial())
       std::memmove(std::addressof(pointer[index]),
                    std::addressof(pointer[index + distance]),
                    (length - index) * sizeof(T));
@@ -1397,7 +1454,7 @@ class segmented_tree_seq {
   // purge_range
   size_type purge_range_segment(element_pointer pointer, size_type index,
                                 size_type count) {
-    if (!is_trivial_) {
+    if (!is_trivial()) {
       auto from = index;
       auto last = index + count;
 
@@ -1433,7 +1490,7 @@ class segmented_tree_seq {
 
     while (from != last) {
       auto sz = pointer->sizes[from];
-      purge_node(static_traits::cast_node(pointer->pointers[from]), sz, ht - 1);
+      purge_node(static_traits::cast_node(pointer->pointers[from]), ht - 1);
       erase_size += sz;
       ++from;
     }
@@ -1475,7 +1532,7 @@ class segmented_tree_seq {
           return alloc;
         }
 
-        if (pointer->length() != static_traits::base_max) return alloc;
+        if (pointer->length() != static_traits::base_max()) return alloc;
 
         auto temp = allocate_node();
         temp->parent_pointer = alloc;
@@ -1519,7 +1576,7 @@ class segmented_tree_seq {
       return;
     }
 
-    if (length != static_traits::segment_max) {
+    if (length != static_traits::segment_max()) {
       move_forward_segment(pointer, length, index, 1);
       ++entry.segment.length;
       increment_sizes(parent_pointer, parent_index);
@@ -1529,7 +1586,7 @@ class segmented_tree_seq {
     auto alloc = allocate_segment();
     auto leaf_alloc = alloc_nodes_single(parent_pointer, alloc);
 
-    constexpr auto sum = static_traits::segment_max + 1;
+    constexpr auto sum = static_traits::segment_max() + 1;
     constexpr auto pointer_length = sum / 2;
     constexpr auto alloc_length = sum - pointer_length;
 
@@ -1573,7 +1630,7 @@ class segmented_tree_seq {
     pointer->sizes[index - 1] -= child_size - 1;
 
     auto length = pointer->length();
-    if (length != static_traits::base_max) {
+    if (length != static_traits::base_max()) {
       move_forward_leaf(pointer, length, index, 1);
       copy_single_leaf(pointer, index, child_pointer, child_size);
       pointer->length(length + 1);
@@ -1582,7 +1639,7 @@ class segmented_tree_seq {
     }
 
     auto next_alloc = alloc->parent_pointer;
-    constexpr auto sum = static_traits::base_max + 1;
+    constexpr auto sum = static_traits::base_max() + 1;
     constexpr auto pointer_length = sum / 2;
     constexpr auto alloc_length = sum - pointer_length;
 
@@ -1636,7 +1693,7 @@ class segmented_tree_seq {
       pointer->sizes[index - 1] -= child_size - 1;
 
       auto length = pointer->length();
-      if (length != static_traits::base_max) {
+      if (length != static_traits::base_max()) {
         move_forward_branch(pointer, length, index, 1);
         copy_single_branch(pointer, index, child_pointer, child_size);
         pointer->length(length + 1);
@@ -1645,7 +1702,7 @@ class segmented_tree_seq {
       }
 
       auto next_alloc = alloc->parent_pointer;
-      constexpr auto sum = static_traits::base_max + 1;
+      constexpr auto sum = static_traits::base_max() + 1;
       constexpr auto pointer_length = sum / 2;
       constexpr auto alloc_length = sum - pointer_length;
 
@@ -1697,7 +1754,7 @@ class segmented_tree_seq {
     auto parent_index = entry.leaf.index;
 
     if (length == 1 &&
-        (static_traits::segment_min != 1 || parent_pointer == nullptr)) {
+        (static_traits::segment_min() != 1 || parent_pointer == nullptr)) {
       deallocate_segment(pointer);
       get_root() = nullptr;
       get_size() = 0;
@@ -1708,14 +1765,14 @@ class segmented_tree_seq {
       return;
     }
 
-    if (length-- != static_traits::segment_min || parent_pointer == nullptr) {
+    if (length-- != static_traits::segment_min() || parent_pointer == nullptr) {
       move_backward_segment(pointer, length, index, 1);
       entry.segment.length = length;
       decrement_sizes(parent_pointer, parent_index);
       return;
     }
 
-    constexpr auto merge_size = static_traits::segment_min * 2 - 1;
+    constexpr auto merge_size = static_traits::segment_min() * 2 - 1;
     auto pointers = &parent_pointer->pointers[0];
     auto sizes = &parent_pointer->sizes[0];
 
@@ -1725,7 +1782,7 @@ class segmented_tree_seq {
       auto prev_pointer = static_traits::cast_segment(pointers[prev_index]);
       auto prev_length = sizes[prev_index];
 
-      if (prev_length != static_traits::segment_min) {
+      if (prev_length != static_traits::segment_min()) {
         --prev_length;
         move_forward_segment(pointer, index, 0, 1);
         move_single_segment(prev_pointer, prev_length, pointer, 0);
@@ -1743,7 +1800,7 @@ class segmented_tree_seq {
       erase_index = parent_index;
       entry.segment.pointer = prev_pointer;
       entry.segment.length = merge_size;
-      entry.segment.index += static_traits::segment_min;
+      entry.segment.index += static_traits::segment_min();
       --entry.leaf.index;
     }
 
@@ -1752,7 +1809,7 @@ class segmented_tree_seq {
       auto next_pointer = static_traits::cast_segment(pointers[next_index]);
       auto next_length = sizes[next_index];
 
-      if (next_length != static_traits::segment_min) {
+      if (next_length != static_traits::segment_min()) {
         --next_length;
         move_backward_segment(pointer, length, index, 1);
         move_single_segment(next_pointer, 0, pointer, length);
@@ -1782,7 +1839,7 @@ class segmented_tree_seq {
     auto length = pointer->length();
 
     if (length == 2 &&
-        (static_traits::base_min != 2 || parent_pointer == nullptr)) {
+        (static_traits::base_min() != 2 || parent_pointer == nullptr)) {
       auto other = pointer->pointers[index ^ 1];
       deallocate_node(pointer);
       get_root() = other;
@@ -1793,7 +1850,7 @@ class segmented_tree_seq {
       return;
     }
 
-    if (length-- != static_traits::base_min || parent_pointer == nullptr) {
+    if (length-- != static_traits::base_min() || parent_pointer == nullptr) {
       move_backward_leaf(pointer, length, index, 1);
       pointer->length(length);
       decrement_sizes(parent_pointer, parent_index);
@@ -1809,7 +1866,7 @@ class segmented_tree_seq {
       auto prev_pointer = static_traits::cast_node(pointers[prev_index]);
       auto prev_length = prev_pointer->length();
 
-      if (prev_length != static_traits::base_min) {
+      if (prev_length != static_traits::base_min()) {
         --prev_length;
         move_forward_leaf(pointer, index, 0, 1);
         auto sz = move_single_leaf(prev_pointer, prev_length, pointer, 0);
@@ -1838,7 +1895,7 @@ class segmented_tree_seq {
       auto next_pointer = static_traits::cast_node(pointers[next_index]);
       auto next_length = next_pointer->length();
 
-      if (next_length != static_traits::base_min) {
+      if (next_length != static_traits::base_min()) {
         --next_length;
         move_backward_leaf(pointer, length, index, 1);
         auto sz = move_single_leaf(next_pointer, 0, pointer, length);
@@ -1871,7 +1928,7 @@ class segmented_tree_seq {
       auto length = pointer->length();
 
       if (length == 2 &&
-          (static_traits::base_min != 2 || parent_pointer == nullptr)) {
+          (static_traits::base_min() != 2 || parent_pointer == nullptr)) {
         auto other = static_traits::cast_node(pointer->pointers[index ^ 1]);
         deallocate_node(pointer);
         get_root() = other;
@@ -1883,7 +1940,7 @@ class segmented_tree_seq {
         return;
       }
 
-      if (length-- != static_traits::base_min || parent_pointer == nullptr) {
+      if (length-- != static_traits::base_min() || parent_pointer == nullptr) {
         move_backward_branch(pointer, length, index, 1);
         pointer->length(length);
         decrement_sizes(parent_pointer, parent_index);
@@ -1899,7 +1956,7 @@ class segmented_tree_seq {
         auto prev_pointer = static_traits::cast_node(pointers[prev_index]);
         auto prev_length = prev_pointer->length();
 
-        if (prev_length != static_traits::base_min) {
+        if (prev_length != static_traits::base_min()) {
           --prev_length;
           move_forward_branch(pointer, index, 0, 1);
           auto sz = move_single_branch(prev_pointer, prev_length, pointer, 0);
@@ -1926,7 +1983,7 @@ class segmented_tree_seq {
         auto next_pointer = static_traits::cast_node(pointers[next_index]);
         auto next_length = next_pointer->length();
 
-        if (next_length != static_traits::base_min) {
+        if (next_length != static_traits::base_min()) {
           --next_length;
           move_backward_branch(pointer, length, index, 1);
           auto sz = move_single_branch(next_pointer, 0, pointer, length);
@@ -1980,6 +2037,95 @@ class segmented_tree_seq {
     other.get_size() = 0;
   }
 
+  void grow_for(iterator pos, size_type count) {
+    for (size_type i = 0; i != count; ++i) {
+      pos = emplace(pos);
+      ++pos;
+    }
+  }
+
+  void copy_assign_alloc(segmented_tree_seq const &other) {
+    copy_assign_alloc(
+        other,
+        std::integral_constant<
+            bool,
+            element_traits::propagate_on_container_copy_assignment::value>{});
+  }
+
+  template <typename = void>
+  void copy_assign_alloc(segmented_tree_seq const &other, std::true_type) {
+    if (get_element_allocator() != other.get_element_allocator()) clear();
+    get_element_allocator() = other.get_element_allocator();
+    get_node_allocator() = other.get_node_allocator();
+  }
+
+  template <typename = void>
+  void copy_assign_alloc(segmented_tree_seq const &, std::false_type) {}
+
+  void move_assign_alloc(segmented_tree_seq &other) noexcept(
+      !element_traits::propagate_on_container_move_assignment::value ||
+      std::is_nothrow_move_assignable<allocator_type>::value) {
+    move_assign_alloc(
+        other,
+        std::integral_constant<
+            bool,
+            element_traits::propagate_on_container_move_assignment::value>{});
+  }
+
+  template <typename = void>
+  void move_assign_alloc(segmented_tree_seq &other, std::true_type) noexcept(
+      std::is_nothrow_move_assignable<allocator_type>::value) {
+    get_element_allocator() = std::move(other.get_element_allocator());
+    get_node_allocator() = std::move(other.get_node_allocator());
+  }
+
+  template <typename = void>
+  void move_assign_alloc(segmented_tree_seq const &, std::false_type) noexcept {
+  }
+
+  void move_assign(segmented_tree_seq &other) noexcept(
+      element_traits::propagate_on_container_move_assignment::value
+          &&std::is_nothrow_move_assignable<allocator_type>::value) {
+    move_assign(
+        other,
+        std::integral_constant<
+            bool,
+            element_traits::propagate_on_container_move_assignment::value>{});
+  }
+
+  template <typename = void>
+  void move_assign(segmented_tree_seq &other, std::false_type) {
+    if (get_element_allocator() == other.get_element_allocator()) {
+      assign(std::make_move_iterator(other.begin()),
+             std::make_move_iterator(other.end()));
+    } else
+      move_assign(other, std::true_type{});
+  }
+
+  template <typename = void>
+  void move_assign(segmented_tree_seq &other, std::true_type) {
+    purge();
+    move_assign_alloc(other);
+    steal(other);
+  }
+
+  void swap_allocator(segmented_tree_seq &other) {
+    swap_allocator(
+        other, std::integral_constant<
+                   bool, element_traits::propagate_on_container_swap::value>{});
+  }
+
+  template <typename = void>
+  void swap_allocator(segmented_tree_seq &other, std::true_type) noexcept(
+      segmented_tree_seq_detail::is_nothrow_swappable<allocator_type>::value) {
+    using std::swap;
+    swap(get_element_allocator(), other.get_element_allocator());
+    swap(get_node_allocator(), other.get_node_allocator());
+  }
+
+  template <typename = void>
+  void swap_allocator(segmented_tree_seq &, std::false_type) noexcept {}
+
 // debug functions
 #ifdef BOOST_SEGMENTED_TREE_SEQ_DEBUG
   void verify_iterator(iterator_data a, size_type pos) {
@@ -2022,21 +2168,20 @@ class segmented_tree_seq {
  public:
   // public interface
   /// \par Effects
+  ///   Default constructs an empty sequence.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  explicit segmented_tree_seq() noexcept(
+      std::is_nothrow_default_constructible<allocator_type>::value) {}
+
+  /// \par Effects
   ///   Constructs an empty sequence using the specified allocator.
   ///
   /// \par Complexity
   ///   Constant.
   explicit segmented_tree_seq(Allocator const &alloc)
       : data_{nullptr, 0, 0, alloc, alloc} {}
-
-  /// \par Effects
-  ///   Default constructs an empty sequence.
-  ///
-  /// \par Complexity
-  ///   Constant.
-  explicit segmented_tree_seq() noexcept(
-      std::is_nothrow_default_constructible<allocator_type>::value)
-      : segmented_tree_seq{Allocator()} {}
 
   /// \par Effects
   ///   Constructs a count size sequence using the specified allocator, each
@@ -2059,7 +2204,7 @@ class segmented_tree_seq {
   explicit segmented_tree_seq(size_type count,
                               Allocator const &alloc = Allocator())
       : segmented_tree_seq{alloc} {
-    insert(end(), count, value_type{});
+    grow_for(end(), count);
   }
 
   /// \par Effects
@@ -2105,8 +2250,12 @@ class segmented_tree_seq {
   ///   Constant.
   segmented_tree_seq(segmented_tree_seq &&other) noexcept(
       std::is_nothrow_move_constructible<allocator_type>::value)
-      : segmented_tree_seq{std::move(other.get_element_allocator())} {
-    steal(other);
+      : data_{other.get_root(), other.get_size(), other.get_height(),
+              std::move(other.get_element_allocator()),
+              std::move(other.get_node_allocator())} {
+    other.get_root() = nullptr;
+    other.get_height() = 0;
+    other.get_size() = 0;
   }
 
   /// \par Effects
@@ -2161,11 +2310,7 @@ class segmented_tree_seq {
   ///   Basic.
   segmented_tree_seq &operator=(segmented_tree_seq const &other) {
     if (this != &other) {
-      if (element_traits::propagate_on_container_copy_assignment::value) {
-        if (get_element_allocator() != other.get_element_allocator()) clear();
-        get_element_allocator() = other.get_element_allocator();
-        get_node_allocator() = other.get_node_allocator();
-      }
+      copy_assign_alloc(other);
       assign(other.begin(), other.end());
     }
     return *this;
@@ -2194,20 +2339,9 @@ class segmented_tree_seq {
   ///   sequence's allocator compares equal to other's allocator. Basic
   ///   otherwise.
   segmented_tree_seq &operator=(segmented_tree_seq &&other) noexcept(
-      allocator_type::propagate_on_container_move_assignment::value
+      element_traits::propagate_on_container_move_assignment::value
           &&std::is_nothrow_move_assignable<allocator_type>::value) {
-    if (element_traits::propagate_on_container_move_assignment::value ||
-        get_element_allocator() == other.get_element_allocator()) {
-      purge();
-      if (element_traits::propagate_on_container_move_assignment::value) {
-        get_element_allocator() = other.get_element_allocator();
-        get_node_allocator() = other.get_node_allocator();
-      }
-      steal(other);
-    } else
-      assign(std::make_move_iterator(other.begin()),
-             std::make_move_iterator(other.end()));
-
+    move_assign(other);
     return *this;
   }
 
@@ -2869,10 +3003,10 @@ class segmented_tree_seq {
   ///   Basic.
   iterator insert(const_iterator pos, size_type count, T const &value) {
     for (size_type i = 0; i != count; ++i) {
-      pos = insert(pos, value);
+      pos = emplace(pos, value);
       ++pos;
     }
-    static_traits::move_prev_segment_count(pos.it_.entry, count);
+    static_traits::move_prev_iterator_count(pos.it_, count);
     return pos.it_;
   }
 
@@ -2898,12 +3032,12 @@ class segmented_tree_seq {
   iterator insert(const_iterator pos, InputIt first, InputIt last) {
     size_type count = 0;
     while (first != last) {
-      pos = insert(pos, *first);
+      pos = emplace(pos, *first);
       ++first;
       ++pos;
       ++count;
     }
-    static_traits::move_prev_segment_count(pos.it_.entry, count);
+    static_traits::move_prev_iterator_count(pos.it_, count);
     return pos.it_;
   }
 
@@ -3122,7 +3256,16 @@ class segmented_tree_seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  void resize(size_type count) { resize(count, {}); }
+  void resize(size_type count) {
+    auto sz = size();
+    if (sz == count) return;
+
+    auto last = end();
+    if (count < sz)
+      erase(nth(count), last);
+    else
+      grow_for(last, count - sz);
+  }
 
   /// \par Effects
   ///   Resizes the seqeuence to the specified size, copy constructing any
@@ -3166,13 +3309,10 @@ class segmented_tree_seq {
       !element_traits::propagate_on_container_swap::value ||
       segmented_tree_seq_detail::is_nothrow_swappable<allocator_type>::value) {
     using std::swap;
-    if (element_traits::propagate_on_container_swap::value) {
-      swap(get_element_allocator(), other.get_element_allocator());
-      swap(get_node_allocator(), other.get_node_allocator());
-    }
     swap(get_root(), other.get_root());
     swap(get_height(), other.get_height());
     swap(get_size(), other.get_size());
+    swap_allocator(other);
   }
 
   /// \par Effects
@@ -3453,140 +3593,124 @@ class segmented_tree_seq {
   void sort(Compare comp) {
     std::stable_sort(begin(), end(), comp);
   }
+
+  /// \par Returns
+  ///   True if both sequences are of the same length and have each element in
+  ///   both sequences are equal. False otherwise.
+  ///
+  /// \par Complexity
+  ///    Linear in size().
+  ///
+  /// \par Iterator invalidation
+  ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
+  friend bool operator==(segmented_tree_seq &lhs, segmented_tree_seq &rhs) {
+    return lhs.size() == rhs.size() &&
+           std::equal(lhs.begin(), lhs.end(), rhs.begin());
+  }
+
+  /// \par Returns
+  ///   False if both sequences are of the same length and have each element in
+  ///   both sequences are equal. True otherwise.
+  ///
+  /// \par Complexity
+  ///   Linear in size().
+  ///
+  /// \par Iterator invalidation
+  ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
+  friend bool operator!=(segmented_tree_seq &lhs, segmented_tree_seq &rhs) {
+    return !(lhs == rhs);
+  }
+
+  /// \par Returns
+  ///   True if the first sequence is lexicographically less than the second.
+  ///   False otherwise.
+  ///
+  /// \par Complexity
+  ///   Linear in size().
+  ///
+  /// \par Iterator invalidation
+  ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
+  friend bool operator<(segmented_tree_seq &lhs, segmented_tree_seq &rhs) {
+    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(),
+                                        rhs.end());
+  }
+
+  /// \par Returns
+  ///   True if the first sequence is equal or lexicographically less than the
+  ///   second. False otherwise.
+  ///
+  /// \par Complexity
+  ///   Linear in size().
+  ///
+  /// \par Iterator invalidation
+  ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
+  friend bool operator<=(segmented_tree_seq &lhs, segmented_tree_seq &rhs) {
+    return !(rhs < lhs);
+  }
+
+  /// \par Returns
+  ///   True if the first sequence is lexicographically greater than the second.
+  ///   False otherwise.
+  ///
+  /// \par Complexity
+  ///   Linear in size().
+  ///
+  /// \par Iterator invalidation
+  ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
+  friend bool operator>(segmented_tree_seq &lhs, segmented_tree_seq &rhs) {
+    return rhs < lhs;
+  }
+
+  /// \par Returns
+  ///   True if the first sequence is lexicographically greater or equal to the
+  ///   second. False otherwise.
+  ///
+  /// \par Complexity
+  ///   Linear in size().
+  ///
+  /// \par Iterator invalidation
+  ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   Strong.
+  friend bool operator>=(segmented_tree_seq &lhs, segmented_tree_seq &rhs) {
+    return !(lhs < rhs);
+  }
+
+  /// \par Effects
+  ///   Swaps the contents of the sequences.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  ///
+  /// \par Iterator invalidation
+  ///   Every iterator referring to an element in one container before the
+  ///   swap shall refer to the same element in the other container after the
+  ///   swap.
+  ///
+  /// \par Exception safety
+  ///   No-throw if the allocator propagates on swap or the allocator doesn't
+  ///   throw on swap. Strong otherwise.
+  friend void swap(segmented_tree_seq &a,
+                   segmented_tree_seq &b) noexcept(noexcept(a.swap(b))) {
+    a.swap(b);
+  }
 };
-
-// free functions
-
-/// \par Returns
-///   True if both sequences are of the same length and have each element in
-///   both sequences are equal. False otherwise.
-///
-/// \par Complexity
-///    Linear in size().
-///
-/// \par Iterator invalidation
-///   Iterators are not invalidated.
-///
-/// \par Exception safety
-///   Strong.
-template <typename T, typename Alloc, size_t... Args>
-bool operator==(segmented_tree_seq<T, Alloc, Args...> &lhs,
-                segmented_tree_seq<T, Alloc, Args...> &rhs) {
-  return lhs.size() == rhs.size() &&
-         std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-}
-
-/// \par Returns
-///   False if both sequences are of the same length and have each element in
-///   both sequences are equal. True otherwise.
-///
-/// \par Complexity
-///   Linear in size().
-///
-/// \par Iterator invalidation
-///   Iterators are not invalidated.
-///
-/// \par Exception safety
-///   Strong.
-template <typename T, typename Alloc, size_t... Args>
-bool operator!=(segmented_tree_seq<T, Alloc, Args...> &lhs,
-                segmented_tree_seq<T, Alloc, Args...> &rhs) {
-  return !(lhs == rhs);
-}
-
-/// \par Returns
-///   True if the first sequence is lexicographically less than the second.
-///   False otherwise.
-///
-/// \par Complexity
-///   Linear in size().
-///
-/// \par Iterator invalidation
-///   Iterators are not invalidated.
-///
-/// \par Exception safety
-///   Strong.
-template <typename T, typename Alloc, size_t... Args>
-bool operator<(segmented_tree_seq<T, Alloc, Args...> &lhs,
-               segmented_tree_seq<T, Alloc, Args...> &rhs) {
-  return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(),
-                                      rhs.end());
-}
-
-/// \par Returns
-///   True if the first sequence is equal or lexicographically less than the
-///   second. False otherwise.
-///
-/// \par Complexity
-///   Linear in size().
-///
-/// \par Iterator invalidation
-///   Iterators are not invalidated.
-///
-/// \par Exception safety
-///   Strong.
-template <typename T, typename Alloc, size_t... Args>
-bool operator<=(segmented_tree_seq<T, Alloc, Args...> &lhs,
-                segmented_tree_seq<T, Alloc, Args...> &rhs) {
-  return !(rhs < lhs);
-}
-
-/// \par Returns
-///   True if the first sequence is lexicographically greater than the second.
-///   False otherwise.
-///
-/// \par Complexity
-///   Linear in size().
-///
-/// \par Iterator invalidation
-///   Iterators are not invalidated.
-///
-/// \par Exception safety
-///   Strong.
-template <typename T, typename Alloc, size_t... Args>
-bool operator>(segmented_tree_seq<T, Alloc, Args...> &lhs,
-               segmented_tree_seq<T, Alloc, Args...> &rhs) {
-  return rhs < lhs;
-}
-
-/// \par Returns
-///   True if the first sequence is lexicographically greater or equal to the
-///   second. False otherwise.
-///
-/// \par Complexity
-///   Linear in size().
-///
-/// \par Iterator invalidation
-///   Iterators are not invalidated.
-///
-/// \par Exception safety
-///   Strong.
-template <typename T, typename Alloc, size_t... Args>
-bool operator>=(segmented_tree_seq<T, Alloc> &lhs,
-                segmented_tree_seq<T, Alloc> &rhs) {
-  return !(lhs < rhs);
-}
-
-/// \par Effects
-///   Swaps the contents of the sequences.
-///
-/// \par Complexity
-///   Constant.
-///
-/// \par Iterator invalidation
-///   Every iterator referring to an element in one container before the
-///   swap shall refer to the same element in the other container after the
-///   swap.
-///
-/// \par Exception safety
-///   No-throw if the allocator propagates on swap or the allocator doesn't
-///   throw on swap. Strong otherwise.
-template <typename T, typename Traits, typename Alloc, size_t... Args>
-void swap(
-    segmented_tree_seq<T, Alloc, Args...> &a,
-    segmented_tree_seq<T, Alloc, Args...> &b) noexcept(noexcept(a.swap(b))) {
-  a.swap(b);
-}
 }
 
 #endif  // #ifndef BOOST_SEGMENTED_TREE_SEQ
