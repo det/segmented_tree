@@ -23,7 +23,7 @@ class tagged_allocator {
   using value_type = T;
   tagged_allocator(unsigned tag = 0) : tag_{tag} {}
   template <class U>
-  tagged_allocator(const tagged_allocator<U> &other) : tag_{other.tag()} {}
+  tagged_allocator(tagged_allocator<U> const &other) : tag_{other.tag()} {}
 
   T *allocate(std::size_t n) {
     if (n <= std::numeric_limits<std::size_t>::max() / sizeof(T)) {

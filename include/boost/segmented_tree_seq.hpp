@@ -1553,10 +1553,8 @@ class segmented_tree_seq {
   }
 
   // reserve_single
-  iterator_data reserve_single_iterator(iterator_data const &it) {
-    auto res = it;
-    reserve_single_segment(res.entry);
-    return res;
+  void reserve_single_iterator(iterator_data &it) {
+    reserve_single_segment(it.entry);
   }
 
   void reserve_single_segment(iterator_entry &entry) {
@@ -1737,13 +1735,8 @@ class segmented_tree_seq {
   }
 
   // erase_single
-  iterator_data erase_single_iterator(iterator_data const &it) {
-    auto res = it;
-    destroy_element(res.entry.segment.pointer, res.entry.segment.index);
-    erase_single_segment(res.entry);
-    if (res.entry.segment.index == res.entry.segment.length)
-      static_traits::move_next_leaf(res.entry);
-    return res;
+  void erase_single_iterator(iterator_data &it) {
+    erase_single_segment(it.entry);
   }
 
   void erase_single_segment(iterator_entry &entry) {
@@ -2038,17 +2031,17 @@ class segmented_tree_seq {
   }
 
   template <class... Args>
-  iterator_data emplace_single(iterator_data const &it, Args &&... args) {
-    auto ret = reserve_single_iterator(it);
+  iterator_data emplace_single(iterator_data it, Args &&... args) {
+    reserve_single_iterator(it);
     try {
-      copy_single_segment(ret.entry.segment.pointer, ret.entry.segment.index,
+      copy_single_segment(it.entry.segment.pointer, it.entry.segment.index,
                           std::forward<Args>(args)...);
     } catch (...) {
-      erase_single_segment(ret.entry);
+      erase_single_iterator(it);
       throw;
     }
 
-    return ret;
+    return it;
   }
 
   template <typename... Args>
@@ -2075,10 +2068,18 @@ class segmented_tree_seq {
     return it;
   }
 
+  iterator_data erase_single(iterator_data it) {
+    destroy_element(it.entry.segment.pointer, it.entry.segment.index);
+    erase_single_iterator(it);
+    if (it.entry.segment.index == it.entry.segment.length)
+      static_traits::move_next_leaf(it.entry);
+    return it;
+  }
+
   iterator_data erase_range(iterator_data first, iterator_data last) {
     while (last.pos - first.pos) {
       static_traits::move_prev_iterator(last);
-      last = erase_single_iterator(last);
+      last = erase_single(last);
     }
     return last;
   }
@@ -3102,7 +3103,7 @@ class segmented_tree_seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  iterator erase(const_iterator pos) { return erase_single_iterator(pos.it_); }
+  iterator erase(const_iterator pos) { return erase_single(pos.it_); }
 
   /// \par Effects
   ///   Remove all elements in the range [first, last) from the sequence.
@@ -3175,7 +3176,7 @@ class segmented_tree_seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  void pop_back() { erase_single_iterator(find_last()); }
+  void pop_back() { erase_single(find_last()); }
 
   /// \par Effects
   ///   Copy constructs an element at begin().
@@ -3230,7 +3231,7 @@ class segmented_tree_seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  void pop_front() { erase_single_iterator(find_first()); }
+  void pop_front() { erase_single(find_first()); }
 
   /// \par Effects
   ///   Resizes the seqeuence to the specified size, default constructing any
