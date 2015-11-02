@@ -2037,11 +2037,103 @@ class segmented_tree_seq {
     other.get_size() = 0;
   }
 
-  void grow_for(iterator pos, size_type count) {
-    for (size_type i = 0; i != count; ++i) {
-      pos = emplace(pos);
-      ++pos;
+  template <class... Args>
+  iterator_data emplace_single(iterator_data const &it, Args &&... args) {
+    auto ret = reserve_single_iterator(it);
+    try {
+      copy_single_segment(ret.entry.segment.pointer, ret.entry.segment.index,
+                          std::forward<Args>(args)...);
+    } catch (...) {
+      erase_single_segment(ret.entry);
+      throw;
     }
+
+    return ret;
+  }
+
+  template <typename... Args>
+  iterator_data emplace_count(iterator_data it, size_type count,
+                              Args &&... args) {
+    for (size_type i = 0; i != count; ++i) {
+      it = emplace_single(it, std::forward<Args>(args)...);
+      static_traits::move_next_iterator(it);
+    }
+    static_traits::move_prev_iterator_count(it, count);
+    return it;
+  }
+
+  template <class InputIt>
+  iterator_data emplace_range(iterator_data it, InputIt first, InputIt last) {
+    size_type count = 0;
+    while (first != last) {
+      it = emplace_single(it, *first);
+      ++first;
+      static_traits::move_next_iterator(it);
+      ++count;
+    }
+    static_traits::move_prev_iterator_count(it, count);
+    return it;
+  }
+
+  iterator_data erase_range(iterator_data first, iterator_data last) {
+    while (last.pos - first.pos) {
+      static_traits::move_prev_iterator(last);
+      last = erase_single_iterator(last);
+    }
+    return last;
+  }
+
+  void assign_count(size_type count, T const &value) {
+    auto first = find_first();
+    auto last = find_end();
+    while (true) {
+      if (count == 0) {
+        erase_range(first, last);
+        return;
+      }
+
+      if (first.pos == last.pos) {
+        emplace_count(last, count, value);
+        return;
+      }
+
+      first.entry.segment.pointer[first.entry.segment.index] = value;
+      static_traits::move_next_iterator(first);
+      --count;
+    }
+  }
+
+  template <class InputIt>
+  void assign_range(InputIt source_first, InputIt source_last) {
+    auto first = find_first();
+    auto last = find_end();
+    while (true) {
+      if (source_first == source_last) {
+        erase_range(first, last);
+        return;
+      }
+
+      if (first.pos == last.pos) {
+        emplace_range(last, source_first, source_last);
+        return;
+      }
+
+      first.entry.segment.pointer[first.entry.segment.index] = *source_first;
+      static_traits::move_next_iterator(first);
+      ++source_first;
+    }
+  }
+
+  template <typename... Args>
+  void resize_count(size_type count, Args &&... args) {
+    auto sz = size();
+    if (sz == count) return;
+
+    auto last = find_end();
+    if (count < sz)
+      erase_range(find_index(count), last);
+    else
+      emplace_count(last, count - sz, std::forward<Args>(args)...);
   }
 
   void copy_assign_alloc(segmented_tree_seq const &other) {
@@ -2125,46 +2217,8 @@ class segmented_tree_seq {
 
   template <typename = void>
   void swap_allocator(segmented_tree_seq &, std::false_type) noexcept {}
-
-// debug functions
-#ifdef BOOST_SEGMENTED_TREE_SEQ_DEBUG
-  void verify_iterator(iterator_data a, size_type pos) {
-    auto b = nth(pos).it_;
-    if (a.entry.segment.pointer != b.entry.segment.pointer) {
-      std::cerr << "segment pointer mismatch: " << a.entry.segment.pointer
-                << " " << b.entry.segment.pointer << std::endl;
-    }
-
-    if (a.entry.segment.index != b.entry.segment.index) {
-      std::cerr << "segment index mismatch: " << +a.entry.segment.index << " "
-                << +b.entry.segment.index << std::endl;
-    }
-
-    if (a.entry.segment.length != b.entry.segment.length) {
-      std::cerr << "segment length mismatch: " << +a.entry.segment.length << " "
-                << +b.entry.segment.length << std::endl;
-    }
-
-    if (a.entry.leaf.pointer != b.entry.leaf.pointer) {
-      std::cerr << "leaf pointer mismatch: " << a.entry.leaf.pointer << " "
-                << b.entry.leaf.pointer << std::endl;
-    }
-
-    if (a.entry.leaf.index != b.entry.leaf.index) {
-      std::cerr << "leaf index mismatch: " << +a.entry.leaf.index << " "
-                << +b.entry.leaf.index << std::endl;
-    }
-
-    if (a.pos != b.pos) {
-      std::cerr << "pos mismatch: " << +a.pos << " " << +b.pos << std::endl;
-    }
-  }
-#else
-  template <typename... Args>
-  void verify_iterator(Args &&...) {}
-#endif
-
 #endif  // #ifndef BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
+
  public:
   // public interface
   /// \par Effects
@@ -2192,7 +2246,7 @@ class segmented_tree_seq {
   segmented_tree_seq(size_type count, T const &value,
                      Allocator const &alloc = Allocator())
       : segmented_tree_seq{alloc} {
-    insert(end(), count, value);
+    emplace_count(find_end(), count, value);
   }
 
   /// \par Effects
@@ -2204,7 +2258,7 @@ class segmented_tree_seq {
   explicit segmented_tree_seq(size_type count,
                               Allocator const &alloc = Allocator())
       : segmented_tree_seq{alloc} {
-    grow_for(end(), count);
+    emplace_count(find_end(), count);
   }
 
   /// \par Effects
@@ -2218,7 +2272,7 @@ class segmented_tree_seq {
   segmented_tree_seq(InputIt first, InputIt last,
                      Allocator const &alloc = Allocator())
       : segmented_tree_seq{alloc} {
-    insert(end(), first, last);
+    emplace_range(find_end(), first, last);
   }
 
   /// \par Effects
@@ -2230,7 +2284,7 @@ class segmented_tree_seq {
       : segmented_tree_seq{
             element_traits::select_on_container_copy_construction(
                 other.get_element_allocator())} {
-    insert(end(), other.begin(), other.end());
+    emplace_range(find_end(), other.begin(), other.end());
   }
 
   /// \par Effects
@@ -2240,7 +2294,7 @@ class segmented_tree_seq {
   ///   NlogN, where N is other.size().
   segmented_tree_seq(segmented_tree_seq const &other, Allocator const &alloc)
       : segmented_tree_seq{alloc} {
-    insert(end(), other.begin(), other.end());
+    emplace_range(find_end(), other.begin(), other.end());
   }
 
   /// \par Effects
@@ -2269,8 +2323,8 @@ class segmented_tree_seq {
     if (get_element_allocator() == other.get_element_allocator())
       steal(other);
     else
-      insert(end(), std::make_move_iterator(other.begin()),
-             std::make_move_iterator(other.end()));
+      emplace_range(find_end(), std::make_move_iterator(other.begin()),
+                    std::make_move_iterator(other.end()));
   }
 
   /// \par Effects
@@ -2282,7 +2336,7 @@ class segmented_tree_seq {
   segmented_tree_seq(std::initializer_list<T> init,
                      Allocator const &alloc = Allocator())
       : segmented_tree_seq{alloc} {
-    insert(end(), init.begin(), init.end());
+    emplace_range(find_end(), init.begin(), init.end());
   }
 
   /// \par Effects
@@ -2311,7 +2365,7 @@ class segmented_tree_seq {
   segmented_tree_seq &operator=(segmented_tree_seq const &other) {
     if (this != &other) {
       copy_assign_alloc(other);
-      assign(other.begin(), other.end());
+      assign_range(other.begin(), other.end());
     }
     return *this;
   }
@@ -2362,7 +2416,7 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Basic.
   segmented_tree_seq &operator=(std::initializer_list<T> ilist) {
-    assign(ilist.begin(), ilist.end());
+    assign_range(ilist.begin(), ilist.end());
     return *this;
   }
 
@@ -2379,25 +2433,7 @@ class segmented_tree_seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  void assign(size_type count, T const &value) {
-    auto first = begin();
-    auto last = end();
-    while (true) {
-      if (count == 0) {
-        erase(first, last);
-        return;
-      }
-
-      if (first == last) {
-        insert(last, count, value);
-        return;
-      }
-
-      *first = value;
-      ++first;
-      --count;
-    }
-  }
+  void assign(size_type count, T const &value) { assign_count(count, value); }
 
   /// \par Effects
   ///   Assigns the sequence to the elements copy constructed from the range
@@ -2415,24 +2451,8 @@ class segmented_tree_seq {
   ///   Basic.
   template <class InputIt,
             typename = typename std::iterator_traits<InputIt>::pointer>
-  void assign(InputIt source_first, InputIt source_last) {
-    auto first = begin();
-    auto last = end();
-    while (true) {
-      if (source_first == source_last) {
-        erase(first, last);
-        return;
-      }
-
-      if (first == last) {
-        insert(last, source_first, source_last);
-        return;
-      }
-
-      *first = *source_first;
-      ++first;
-      ++source_first;
-    }
+  void assign(InputIt first, InputIt last) {
+    assign_range(first, last);
   }
 
   /// \par Effects
@@ -2449,7 +2469,7 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Basic.
   void assign(std::initializer_list<T> ilist) {
-    assign(ilist.begin(), ilist.end());
+    assign_range(ilist.begin(), ilist.end());
   }
 
   /// \par Returns
@@ -2513,8 +2533,8 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Strong.
   reference operator[](size_type pos) {
-    iterator it = find_index(pos);
-    return *it;
+    auto it = find_index(pos);
+    return it.entry.segment.pointer[it.entry.segment.index];
   }
 
   /// \par Returns
@@ -2529,8 +2549,8 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Strong.
   const_reference operator[](size_type pos) const {
-    iterator it = find_index(pos);
-    return *it;
+    auto it = find_index(pos);
+    return it.entry.segment.pointer[it.entry.segment.index];
   }
 
   /// \par Returns
@@ -2965,7 +2985,7 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Strong.
   iterator insert(const_iterator pos, T const &value) {
-    return emplace(pos, value);
+    return emplace_single(pos.it_, value);
   }
 
   /// \par Effects
@@ -2983,7 +3003,7 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Strong.
   iterator insert(const_iterator pos, T &&value) {
-    return emplace(pos, std::move(value));
+    return emplace_single(pos.it_, std::move(value));
   }
 
   /// \par Effects
@@ -3002,12 +3022,7 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Basic.
   iterator insert(const_iterator pos, size_type count, T const &value) {
-    for (size_type i = 0; i != count; ++i) {
-      pos = emplace(pos, value);
-      ++pos;
-    }
-    static_traits::move_prev_iterator_count(pos.it_, count);
-    return pos.it_;
+    return emplace_count(pos.it_, count, value);
   }
 
   /// \par Effects
@@ -3030,15 +3045,7 @@ class segmented_tree_seq {
   template <class InputIt,
             typename = typename std::iterator_traits<InputIt>::pointer>
   iterator insert(const_iterator pos, InputIt first, InputIt last) {
-    size_type count = 0;
-    while (first != last) {
-      pos = emplace(pos, *first);
-      ++first;
-      ++pos;
-      ++count;
-    }
-    static_traits::move_prev_iterator_count(pos.it_, count);
-    return pos.it_;
+    return emplace_range(pos.it_, first, last);
   }
 
   /// \par Effects
@@ -3059,7 +3066,7 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Basic.
   iterator insert(const_iterator pos, std::initializer_list<T> ilist) {
-    return insert(pos, ilist.begin(), ilist.end());
+    return emplace_range(pos.it_, ilist.begin(), ilist.end());
   }
 
   /// \par Effects
@@ -3078,17 +3085,7 @@ class segmented_tree_seq {
   ///   Strong.
   template <class... Args>
   iterator emplace(const_iterator pos, Args &&... args) {
-    auto it = reserve_single_iterator(pos.it_);
-    try {
-      copy_single_segment(it.entry.segment.pointer, it.entry.segment.index,
-                          std::forward<Args>(args)...);
-    } catch (...) {
-      erase_single_segment(it.entry);
-      throw;
-    }
-
-    verify_iterator(it, pos.it_.pos);
-    return it;
+    return emplace_single(pos.it_, std::forward<Args>(args)...);
   }
 
   /// \par Effects
@@ -3105,11 +3102,7 @@ class segmented_tree_seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  iterator erase(const_iterator pos) {
-    auto it = erase_single_iterator(pos.it_);
-    verify_iterator(it, pos.it_.pos);
-    return it;
-  }
+  iterator erase(const_iterator pos) { return erase_single_iterator(pos.it_); }
 
   /// \par Effects
   ///   Remove all elements in the range [first, last) from the sequence.
@@ -3126,11 +3119,7 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Basic.
   iterator erase(const_iterator first, const_iterator last) {
-    while (first != last) {
-      --last;
-      last = erase(last);
-    }
-    return last.it_;
+    return erase_range(first.it_, last.it_);
   }
 
   /// \par Effects
@@ -3172,7 +3161,7 @@ class segmented_tree_seq {
   ///   Strong.
   template <class... Args>
   void emplace_back(Args &&... args) {
-    emplace(end(), std::forward<Args>(args)...);
+    emplace_single(find_end(), std::forward<Args>(args)...);
   }
 
   /// \par Effects
@@ -3186,7 +3175,7 @@ class segmented_tree_seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  void pop_back() { erase(penultimate()); }
+  void pop_back() { erase_single_iterator(find_last()); }
 
   /// \par Effects
   ///   Copy constructs an element at begin().
@@ -3227,7 +3216,7 @@ class segmented_tree_seq {
   ///   Strong.
   template <class... Args>
   void emplace_front(Args &&... args) {
-    emplace(begin(), std::forward<Args>(args)...);
+    emplace_single(find_first(), std::forward<Args>(args)...);
   }
 
   /// \par Effects
@@ -3241,7 +3230,7 @@ class segmented_tree_seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  void pop_front() { erase(begin()); }
+  void pop_front() { erase_single_iterator(find_first()); }
 
   /// \par Effects
   ///   Resizes the seqeuence to the specified size, default constructing any
@@ -3256,16 +3245,7 @@ class segmented_tree_seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  void resize(size_type count) {
-    auto sz = size();
-    if (sz == count) return;
-
-    auto last = end();
-    if (count < sz)
-      erase(nth(count), last);
-    else
-      grow_for(last, count - sz);
-  }
+  void resize(size_type count) { resize_count(count); }
 
   /// \par Effects
   ///   Resizes the seqeuence to the specified size, copy constructing any
@@ -3281,14 +3261,7 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Basic.
   void resize(size_type count, value_type const &value) {
-    auto sz = size();
-    if (sz == count) return;
-
-    auto last = end();
-    if (count < sz)
-      erase(nth(count), last);
-    else
-      insert(last, count - sz, value);
+    resize_count(count, value);
   }
 
   /// \par Effects

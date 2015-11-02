@@ -160,6 +160,14 @@ BOOST_AUTO_TEST_CASE(test_operator_assign_ilist) {
   check_contents(c1, ilist2);
 }
 
+BOOST_AUTO_TEST_CASE(test_assign_count) {
+  seq<uint64_t> c1{0, 1, 2, 3, 4};
+  c1.assign(10, 0);
+  check_contents(c1, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+  c1.assign(5, 1);
+  check_contents(c1, {1, 1, 1, 1, 1});
+}
+
 BOOST_AUTO_TEST_CASE(test_assign_range) {
   std::initializer_list<uint64_t> ilist{0, 1, 2, 3, 4};
   seq<uint64_t> c1;
