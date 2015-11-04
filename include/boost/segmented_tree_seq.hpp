@@ -2188,7 +2188,7 @@ class segmented_tree_seq {
 
   template <typename = void>
   void move_assign(segmented_tree_seq &other, std::false_type) {
-    if (get_element_allocator() == other.get_element_allocator()) {
+    if (get_element_allocator() != other.get_element_allocator()) {
       assign(std::make_move_iterator(other.begin()),
              std::make_move_iterator(other.end()));
     } else
