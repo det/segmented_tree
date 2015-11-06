@@ -638,6 +638,52 @@ struct static_traits_t {
       ++child_ht;
     }
   }
+
+  static element_pointer first_element(iterator_data it) {
+    return it.entry.segment.pointer;
+  }
+
+  static element_pointer current_element(iterator_data it) {
+    return it.entry.segment.pointer + it.entry.segment.index;
+  }
+
+  static element_pointer last_element(iterator_data it) {
+    return it.entry.segment.pointer + it.entry.segment.length;
+  }
+
+  static value_type &dereference(iterator_data it) {
+    return it.entry.segment.pointer[it.entry.segment.index];
+  }
+
+  static value_type &dereference_count(iterator_data it, difference_type diff) {
+    move_iterator_count(it, diff);
+    return it.entry.segment.pointer[it.entry.segment.index];
+  }
+
+  static difference_type difference(iterator_data a, iterator_data b) {
+    return a.pos > b.pos ? static_cast<difference_type>(a.pos - b.pos)
+                         : -static_cast<difference_type>(b.pos - a.pos);
+  }
+
+  static void move_after_segment(iterator_data &it) {
+    it.pos += it.entry.segment.length - it.entry.segment.index;
+    move_next_leaf(it.entry);
+  }
+
+  static void move_after_segment_count(iterator_data &it, size_type count) {
+    it.pos += it.entry.segment.length - it.entry.segment.index + count;
+    move_next_leaf_count(it.entry, count);
+  }
+
+  static void move_before_segment(iterator_data &it) {
+    it.pos -= it.entry.segment.index + 1;
+    move_prev_leaf(it.entry);
+  }
+
+  static void move_before_segment_count(iterator_data &it, size_type count) {
+    it.pos -= it.entry.segment.index + 1 - count;
+    move_prev_leaf_count(it.entry, count);
+  }
 };
 }
 #endif  // #ifndef BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED
@@ -710,48 +756,48 @@ class segmented_tree_seq_iterator {
       : it_(other.it_) {}
 
   /// \par Returns
-  ///   The index into the segment that the iterator points to.
+  ///   A pointer to the current element of the current segment of the iterator.
   ///
   /// \par Complexity
   ///   Constant.
   ///
   /// \par Note
   ///   Non-standard extension.
-  size_type index() const { return it_.entry.segment.index; }
+  pointer current() const { return static_traits::current_element(it_); }
 
   /// \par Returns
-  ///   The beginning of the segment that the iterator points to.
+  ///   A pointer to the first element of the current segment of the iterator.
   ///
   /// \par Complexity
   ///   Constant.
   ///
   /// \par Note
   ///   Non-standard extension.
-  pointer begin() const { return it_.entry.segment.pointer; }
+  pointer begin() const { return static_traits::first_element(it_); }
 
   /// \par Returns
-  ///  The end of the segment that the iterator points to.
+  ///  A pointer 1 past the last element of the current segment of the iterator.
   ///
   /// \par Complexity
   ///   Constant.
   ///
   /// \par Note
   ///   Non-standard extension.
-  pointer end() const { return begin() + it_.entry.segment.length; }
+  pointer end() const { return static_traits::last_element(it_); }
 
   /// \par Returns
   ///   A pointer to the current element.
   ///
   /// \par Complexity
   ///   Constant.
-  pointer operator->() const { return begin() + index(); }
+  pointer operator->() const { return static_traits::current_element(it_); }
 
   /// \par Returns
   ///   A reference to the current element.
   ///
   /// \par Complexity
   ///   Constant.
-  reference operator*() const { return begin()[index()]; }
+  reference operator*() const { return static_traits::dereference(it_); }
 
   /// \par Returns
   ///   A reference to the element diff positions away from the current
@@ -759,7 +805,9 @@ class segmented_tree_seq_iterator {
   ///
   /// \par Complexity
   ///   Logarithmic amortized in the absolute value of diff.
-  reference operator[](difference_type diff) const { return *(*this + diff); }
+  reference operator[](difference_type diff) const {
+    return static_traits::dereference_count(it_, diff);
+  }
 
   /// \par Effects
   ///   Move the iterator forward 1 element.
@@ -863,9 +911,7 @@ class segmented_tree_seq_iterator {
   /// \par Complexity
   ///   Constant.
   difference_type operator-(segmented_tree_seq_iterator const &other) const {
-    return it_.pos > other.it_.pos
-               ? static_cast<difference_type>(it_.pos - other.it_.pos)
-               : -static_cast<difference_type>(other.it_.pos - it_.pos);
+    return static_traits::difference(it_, other.it_);
   }
 
   /// \par Effects
@@ -880,8 +926,7 @@ class segmented_tree_seq_iterator {
   /// \par Note
   ///   Non-standard extension.
   segmented_tree_seq_iterator &move_before_segment() {
-    it_.pos -= it_.entry.segment.index + 1;
-    move_prev_leaf(it_.entry);
+    static_traits::move_before_segment(it_);
     return *this;
   }
 
@@ -898,8 +943,7 @@ class segmented_tree_seq_iterator {
   /// \par Note
   ///   Non-standard extension.
   segmented_tree_seq_iterator &move_before_segment(size_type count) {
-    it_.pos -= it_.entry.segment.index + 1 - count;
-    move_prev_leaf_count(it_.entry, count);
+    static_traits::move_before_segment_count(it_, count);
     return *this;
   }
 
@@ -915,8 +959,7 @@ class segmented_tree_seq_iterator {
   /// \par Note
   ///   Non-standard extension.
   segmented_tree_seq_iterator &move_after_segment() {
-    it_.pos += it_.entry.segment.length - it_.entry.segment.index;
-    move_next_leaf(it_.entry);
+    static_traits::move_after_segment(it_);
     return *this;
   }
 
@@ -930,8 +973,7 @@ class segmented_tree_seq_iterator {
   /// \par Note
   ///   Non-standard extension.
   segmented_tree_seq_iterator &move_after_segment(size_type count) {
-    it_.pos += it_.entry.segment.length - it_.entry.segment.index + count;
-    move_next_leaf_count(it_.entry, count);
+    static_traits::move_after_segment_count(it_, count);
     return *this;
   }
 
@@ -946,7 +988,7 @@ class segmented_tree_seq_iterator {
   ///   Non-standard extension.
   segmented_tree_seq_iterator before_segment() const {
     auto copy = it_;
-    move_before_segment(copy);
+    static_traits::move_before_segment(copy);
     return copy;
   }
 
@@ -961,7 +1003,7 @@ class segmented_tree_seq_iterator {
   ///   Non-standard extension.
   segmented_tree_seq_iterator after_segment() const {
     auto copy = it_;
-    move_after_segment(copy);
+    static_traits::move_after_segment(copy);
     return copy;
   }
 
@@ -976,7 +1018,7 @@ class segmented_tree_seq_iterator {
   ///   Non-standard extension.
   segmented_tree_seq_iterator before_segment(size_type count) const {
     auto copy = it_;
-    move_before_segment_count(copy, count);
+    static_traits::move_before_segment_count(copy, count);
     return copy;
   }
 
@@ -991,7 +1033,7 @@ class segmented_tree_seq_iterator {
   ///   Non-standard extension.
   segmented_tree_seq_iterator after_segment(size_type count) const {
     auto copy = it_;
-    move_after_segment_count(copy, count);
+    static_traits::move_after_segment_count(copy, count);
     return copy;
   }
 
@@ -2500,9 +2542,10 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Strong.
   reference at(size_type pos) {
-    if (pos >= size())
+    if (pos >= get_size())
       throw std::out_of_range{"segmented_tree_seq at() out of bounds"};
-    return (*this)[pos];
+    auto it = find_index(pos);
+    return static_traits::dereference(it);
   }
 
   /// \par Returns
@@ -2517,9 +2560,10 @@ class segmented_tree_seq {
   /// \par Exception safety
   ///   Strong.
   const_reference at(size_type pos) const {
-    if (pos >= size())
+    if (pos >= get_size())
       throw std::out_of_range{"segmented_tree_seq at() out of bounds"};
-    return (*this)[pos];
+    auto it = find_index(pos);
+    return static_traits::dereference(it);
   }
 
   /// \par Returns
@@ -2535,7 +2579,7 @@ class segmented_tree_seq {
   ///   Strong.
   reference operator[](size_type pos) {
     auto it = find_index(pos);
-    return it.entry.segment.pointer[it.entry.segment.index];
+    return static_traits::dereference(it);
   }
 
   /// \par Returns
@@ -2551,7 +2595,7 @@ class segmented_tree_seq {
   ///   Strong.
   const_reference operator[](size_type pos) const {
     auto it = find_index(pos);
-    return it.entry.segment.pointer[it.entry.segment.index];
+    return static_traits::dereference(it);
   }
 
   /// \par Returns
