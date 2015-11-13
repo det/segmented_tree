@@ -1129,9 +1129,6 @@ class seq {
   using node_traits =
       typename element_traits::template rebind_traits<node_type>;
 
-  // constexpr
-  static constexpr bool is_trivial() { return std::is_trivial<T>::value; }
-
  public:
   /// The type of elements stored in the container.
   using value_type = typename element_traits::value_type;
@@ -1218,9 +1215,17 @@ class seq {
   // purge
   void purge() { purge_root(get_root(), get_size(), get_height()); }
 
+  void purge_segment(element_pointer, size_type, std::true_type) {}
+
+  void purge_segment(element_pointer pointer, size_type sz, std::false_type) {
+    for (size_type i = 0, e = sz; i != e; ++i) destroy_element(pointer, i);
+  }
+
   void purge_segment(element_pointer pointer, size_type sz) {
-    if (!is_trivial())
-      for (size_type i = 0, e = sz; i != e; ++i) destroy_element(pointer, i);
+    purge_segment(
+        pointer, sz,
+        std::integral_constant<bool,
+                               std::is_trivially_destructible<T>::value>{});
     deallocate_segment(pointer);
   }
 
@@ -1253,14 +1258,14 @@ class seq {
 
   // move_single
   template <typename = void>
-  void move_single_element(element_pointer source, size_type source_index,
+  void move_single_segment(element_pointer source, size_type source_index,
                            element_pointer dest, size_type dest_index,
                            std::true_type) {
     dest[dest_index] = source[source_index];
   }
 
   template <typename = void>
-  void move_single_element(element_pointer source, size_type source_index,
+  void move_single_segment(element_pointer source, size_type source_index,
                            element_pointer dest, size_type dest_index,
                            std::false_type) {
     construct_element(dest, dest_index, std::move(source[source_index]));
@@ -1269,9 +1274,10 @@ class seq {
 
   size_type move_single_segment(element_pointer source, size_type source_index,
                                 element_pointer dest, size_type dest_index) {
-    move_single_element(
+    move_single_segment(
         source, source_index, dest, dest_index,
-        std::integral_constant<bool, std::is_trivial<value_type>::value>{});
+        std::integral_constant<bool,
+                               std::is_trivially_assignable<T, T>::value>{});
     return 1;
   }
 
@@ -1295,24 +1301,34 @@ class seq {
   }
 
   // move_range
+  void move_range_segment(element_pointer source, size_type source_index,
+                          element_pointer dest, size_type dest_index,
+                          size_type count, std::true_type) {
+    std::memcpy(std::addressof(dest[dest_index]),
+                std::addressof(source[source_index]), count * sizeof(T));
+  }
+
+  void move_range_segment(element_pointer source, size_type source_index,
+                          element_pointer dest, size_type dest_index,
+                          size_type count, std::false_type) {
+    auto from = source_index;
+    auto last = source_index + count;
+    auto to = dest_index;
+
+    while (from != last) {
+      construct_element(dest, to, std::move(source[from]));
+      destroy_element(source, from);
+      ++from;
+      ++to;
+    }
+  }
+
   size_type move_range_segment(element_pointer source, size_type source_index,
                                element_pointer dest, size_type dest_index,
                                size_type count) {
-    if (is_trivial())
-      std::memcpy(std::addressof(dest[dest_index]),
-                  std::addressof(source[source_index]), count * sizeof(T));
-    else {
-      auto from = source_index;
-      auto last = source_index + count;
-      auto to = dest_index;
-
-      while (from != last) {
-        construct_element(dest, to, std::move(source[from]));
-        destroy_element(source, from);
-        ++from;
-        ++to;
-      }
-    }
+    move_range_segment(
+        source, source_index, dest, dest_index, count,
+        std::integral_constant<bool, std::is_trivially_copyable<T>::value>{});
     return count;
   }
 
@@ -1361,23 +1377,32 @@ class seq {
 
   // move_forward
   void move_forward_segment(element_pointer pointer, size_type length,
-                            size_type index, size_type distance) {
-    if (is_trivial())
-      std::memmove(std::addressof(pointer[index + distance]),
-                   std::addressof(pointer[index]),
-                   (length - index) * sizeof(T));
-    else {
-      auto first = index;
-      auto from = length;
-      auto to = length + distance;
+                            size_type index, size_type distance,
+                            std::true_type) {
+    std::memmove(std::addressof(pointer[index + distance]),
+                 std::addressof(pointer[index]), (length - index) * sizeof(T));
+  }
 
-      while (first != from) {
-        --from;
-        --to;
-        construct_element(pointer, to, std::move(pointer[from]));
-        destroy_element(pointer, from);
-      }
+  void move_forward_segment(element_pointer pointer, size_type length,
+                            size_type index, size_type distance,
+                            std::false_type) {
+    auto first = index;
+    auto from = length;
+    auto to = length + distance;
+
+    while (first != from) {
+      --from;
+      --to;
+      construct_element(pointer, to, std::move(pointer[from]));
+      destroy_element(pointer, from);
     }
+  }
+
+  void move_forward_segment(element_pointer pointer, size_type length,
+                            size_type index, size_type distance) {
+    move_forward_segment(
+        pointer, length, index, distance,
+        std::integral_constant<bool, std::is_trivially_copyable<T>::value>{});
   }
 
   void move_forward_leaf(node_pointer pointer, size_type length,
@@ -1412,23 +1437,33 @@ class seq {
 
   // move_backward
   void move_backward_segment(element_pointer pointer, size_type length,
-                             size_type index, size_type distance) {
-    if (is_trivial())
-      std::memmove(std::addressof(pointer[index]),
-                   std::addressof(pointer[index + distance]),
-                   (length - index) * sizeof(T));
-    else {
-      auto from = index + distance;
-      auto to = index;
-      auto last = length;
+                             size_type index, size_type distance,
+                             std::true_type) {
+    std::memmove(std::addressof(pointer[index]),
+                 std::addressof(pointer[index + distance]),
+                 (length - index) * sizeof(T));
+  }
 
-      while (to != last) {
-        construct_element(pointer, to, std::move(pointer[from]));
-        destroy_element(pointer, from);
-        ++from;
-        ++to;
-      }
+  void move_backward_segment(element_pointer pointer, size_type length,
+                             size_type index, size_type distance,
+                             std::false_type) {
+    auto from = index + distance;
+    auto to = index;
+    auto last = length;
+
+    while (to != last) {
+      construct_element(pointer, to, std::move(pointer[from]));
+      destroy_element(pointer, from);
+      ++from;
+      ++to;
     }
+  }
+
+  void move_backward_segment(element_pointer pointer, size_type length,
+                             size_type index, size_type distance) {
+    move_backward_segment(
+        pointer, length, index, distance,
+        std::integral_constant<bool, std::is_trivially_copyable<T>::value>{});
   }
 
   void move_backward_leaf(node_pointer pointer, size_type length,
@@ -1485,55 +1520,6 @@ class seq {
     pointer->sizes[index] = child_size;
     pointer->pointers[index] = child_pointer;
     return child_size;
-  }
-
-  // purge_single
-
-  // purge_range
-  size_type purge_range_segment(element_pointer pointer, size_type index,
-                                size_type count) {
-    if (!is_trivial()) {
-      auto from = index;
-      auto last = index + count;
-
-      while (from != last) {
-        destroy_element(pointer, from);
-        ++from;
-      }
-    }
-    return count;
-  }
-
-  size_type purge_range_leaf(node_pointer pointer, size_type index,
-                             size_type count) {
-    auto from = index;
-    auto last = index + count;
-    size_type erase_size = 0;
-
-    while (from != last) {
-      auto sz = pointer->sizes[from];
-      purge_segment(static_traits::cast_segment(pointer->pointers[from]), sz);
-      erase_size += sz;
-      ++from;
-    }
-
-    return erase_size;
-  }
-
-  size_type purge_range_branch(node_pointer pointer, size_type index,
-                               size_type count, size_type ht) {
-    auto from = index;
-    auto last = index + count;
-    size_type erase_size = 0;
-
-    while (from != last) {
-      auto sz = pointer->sizes[from];
-      purge_node(static_traits::cast_node(pointer->pointers[from]), ht - 1);
-      erase_size += sz;
-      ++from;
-    }
-
-    return erase_size;
   }
 
   // update_sizes
@@ -2529,8 +2515,7 @@ class seq {
   /// \par Exception safety
   ///   Strong.
   reference at(size_type pos) {
-    if (pos >= get_size())
-      throw std::out_of_range{"seq at() out of bounds"};
+    if (pos >= get_size()) throw std::out_of_range{"seq at() out of bounds"};
     auto it = find_index(pos);
     return static_traits::dereference(it);
   }
@@ -2547,8 +2532,7 @@ class seq {
   /// \par Exception safety
   ///   Strong.
   const_reference at(size_type pos) const {
-    if (pos >= get_size())
-      throw std::out_of_range{"seq at() out of bounds"};
+    if (pos >= get_size()) throw std::out_of_range{"seq at() out of bounds"};
     auto it = find_index(pos);
     return static_traits::dereference(it);
   }
