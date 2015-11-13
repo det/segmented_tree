@@ -11,7 +11,7 @@ doxygen autodoc
   :
     [ glob ../include/boost/segmented_tree_seq.hpp ]
   :
-    <doxygen:param>PREDEFINED=\"BOOST_SEGMENTED_TREE_SEQ_DOXYGEN_INVOKED\"
+    <doxygen:param>PREDEFINED=\"BOOST_SEGMENTED_TREE_DOXYGEN_INVOKED\"
   ;
 
 xml segmented_tree_seq : segmented_tree_seq.qbk : <dependency>autodoc ;

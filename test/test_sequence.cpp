@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE test_sequence
 
 #include <boost/test/unit_test.hpp>
-#include <boost/segmented_tree_seq.hpp>
+#include <boost/segmented_tree/seq.hpp>
 
 #include "../common/single.hpp"
 #include "../common/range.hpp"
@@ -11,7 +11,7 @@
 #include <limits>
 
 template <typename T, typename Alloc = std::allocator<T>>
-using seq = boost::segmented_tree_seq<T, Alloc, TARGET_SIZE>;
+using seq = boost::segmented_tree::seq<T, Alloc, TARGET_SIZE>;
 using uint64_t = std::uint64_t;
 
 template <typename T>
