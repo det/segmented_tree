@@ -1277,7 +1277,7 @@ class seq {
     move_single_segment(
         source, source_index, dest, dest_index,
         std::integral_constant<bool,
-                               std::is_trivially_assignable<T, T>::value>{});
+                               std::is_trivially_assignable<T &, T>::value>{});
     return 1;
   }
 
