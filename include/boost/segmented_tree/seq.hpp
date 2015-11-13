@@ -3589,7 +3589,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  friend bool operator==(seq &lhs, seq &rhs) {
+  friend bool operator==(seq const &lhs, seq const &rhs) {
     return lhs.size() == rhs.size() &&
            std::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -3606,7 +3606,9 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  friend bool operator!=(seq &lhs, seq &rhs) { return !(lhs == rhs); }
+  friend bool operator!=(seq const &lhs, seq const &rhs) {
+    return !(lhs == rhs);
+  }
 
   /// \par Returns
   ///   True if the first sequence is lexicographically less than the second.
@@ -3620,7 +3622,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  friend bool operator<(seq &lhs, seq &rhs) {
+  friend bool operator<(seq const &lhs, seq const &rhs) {
     return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(),
                                         rhs.end());
   }
@@ -3637,7 +3639,9 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  friend bool operator<=(seq &lhs, seq &rhs) { return !(rhs < lhs); }
+  friend bool operator<=(seq const &lhs, seq const &rhs) {
+    return !(rhs < lhs);
+  }
 
   /// \par Returns
   ///   True if the first sequence is lexicographically greater than the second.
@@ -3651,7 +3655,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  friend bool operator>(seq &lhs, seq &rhs) { return rhs < lhs; }
+  friend bool operator>(seq const &lhs, seq const &rhs) { return rhs < lhs; }
 
   /// \par Returns
   ///   True if the first sequence is lexicographically greater or equal to the
@@ -3665,7 +3669,9 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  friend bool operator>=(seq &lhs, seq &rhs) { return !(lhs < rhs); }
+  friend bool operator>=(seq const &lhs, seq const &rhs) {
+    return !(lhs < rhs);
+  }
 
   /// \par Effects
   ///   Swaps the contents of the sequences.
