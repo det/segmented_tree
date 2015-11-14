@@ -11,10 +11,7 @@
 #include <algorithm>
 #include <cstring>
 #include <limits>
-#include <string>
-#include <tuple>
 #include <utility>
-#include <vector>
 #include <type_traits>
 
 #ifdef BOOST_SEGMENTED_TREE_DEBUG
@@ -1158,24 +1155,32 @@ class seq {
  private:
 #ifndef BOOST_SEGMENTED_TREE_DOXYGEN_INVOKED
   // private data
-  std::tuple<void_pointer, size_type, size_type, allocator_type, node_allocator>
-      data_;
+  void_pointer root_ = nullptr;
+
+  struct size_pair_t : allocator_type {
+    size_type sz = 0;
+    size_pair_t() : allocator_type{} {}
+    size_pair_t(allocator_type const &alloc) : allocator_type{alloc}, sz{} {}
+
+  } size_pair;
+
+  struct height_pair_t : node_allocator {
+    size_type ht = 0;
+    height_pair_t() : node_allocator{} {}
+    height_pair_t(allocator_type const &alloc) : node_allocator{alloc}, ht{} {}
+  } height_pair;
 
   // getters
-  void_pointer &get_root() { return std::get<0>(data_); }
-  void_pointer const &get_root() const { return std::get<0>(data_); }
-  size_type &get_size() { return std::get<1>(data_); }
-  size_type const &get_size() const { return std::get<1>(data_); }
-  size_type &get_height() { return std::get<2>(data_); }
-  size_type const &get_height() const { return std::get<2>(data_); }
-  allocator_type &get_element_allocator() { return std::get<3>(data_); }
-  allocator_type const &get_element_allocator() const {
-    return std::get<3>(data_);
-  }
-  node_allocator &get_node_allocator() { return std::get<4>(data_); }
-  node_allocator const &get_node_allocator() const {
-    return std::get<4>(data_);
-  }
+  void_pointer &get_root() { return root_; }
+  void_pointer const &get_root() const { return root_; }
+  size_type &get_size() { return size_pair.sz; }
+  size_type const &get_size() const { return size_pair.sz; }
+  size_type &get_height() { return height_pair.ht; }
+  size_type const &get_height() const { return height_pair.ht; }
+  allocator_type &get_element_allocator() { return size_pair; }
+  allocator_type const &get_element_allocator() const { return size_pair; }
+  node_allocator &get_node_allocator() { return height_pair; }
+  node_allocator const &get_node_allocator() const { return height_pair; }
 
   // destroy
   void destroy_segment(element_pointer pointer, size_type index) {
@@ -2239,7 +2244,8 @@ class seq {
   ///
   /// \par Complexity
   ///   Constant.
-  explicit seq(Allocator const &alloc) : data_{nullptr, 0, 0, alloc, alloc} {}
+  explicit seq(Allocator const &alloc)
+      : size_pair{alloc}, height_pair{alloc} {}
 
   /// \par Effects
   ///   Constructs a count size sequence using the specified allocator, each
@@ -2303,9 +2309,9 @@ class seq {
   ///   Constant.
   seq(seq &&other) noexcept(
       std::is_nothrow_move_constructible<allocator_type>::value)
-      : data_{other.get_root(), other.get_size(), other.get_height(),
-              std::move(other.get_element_allocator()),
-              std::move(other.get_node_allocator())} {
+      : root_{other.root_},
+        size_pair{std::move(other.size_pair)},
+        height_pair{std::move(other.height_pair)} {
     other.get_root() = nullptr;
     other.get_height() = 0;
     other.get_size() = 0;
