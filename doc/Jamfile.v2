@@ -4,20 +4,20 @@
 # http://www.boost.org/LICENSE_1_0.txt)
 
 using quickbook ;
-import boostbook : boostbook ;
-import doxygen ;
+using boostbook ;
+using doxygen ;
 
 doxygen autodoc
   :
-    [ glob ../include/boost/segmented_tree_seq.hpp ]
+    [ glob ../include/boost/segmented_tree/seq.hpp ]
   :
     <doxygen:param>PREDEFINED=\"BOOST_SEGMENTED_TREE_DOXYGEN_INVOKED\"
   ;
 
-xml segmented_tree_seq : segmented_tree_seq.qbk : <dependency>autodoc ;
+xml segmented_tree : segmented_tree.qbk : <dependency>autodoc ;
 boostbook standalone
   :
-    segmented_tree_seq
+    segmented_tree
   :
     <xsl:param>boost.root=http://www.boost.org/doc/libs/1_59_0
 #    <xsl:param>html.stylesheet=boostbook.css

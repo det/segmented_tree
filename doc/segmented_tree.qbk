@@ -1,4 +1,4 @@
-[library Boost.SegmentedTreeSeq
+[library Boost.SegmentedTree
     [quickbook 1.6]
     [version 1.0]
     [copyright 2014-2015 Chris Clearwater]
@@ -16,15 +16,15 @@ The standard library provides sequence containers that offer efficient insertion
 at at the end (`std::vector`), efficient insertition at the front and the end
 (`std::deque`), but offers no solution for efficient random access insertion.
 
-Boost.SegmentedTreeSeq was designed to fill this use case.
+Boost.SegmentedTree was designed to fill this use case.
 
-[note Boost.SegmentedTreeSeq is not currently a part of Boost.]
+[note Boost.SegmentedTree is not currently a part of Boost.]
 
 [endsect]
 
 [section Getting started]
 
-The [classref boost::segmented_tree_seq] container supports the interfaces of
+The [classref boost::segmented_tree::seq] container supports the interfaces of
 `std::vector` and `std::deque`, it can be used in the same way as these
 containers with a few exceptions:
 
@@ -34,14 +34,14 @@ containers with a few exceptions:
 * `reserve()` and `shrink_to_fit()` are missing.
 * The standard library requires users to obtain an iterator to the middle of 
   a sequence container by using "container.begin() + offset", doing this with
-  [classref boost::segmented_tree_seq] is inefficient. Instead users should
-  use [memberref boost::segmented_tree_seq::nth].
+  [classref boost::segmented_tree::seq] is inefficient. Instead users should
+  use [memberref boost::segmented_tree::seq::nth].
 
 [section How to use]
 
-Boost.SegmentedTreeSeq is a header only C++11 library and it does not depend on
+Boost.SegmentedTree is a header only C++11 library and it does not depend on
 any other Boost libraries. Simply include [headerref
-boost/segmented_tree_seq.hpp] to start using it.
+boost/segmented_tree/seq.hpp] to start using it.
 
 [endsect]
 
@@ -49,10 +49,10 @@ boost/segmented_tree_seq.hpp] to start using it.
 
   #include <algorithm>
   #include <iostream>
-  #include <boost/segmented_tree_seq.hpp>
+  #include <boost/segmented_tree/seq.hpp>
 
   int main() {
-    boost::segmented_tree_seq<std::string> haystack(100000, "hay");
+    boost::segmented_tree::seq<std::string> haystack(100000, "hay");
     haystack.insert(haystack.nth(33333), "needle");
     auto first = haystack.begin();
     auto last = haystack.end();
@@ -68,7 +68,7 @@ boost/segmented_tree_seq.hpp] to start using it.
 
 [section Implementation]
 
-Boost.SegmentedTreeSeq is implemented using a counted
+Boost.SegmentedTree is implemented using a counted
 [@https://en.wikipedia.org/wiki/B%2B_tree B+Tree].
 
 [section Representation]
@@ -92,9 +92,9 @@ the empty tree.
 
 The size array stores the recursive size of all its children.
 
-The segmented_tree_seq container looks like this:
+The segmented_tree::seq container looks like this:
 
-  struct segmented_tree_seq {
+  struct seq {
     size_type height;
     size_type size;
     void * root;
@@ -160,7 +160,7 @@ make the remaning child the new root and decrease the height.
 The following images show the results of randomly inserting, randomly erasing,
 and iterating over different containers. They come in two flavors, single (1
 element at a time), and range (many elements at a time). It can be seen that
-segmented_tree_seq generally has the fastest random access insert and erase of
+segmented_tree::seq generally has the fastest random access insert and erase of
 single elements. It also has the fastest iterators among containers with
 efficient random access insert and erase. However, btree_seq currently wins by a
 large margin for range insert and erase. All graphs are logairthmic scale on the
