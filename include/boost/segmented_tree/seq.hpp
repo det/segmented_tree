@@ -1177,19 +1177,14 @@ class seq {
     return std::get<4>(data_);
   }
 
-  // construct
-  template <typename... Args>
-  void construct_element(element_pointer pointer, size_type index,
-                         Args &&... args) {
-    element_traits::construct(get_element_allocator(),
-                              std::addressof(pointer[index]),
-                              std::forward<Args>(args)...);
-  }
-
   // destroy
-  void destroy_element(element_pointer pointer, size_type index) {
+  void destroy_segment(element_pointer pointer, size_type index) {
     element_traits::destroy(get_element_allocator(),
                             std::addressof(pointer[index]));
+  }
+
+  void destroy_node(node_pointer pointer, size_type index) {
+    pointer->pointers[index].~void_pointer();
   }
 
   // allocate
@@ -1218,7 +1213,7 @@ class seq {
   void purge_segment(element_pointer, size_type, std::true_type) {}
 
   void purge_segment(element_pointer pointer, size_type sz, std::false_type) {
-    for (size_type i = 0, e = sz; i != e; ++i) destroy_element(pointer, i);
+    for (size_type i = 0, e = sz; i != e; ++i) destroy_segment(pointer, i);
   }
 
   void purge_segment(element_pointer pointer, size_type sz) {
@@ -1229,23 +1224,19 @@ class seq {
     deallocate_segment(pointer);
   }
 
-  void purge_leaf(node_pointer pointer) {
-    for (size_type i = 0, e = pointer->length(); i != e; ++i)
-      purge_segment(static_traits::cast_segment(pointer->pointers[i]),
-                    pointer->sizes[i]);
-    deallocate_node(pointer);
-  }
-
   void purge_node(node_pointer pointer, size_type ht) {
-    if (ht == 2)
-      purge_leaf(pointer);
-    else
-      purge_branch(pointer, ht);
-  }
-
-  void purge_branch(node_pointer pointer, size_type ht) {
-    for (size_type i = 0, e = pointer->length(); i != e; ++i)
-      purge_node(static_traits::cast_node(pointer->pointers[i]), ht - 1);
+    if (ht == 2) {
+      for (size_type i = 0, e = pointer->length(); i != e; ++i) {
+        purge_segment(static_traits::cast_segment(pointer->pointers[i]),
+                      pointer->sizes[i]);
+        destroy_node(pointer, i);
+      }
+    } else {
+      for (size_type i = 0, e = pointer->length(); i != e; ++i) {
+        purge_node(static_traits::cast_node(pointer->pointers[i]), ht - 1);
+        destroy_node(pointer, i);
+      }
+    }
     deallocate_node(pointer);
   }
 
@@ -1257,27 +1248,22 @@ class seq {
   }
 
   // move_single
-  template <typename = void>
-  void move_single_segment(element_pointer source, size_type source_index,
-                           element_pointer dest, size_type dest_index,
-                           std::true_type) {
-    dest[dest_index] = source[source_index];
+  void move_single_element(element_pointer source, size_type source_index,
+                           element_pointer dest, size_type dest_index) {
+    new (&dest[dest_index]) value_type{std::move(source[source_index])};
+    source[source_index].~value_type();
   }
 
-  template <typename = void>
-  void move_single_segment(element_pointer source, size_type source_index,
-                           element_pointer dest, size_type dest_index,
-                           std::false_type) {
-    construct_element(dest, dest_index, std::move(source[source_index]));
-    destroy_element(source, source_index);
+  void move_single_pointer(node_pointer source, size_type source_index,
+                           node_pointer dest, size_type dest_index) {
+    new (&dest->pointers[dest_index])
+        void_pointer{source->pointers[source_index]};
+    source->pointers[source_index].~void_pointer();
   }
 
   size_type move_single_segment(element_pointer source, size_type source_index,
                                 element_pointer dest, size_type dest_index) {
-    move_single_segment(
-        source, source_index, dest, dest_index,
-        std::integral_constant<bool,
-                               std::is_trivially_assignable<T &, T>::value>{});
+    move_single_element(source, source_index, dest, dest_index);
     return 1;
   }
 
@@ -1285,7 +1271,7 @@ class seq {
                              node_pointer dest, size_type dest_index) {
     auto sz = source->sizes[source_index];
     dest->sizes[dest_index] = sz;
-    dest->pointers[dest_index] = source->pointers[source_index];
+    move_single_pointer(source, source_index, dest, dest_index);
     return sz;
   }
 
@@ -1296,7 +1282,7 @@ class seq {
     auto child = static_traits::cast_node(source->pointers[source_index]);
     child->parent_pointer = dest;
     child->parent_index(dest_index);
-    dest->pointers[dest_index] = child;
+    move_single_pointer(source, source_index, dest, dest_index);
     return sz;
   }
 
@@ -1316,8 +1302,7 @@ class seq {
     auto to = dest_index;
 
     while (from != last) {
-      construct_element(dest, to, std::move(source[from]));
-      destroy_element(source, from);
+      move_single_element(source, from, dest, to);
       ++from;
       ++to;
     }
@@ -1343,7 +1328,7 @@ class seq {
     while (from != last) {
       auto sz = source->sizes[from];
       dest->sizes[to] = sz;
-      dest->pointers[to] = source->pointers[from];
+      move_single_pointer(source, from, dest, to);
       copy_size += sz;
       ++from;
       ++to;
@@ -1366,7 +1351,7 @@ class seq {
       auto child = static_traits::cast_node(source->pointers[from]);
       child->parent_pointer = dest;
       child->parent_index(to);
-      dest->pointers[to] = child;
+      move_single_pointer(source, from, dest, to);
       copy_size += sz;
       ++from;
       ++to;
@@ -1393,8 +1378,7 @@ class seq {
     while (first != from) {
       --from;
       --to;
-      construct_element(pointer, to, std::move(pointer[from]));
-      destroy_element(pointer, from);
+      move_single_element(pointer, from, pointer, to);
     }
   }
 
@@ -1415,7 +1399,7 @@ class seq {
       --from;
       --to;
       pointer->sizes[to] = pointer->sizes[from];
-      pointer->pointers[to] = pointer->pointers[from];
+      move_single_pointer(pointer, from, pointer, to);
     }
   }
 
@@ -1431,7 +1415,7 @@ class seq {
       pointer->sizes[to] = pointer->sizes[from];
       auto child = static_traits::cast_node(pointer->pointers[from]);
       child->parent_index(to);
-      pointer->pointers[to] = child;
+      move_single_pointer(pointer, from, pointer, to);
     }
   }
 
@@ -1452,8 +1436,7 @@ class seq {
     auto last = length;
 
     while (to != last) {
-      construct_element(pointer, to, std::move(pointer[from]));
-      destroy_element(pointer, from);
+      move_single_element(pointer, from, pointer, to);
       ++from;
       ++to;
     }
@@ -1474,7 +1457,7 @@ class seq {
 
     while (to != last) {
       pointer->sizes[to] = pointer->sizes[from];
-      pointer->pointers[to] = pointer->pointers[from];
+      move_single_pointer(pointer, from, pointer, to);
       ++from;
       ++to;
     }
@@ -1490,25 +1473,18 @@ class seq {
       pointer->sizes[to] = pointer->sizes[from];
       auto child = static_traits::cast_node(pointer->pointers[from]);
       child->parent_index(to);
-      pointer->pointers[to] = child;
+      move_single_pointer(pointer, from, pointer, to);
       ++from;
       ++to;
     }
   }
 
   // copy_single
-  template <typename... Args>
-  size_type copy_single_segment(element_pointer pointer, size_type index,
-                                Args &&... args) {
-    construct_element(pointer, index, std::forward<Args>(args)...);
-    return 1;
-  }
-
   size_type copy_single_leaf(node_pointer pointer, size_type index,
                              element_pointer child_pointer,
                              size_type child_size) {
     pointer->sizes[index] = child_size;
-    pointer->pointers[index] = child_pointer;
+    new (&pointer->pointers[index]) void_pointer{child_pointer};
     return child_size;
   }
 
@@ -1518,7 +1494,7 @@ class seq {
     child_pointer->parent_pointer = pointer;
     child_pointer->parent_index(index);
     pointer->sizes[index] = child_size;
-    pointer->pointers[index] = child_pointer;
+    new (&pointer->pointers[index]) void_pointer{child_pointer};
     return child_size;
   }
 
@@ -1850,6 +1826,7 @@ class seq {
   void erase_single_leaf(leaf_entry &entry, node_pointer pointer,
                          size_type index) {
     deallocate_segment(static_traits::cast_segment(pointer->pointers[index]));
+    destroy_node(pointer, index);
 
     auto parent_pointer = pointer->parent_pointer;
     auto parent_index = pointer->parent_index();
@@ -1858,6 +1835,7 @@ class seq {
     if (length == 2 &&
         (static_traits::base_min() != 2 || parent_pointer == nullptr)) {
       auto other = pointer->pointers[index ^ 1];
+      destroy_node(pointer, index ^ 1);
       deallocate_node(pointer);
       get_root() = other;
       --get_size();
@@ -1939,6 +1917,7 @@ class seq {
   void erase_single_branch(node_pointer pointer, size_type index) {
     while (true) {
       deallocate_node(static_traits::cast_node(pointer->pointers[index]));
+      destroy_node(pointer, index);
 
       auto parent_pointer = pointer->parent_pointer;
       auto parent_index = pointer->parent_index();
@@ -1947,6 +1926,7 @@ class seq {
       if (length == 2 &&
           (static_traits::base_min() != 2 || parent_pointer == nullptr)) {
         auto other = static_traits::cast_node(pointer->pointers[index ^ 1]);
+        destroy_node(pointer, index ^ 1);
         deallocate_node(pointer);
         get_root() = other;
         other->parent_pointer = nullptr;
@@ -2058,8 +2038,9 @@ class seq {
   iterator_data emplace_single(iterator_data it, Args &&... args) {
     reserve_single_iterator(it);
     try {
-      copy_single_segment(it.entry.segment.pointer, it.entry.segment.index,
-                          std::forward<Args>(args)...);
+      element_traits::construct(get_element_allocator(),
+                                std::addressof(static_traits::dereference(it)),
+                                std::forward<Args>(args)...);
     } catch (...) {
       erase_single_iterator(it);
       throw;
@@ -2093,7 +2074,7 @@ class seq {
   }
 
   iterator_data erase_single(iterator_data it) {
-    destroy_element(it.entry.segment.pointer, it.entry.segment.index);
+    destroy_segment(it.entry.segment.pointer, it.entry.segment.index);
     erase_single_iterator(it);
     if (it.entry.segment.index == it.entry.segment.length)
       static_traits::move_next_leaf(it.entry);
