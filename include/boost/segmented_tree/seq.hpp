@@ -1155,32 +1155,31 @@ class seq {
  private:
 #ifndef BOOST_SEGMENTED_TREE_DOXYGEN_INVOKED
   // private data
-  void_pointer root_ = nullptr;
+  void_pointer root_{nullptr};
 
-  struct size_pair_t : allocator_type {
-    size_type sz = 0;
-    size_pair_t() : allocator_type{} {}
-    size_pair_t(allocator_type const &alloc) : allocator_type{alloc}, sz{} {}
+  struct size_pair : allocator_type {
+    size_type sz;
+    size_pair() = default;
+    size_pair(allocator_type const &alloc) : allocator_type{alloc}, sz{} {}
+  } size_pair_{};
 
-  } size_pair;
-
-  struct height_pair_t : node_allocator {
-    size_type ht = 0;
-    height_pair_t() : node_allocator{} {}
-    height_pair_t(allocator_type const &alloc) : node_allocator{alloc}, ht{} {}
-  } height_pair;
+  struct height_pair : node_allocator {
+    size_type ht;
+    height_pair() = default;
+    height_pair(allocator_type const &alloc) : node_allocator{alloc}, ht{} {}
+  } height_pair_{};
 
   // getters
   void_pointer &get_root() { return root_; }
   void_pointer const &get_root() const { return root_; }
-  size_type &get_size() { return size_pair.sz; }
-  size_type const &get_size() const { return size_pair.sz; }
-  size_type &get_height() { return height_pair.ht; }
-  size_type const &get_height() const { return height_pair.ht; }
-  allocator_type &get_element_allocator() { return size_pair; }
-  allocator_type const &get_element_allocator() const { return size_pair; }
-  node_allocator &get_node_allocator() { return height_pair; }
-  node_allocator const &get_node_allocator() const { return height_pair; }
+  size_type &get_size() { return size_pair_.sz; }
+  size_type const &get_size() const { return size_pair_.sz; }
+  size_type &get_height() { return height_pair_.ht; }
+  size_type const &get_height() const { return height_pair_.ht; }
+  allocator_type &get_element_allocator() { return size_pair_; }
+  allocator_type const &get_element_allocator() const { return size_pair_; }
+  node_allocator &get_node_allocator() { return height_pair_; }
+  node_allocator const &get_node_allocator() const { return height_pair_; }
 
   // destroy
   void destroy_segment(element_pointer pointer, size_type index) {
@@ -1255,13 +1254,14 @@ class seq {
   // move_single
   void move_single_element(element_pointer source, size_type source_index,
                            element_pointer dest, size_type dest_index) {
-    new (&dest[dest_index]) value_type{std::move(source[source_index])};
+    ::new (static_cast<void *>(std::addressof(dest[dest_index])))
+        value_type{std::move(source[source_index])};
     source[source_index].~value_type();
   }
 
   void move_single_pointer(node_pointer source, size_type source_index,
                            node_pointer dest, size_type dest_index) {
-    new (&dest->pointers[dest_index])
+    ::new (static_cast<void *>(std::addressof(dest->pointers[dest_index])))
         void_pointer{source->pointers[source_index]};
     source->pointers[source_index].~void_pointer();
   }
@@ -1489,7 +1489,8 @@ class seq {
                              element_pointer child_pointer,
                              size_type child_size) {
     pointer->sizes[index] = child_size;
-    new (&pointer->pointers[index]) void_pointer{child_pointer};
+    ::new (static_cast<void *>(std::addressof(pointer->pointers[index])))
+        void_pointer{child_pointer};
     return child_size;
   }
 
@@ -1499,7 +1500,8 @@ class seq {
     child_pointer->parent_pointer = pointer;
     child_pointer->parent_index(index);
     pointer->sizes[index] = child_size;
-    new (&pointer->pointers[index]) void_pointer{child_pointer};
+    ::new (static_cast<void *>(std::addressof(pointer->pointers[index])))
+        void_pointer{child_pointer};
     return child_size;
   }
 
@@ -2244,8 +2246,7 @@ class seq {
   ///
   /// \par Complexity
   ///   Constant.
-  explicit seq(Allocator const &alloc)
-      : size_pair{alloc}, height_pair{alloc} {}
+  explicit seq(Allocator const &alloc) : size_pair_{alloc}, height_pair_{alloc} {}
 
   /// \par Effects
   ///   Constructs a count size sequence using the specified allocator, each
@@ -2310,8 +2311,8 @@ class seq {
   seq(seq &&other) noexcept(
       std::is_nothrow_move_constructible<allocator_type>::value)
       : root_{other.root_},
-        size_pair{std::move(other.size_pair)},
-        height_pair{std::move(other.height_pair)} {
+        size_pair_{std::move(other.size_pair_)},
+        height_pair_{std::move(other.height_pair_)} {
     other.get_root() = nullptr;
     other.get_height() = 0;
     other.get_size() = 0;
