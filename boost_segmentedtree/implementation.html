@@ -4,8 +4,8 @@
 <title>Implementation</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
-<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
-<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTree 1.0">
+<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTree 1.0">
 <link rel="prev" href="getting_started.html" title="Getting started">
 <link rel="next" href="reference.html" title="Reference">
 </head>
@@ -24,20 +24,20 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="boost_segmentedtreeseq.implementation"></a><a class="link" href="implementation.html" title="Implementation">Implementation</a>
+<a name="boost_segmentedtree.implementation"></a><a class="link" href="implementation.html" title="Implementation">Implementation</a>
 </h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="implementation.html#boost_segmentedtreeseq.implementation.representation">Representation</a></span></dt>
-<dt><span class="section"><a href="implementation.html#boost_segmentedtreeseq.implementation.searching">Searching</a></span></dt>
-<dt><span class="section"><a href="implementation.html#boost_segmentedtreeseq.implementation.inserting">Inserting</a></span></dt>
-<dt><span class="section"><a href="implementation.html#boost_segmentedtreeseq.implementation.erasing">Erasing</a></span></dt>
+<dt><span class="section"><a href="implementation.html#boost_segmentedtree.implementation.representation">Representation</a></span></dt>
+<dt><span class="section"><a href="implementation.html#boost_segmentedtree.implementation.searching">Searching</a></span></dt>
+<dt><span class="section"><a href="implementation.html#boost_segmentedtree.implementation.inserting">Inserting</a></span></dt>
+<dt><span class="section"><a href="implementation.html#boost_segmentedtree.implementation.erasing">Erasing</a></span></dt>
 </dl></div>
 <p>
-      Boost.SegmentedTreeSeq is implemented using a counted <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_top">B+Tree</a>.
+      Boost.SegmentedTree is implemented using a counted <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_top">B+Tree</a>.
     </p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="boost_segmentedtreeseq.implementation.representation"></a><a class="link" href="implementation.html#boost_segmentedtreeseq.implementation.representation" title="Representation">Representation</a>
+<a name="boost_segmentedtree.implementation.representation"></a><a class="link" href="implementation.html#boost_segmentedtree.implementation.representation" title="Representation">Representation</a>
 </h3></div></div></div>
 <p>
         Internally the tree consists of segments and index_nodes:
@@ -62,9 +62,9 @@
         The size array stores the recursive size of all its children.
       </p>
 <p>
-        The segmented_tree_seq container looks like this:
+        The segmented_tree::seq container looks like this:
       </p>
-<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">segmented_tree_seq</span> <span class="special">{</span>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">seq</span> <span class="special">{</span>
   <span class="identifier">size_type</span> <span class="identifier">height</span><span class="special">;</span>
   <span class="identifier">size_type</span> <span class="identifier">size</span><span class="special">;</span>
   <span class="keyword">void</span> <span class="special">*</span> <span class="identifier">root</span><span class="special">;</span>
@@ -96,7 +96,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="boost_segmentedtreeseq.implementation.searching"></a><a class="link" href="implementation.html#boost_segmentedtreeseq.implementation.searching" title="Searching">Searching</a>
+<a name="boost_segmentedtree.implementation.searching"></a><a class="link" href="implementation.html#boost_segmentedtree.implementation.searching" title="Searching">Searching</a>
 </h3></div></div></div>
 <p>
         All searches start from the root of the tree. To find a given index in the
@@ -106,7 +106,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="boost_segmentedtreeseq.implementation.inserting"></a><a class="link" href="implementation.html#boost_segmentedtreeseq.implementation.inserting" title="Inserting">Inserting</a>
+<a name="boost_segmentedtree.implementation.inserting"></a><a class="link" href="implementation.html#boost_segmentedtree.implementation.inserting" title="Inserting">Inserting</a>
 </h3></div></div></div>
 <p>
         If the segment pointed to by the iterator is not full then insert the element
@@ -118,7 +118,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="boost_segmentedtreeseq.implementation.erasing"></a><a class="link" href="implementation.html#boost_segmentedtreeseq.implementation.erasing" title="Erasing">Erasing</a>
+<a name="boost_segmentedtree.implementation.erasing"></a><a class="link" href="implementation.html#boost_segmentedtree.implementation.erasing" title="Erasing">Erasing</a>
 </h3></div></div></div>
 <p>
         If the segment pointed to by the iterator is not at its minimum value then

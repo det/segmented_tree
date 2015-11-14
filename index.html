@@ -1,11 +1,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0</title>
+<title>Chapter&#160;1.&#160;Boost.SegmentedTree 1.0</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
-<link rel="home" href="index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
-<link rel="next" href="boost_segmentedtreeseq/getting_started.html" title="Getting started">
+<link rel="home" href="index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTree 1.0">
+<link rel="next" href="boost_segmentedtree/getting_started.html" title="Getting started">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -17,14 +17,14 @@
 <td align="center"><a href="http://www.boost.org/doc/libs/1_59_0/more/index.htm">More</a></td>
 </tr></table>
 <hr>
-<div class="spirit-nav"><a accesskey="n" href="boost_segmentedtreeseq/getting_started.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a></div>
+<div class="spirit-nav"><a accesskey="n" href="boost_segmentedtree/getting_started.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a></div>
 <div class="chapter">
 <div class="titlepage"><div>
 <div><h2 class="title">
-<a name="boost_segmentedtreeseq"></a>Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0</h2></div>
+<a name="boost_segmentedtree"></a>Chapter&#160;1.&#160;Boost.SegmentedTree 1.0</h2></div>
 <div><p class="copyright">Copyright &#169; 2014, 2015 Chris Clearwater</p></div>
 <div><div class="legalnotice">
-<a name="boost_segmentedtreeseq.legal"></a><p>
+<a name="boost_segmentedtree.legal"></a><p>
         Distributed under the Boost Software License, Version 1.0. (See accompanying
         file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>
@@ -33,29 +33,29 @@
 <div class="toc">
 <p><b>Table of Contents</b></p>
 <dl class="toc">
-<dt><span class="section"><a href="index.html#boost_segmentedtreeseq.motivation">Motivation</a></span></dt>
-<dt><span class="section"><a href="boost_segmentedtreeseq/getting_started.html">Getting started</a></span></dt>
+<dt><span class="section"><a href="index.html#boost_segmentedtree.motivation">Motivation</a></span></dt>
+<dt><span class="section"><a href="boost_segmentedtree/getting_started.html">Getting started</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="boost_segmentedtreeseq/getting_started.html#boost_segmentedtreeseq.getting_started.how_to_use">How
-      to use</a></span></dt>
-<dt><span class="section"><a href="boost_segmentedtreeseq/getting_started.html#boost_segmentedtreeseq.getting_started.example_needle_in_a_haystack">Example
+<dt><span class="section"><a href="boost_segmentedtree/getting_started.html#boost_segmentedtree.getting_started.how_to_use">How to
+      use</a></span></dt>
+<dt><span class="section"><a href="boost_segmentedtree/getting_started.html#boost_segmentedtree.getting_started.example_needle_in_a_haystack">Example
       needle in a haystack</a></span></dt>
 </dl></dd>
-<dt><span class="section"><a href="boost_segmentedtreeseq/implementation.html">Implementation</a></span></dt>
+<dt><span class="section"><a href="boost_segmentedtree/implementation.html">Implementation</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="boost_segmentedtreeseq/implementation.html#boost_segmentedtreeseq.implementation.representation">Representation</a></span></dt>
-<dt><span class="section"><a href="boost_segmentedtreeseq/implementation.html#boost_segmentedtreeseq.implementation.searching">Searching</a></span></dt>
-<dt><span class="section"><a href="boost_segmentedtreeseq/implementation.html#boost_segmentedtreeseq.implementation.inserting">Inserting</a></span></dt>
-<dt><span class="section"><a href="boost_segmentedtreeseq/implementation.html#boost_segmentedtreeseq.implementation.erasing">Erasing</a></span></dt>
+<dt><span class="section"><a href="boost_segmentedtree/implementation.html#boost_segmentedtree.implementation.representation">Representation</a></span></dt>
+<dt><span class="section"><a href="boost_segmentedtree/implementation.html#boost_segmentedtree.implementation.searching">Searching</a></span></dt>
+<dt><span class="section"><a href="boost_segmentedtree/implementation.html#boost_segmentedtree.implementation.inserting">Inserting</a></span></dt>
+<dt><span class="section"><a href="boost_segmentedtree/implementation.html#boost_segmentedtree.implementation.erasing">Erasing</a></span></dt>
 </dl></dd>
-<dt><span class="section"><a href="boost_segmentedtreeseq/reference.html">Reference</a></span></dt>
-<dd><dl><dt><span class="section"><a href="boost_segmentedtreeseq/reference.html#header.boost.segmented_tree_seq_hpp">Header &lt;boost/segmented_tree_seq.hpp&gt;</a></span></dt></dl></dd>
-<dt><span class="section"><a href="boost_segmentedtreeseq/performance.html">Performance</a></span></dt>
+<dt><span class="section"><a href="boost_segmentedtree/reference.html">Reference</a></span></dt>
+<dd><dl><dt><span class="section"><a href="boost_segmentedtree/reference.html#header.boost.segmented_tree.seq_hpp">Header &lt;boost/segmented_tree/seq.hpp&gt;</a></span></dt></dl></dd>
+<dt><span class="section"><a href="boost_segmentedtree/performance.html">Performance</a></span></dt>
 </dl>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="boost_segmentedtreeseq.motivation"></a><a class="link" href="index.html#boost_segmentedtreeseq.motivation" title="Motivation">Motivation</a>
+<a name="boost_segmentedtree.motivation"></a><a class="link" href="index.html#boost_segmentedtree.motivation" title="Motivation">Motivation</a>
 </h2></div></div></div>
 <p>
       The standard library provides sequence containers that offer efficient insertion
@@ -64,7 +64,7 @@
       random access insertion.
     </p>
 <p>
-      Boost.SegmentedTreeSeq was designed to fill this use case.
+      Boost.SegmentedTree was designed to fill this use case.
     </p>
 <div class="note"><table border="0" summary="Note">
 <tr>
@@ -72,16 +72,16 @@
 <th align="left">Note</th>
 </tr>
 <tr><td align="left" valign="top"><p>
-        Boost.SegmentedTreeSeq is not currently a part of Boost.
+        Boost.SegmentedTree is not currently a part of Boost.
       </p></td></tr>
 </table></div>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: October 30, 2015 at 00:51:15 GMT</small></p></td>
+<td align="left"><p><small>Last revised: November 14, 2015 at 03:58:58 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>
-<div class="spirit-nav"><a accesskey="n" href="boost_segmentedtreeseq/getting_started.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a></div>
+<div class="spirit-nav"><a accesskey="n" href="boost_segmentedtree/getting_started.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/next.png" alt="Next"></a></div>
 </body>
 </html>

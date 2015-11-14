@@ -4,9 +4,9 @@
 <title>Performance</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
-<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
-<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
-<link rel="prev" href="../boost/swap.html" title="Function template swap">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTree 1.0">
+<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTree 1.0">
+<link rel="prev" href="../boost/segmented_tree/seq.html" title="Class template seq">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -19,17 +19,17 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="../boost/swap.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/home.png" alt="Home"></a>
+<a accesskey="p" href="../boost/segmented_tree/seq.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/home.png" alt="Home"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="boost_segmentedtreeseq.performance"></a><a class="link" href="performance.html" title="Performance">Performance</a>
+<a name="boost_segmentedtree.performance"></a><a class="link" href="performance.html" title="Performance">Performance</a>
 </h2></div></div></div>
 <p>
       The following images show the results of randomly inserting, randomly erasing,
       and iterating over different containers. They come in two flavors, single (1
       element at a time), and range (many elements at a time). It can be seen that
-      segmented_tree_seq generally has the fastest random access insert and erase
+      segmented_tree::seq generally has the fastest random access insert and erase
       of single elements. It also has the fastest iterators among containers with
       efficient random access insert and erase. However, btree_seq currently wins
       by a large margin for range insert and erase. All graphs are logairthmic scale
@@ -54,7 +54,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="../boost/swap.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/home.png" alt="Home"></a>
+<a accesskey="p" href="../boost/segmented_tree/seq.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="http://www.boost.org/doc/libs/1_59_0/doc/src/images/home.png" alt="Home"></a>
 </div>
 </body>
 </html>

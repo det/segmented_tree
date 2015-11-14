@@ -4,9 +4,9 @@
 <title>Getting started</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
-<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
-<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
-<link rel="prev" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTreeSeq 1.0">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTree 1.0">
+<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTree 1.0">
+<link rel="prev" href="../index.html" title="Chapter&#160;1.&#160;Boost.SegmentedTree 1.0">
 <link rel="next" href="implementation.html" title="Implementation">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -24,16 +24,16 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="boost_segmentedtreeseq.getting_started"></a><a class="link" href="getting_started.html" title="Getting started">Getting started</a>
+<a name="boost_segmentedtree.getting_started"></a><a class="link" href="getting_started.html" title="Getting started">Getting started</a>
 </h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="getting_started.html#boost_segmentedtreeseq.getting_started.how_to_use">How
-      to use</a></span></dt>
-<dt><span class="section"><a href="getting_started.html#boost_segmentedtreeseq.getting_started.example_needle_in_a_haystack">Example
+<dt><span class="section"><a href="getting_started.html#boost_segmentedtree.getting_started.how_to_use">How to
+      use</a></span></dt>
+<dt><span class="section"><a href="getting_started.html#boost_segmentedtree.getting_started.example_needle_in_a_haystack">Example
       needle in a haystack</a></span></dt>
 </dl></div>
 <p>
-      The <code class="computeroutput"><a class="link" href="../boost/segmented_tree_seq.html" title="Class template segmented_tree_seq">boost::segmented_tree_seq</a></code>
+      The <code class="computeroutput"><a class="link" href="../boost/segmented_tree/seq.html" title="Class template seq">boost::segmented_tree::seq</a></code>
       container supports the interfaces of <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span></code>
       and <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">deque</span></code>, it can be used in the same way as
       these containers with a few exceptions:
@@ -56,32 +56,32 @@
 <li class="listitem">
           The standard library requires users to obtain an iterator to the middle
           of a sequence container by using "container.begin() + offset",
-          doing this with <code class="computeroutput"><a class="link" href="../boost/segmented_tree_seq.html" title="Class template segmented_tree_seq">boost::segmented_tree_seq</a></code>
-          is inefficient. Instead users should use <code class="computeroutput"><a class="link" href="../boost/segmented_tree_seq.html#idm139818338313232-bb">boost::segmented_tree_seq::nth</a></code>.
+          doing this with <code class="computeroutput"><a class="link" href="../boost/segmented_tree/seq.html" title="Class template seq">boost::segmented_tree::seq</a></code>
+          is inefficient. Instead users should use <code class="computeroutput"><a class="link" href="../boost/segmented_tree/seq.html#idm139778564910064-bb">boost::segmented_tree::seq::nth</a></code>.
         </li>
 </ul></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="boost_segmentedtreeseq.getting_started.how_to_use"></a><a class="link" href="getting_started.html#boost_segmentedtreeseq.getting_started.how_to_use" title="How to use">How
-      to use</a>
+<a name="boost_segmentedtree.getting_started.how_to_use"></a><a class="link" href="getting_started.html#boost_segmentedtree.getting_started.how_to_use" title="How to use">How to
+      use</a>
 </h3></div></div></div>
 <p>
-        Boost.SegmentedTreeSeq is a header only C++11 library and it does not depend
-        on any other Boost libraries. Simply include <code class="computeroutput"><a class="link" href="reference.html#header.boost.segmented_tree_seq_hpp" title="Header &lt;boost/segmented_tree_seq.hpp&gt;">boost/segmented_tree_seq.hpp</a></code>
+        Boost.SegmentedTree is a header only C++11 library and it does not depend
+        on any other Boost libraries. Simply include <code class="computeroutput"><a class="link" href="reference.html#header.boost.segmented_tree.seq_hpp" title="Header &lt;boost/segmented_tree/seq.hpp&gt;">boost/segmented_tree/seq.hpp</a></code>
         to start using it.
       </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="boost_segmentedtreeseq.getting_started.example_needle_in_a_haystack"></a><a class="link" href="getting_started.html#boost_segmentedtreeseq.getting_started.example_needle_in_a_haystack" title="Example needle in a haystack">Example
+<a name="boost_segmentedtree.getting_started.example_needle_in_a_haystack"></a><a class="link" href="getting_started.html#boost_segmentedtree.getting_started.example_needle_in_a_haystack" title="Example needle in a haystack">Example
       needle in a haystack</a>
 </h3></div></div></div>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">algorithm</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
-<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">segmented_tree_seq</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">segmented_tree</span><span class="special">/</span><span class="identifier">seq</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">()</span> <span class="special">{</span>
-  <span class="identifier">boost</span><span class="special">::</span><span class="identifier">segmented_tree_seq</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">string</span><span class="special">&gt;</span> <span class="identifier">haystack</span><span class="special">(</span><span class="number">100000</span><span class="special">,</span> <span class="string">"hay"</span><span class="special">);</span>
+  <span class="identifier">boost</span><span class="special">::</span><span class="identifier">segmented_tree</span><span class="special">::</span><span class="identifier">seq</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">string</span><span class="special">&gt;</span> <span class="identifier">haystack</span><span class="special">(</span><span class="number">100000</span><span class="special">,</span> <span class="string">"hay"</span><span class="special">);</span>
   <span class="identifier">haystack</span><span class="special">.</span><span class="identifier">insert</span><span class="special">(</span><span class="identifier">haystack</span><span class="special">.</span><span class="identifier">nth</span><span class="special">(</span><span class="number">33333</span><span class="special">),</span> <span class="string">"needle"</span><span class="special">);</span>
   <span class="keyword">auto</span> <span class="identifier">first</span> <span class="special">=</span> <span class="identifier">haystack</span><span class="special">.</span><span class="identifier">begin</span><span class="special">();</span>
   <span class="keyword">auto</span> <span class="identifier">last</span> <span class="special">=</span> <span class="identifier">haystack</span><span class="special">.</span><span class="identifier">end</span><span class="special">();</span>
