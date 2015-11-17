@@ -38,6 +38,21 @@ struct is_nothrow_swappable
     : std::integral_constant<bool, is_nothrow_swappable_impl::test<T>::value> {
 };
 
+template <typename T, typename Alloc>
+struct is_alloc_move_construct_default {
+ private:
+  template <typename U>
+  static auto test(U alloc)
+      -> decltype(alloc.construct(std::declval<T *>(), std::declval<T &&>()),
+                  std::false_type{});
+  template <typename>
+  static std::true_type test(...);
+
+ public:
+  static bool constexpr value =
+      decltype(test<Alloc>(std::declval<Alloc>()))::value;
+};
+
 template <typename T, typename VoidPointer, typename SizeType,
           std::size_t segment_target, std::size_t base_target>
 struct static_traits_t {
@@ -1376,8 +1391,11 @@ class seq {
     construct_range_segment(
         source, source_index, dest, dest_index, count,
         std::integral_constant < bool,
-        std::is_trivially_copyable<T>::value &&std::is_same<
-            allocator_type, std::allocator<value_type>>::value > {});
+        std::is_trivially_copyable<T>::value &&
+            (std::is_same<allocator_type, std::allocator<value_type>>::value ||
+             detail::is_alloc_move_construct_default<value_type,
+                                                     allocator_type>::value) >
+                {});
     return count;
   }
 

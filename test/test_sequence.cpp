@@ -839,3 +839,12 @@ BOOST_AUTO_TEST_CASE(test_random_single_retry) {
   test_single_retry<uint64_t>(953312ULL, 3109453262ULL,
                               10176667110359292238ULL);
 }
+
+BOOST_AUTO_TEST_CASE(test_traits) {
+  auto x = boost::segmented_tree::detail::is_alloc_move_construct_default<
+      int, throwing_allocator<int>>::value;
+  auto y = boost::segmented_tree::detail::is_alloc_move_construct_default<
+      int, tagged_allocator<int>>::value;
+  BOOST_CHECK(x == false);
+  BOOST_CHECK(y == true);
+}
