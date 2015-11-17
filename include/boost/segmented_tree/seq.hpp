@@ -1151,6 +1151,8 @@ class seq {
   using reverse_iterator = std::reverse_iterator<iterator>;
   /// The const reverse iterator.
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+  /// The stored allocator type.
+  using stored_allocator_type = allocator_type;
 
  private:
 #ifndef BOOST_SEGMENTED_TREE_DOXYGEN_INVOKED
@@ -1181,16 +1183,6 @@ class seq {
   node_allocator &get_node_allocator() { return height_pair_; }
   node_allocator const &get_node_allocator() const { return height_pair_; }
 
-  // destroy
-  void destroy_segment(element_pointer pointer, size_type index) {
-    element_traits::destroy(get_element_allocator(),
-                            std::addressof(pointer[index]));
-  }
-
-  void destroy_node(node_pointer pointer, size_type index) {
-    pointer->pointers[index].~void_pointer();
-  }
-
   // allocate
   element_pointer allocate_segment() {
     return element_traits::allocate(get_element_allocator(),
@@ -1199,6 +1191,16 @@ class seq {
 
   node_pointer allocate_node() {
     return node_traits::allocate(get_node_allocator(), 1);
+  }
+
+  // destroy
+  void destroy_segment(element_pointer pointer, size_type index) {
+    element_traits::destroy(get_element_allocator(),
+                            std::addressof(pointer[index]));
+  }
+
+  void destroy_node(node_pointer pointer, size_type index) {
+    pointer->pointers[index].~void_pointer();
   }
 
   // deallocate
@@ -1251,90 +1253,144 @@ class seq {
       purge_node(static_traits::cast_node(pointer), ht);
   }
 
-  // move_single
-  void move_single_element(element_pointer source, size_type source_index,
-                           element_pointer dest, size_type dest_index) {
-    ::new (static_cast<void *>(std::addressof(dest[dest_index])))
-        value_type{std::move(source[source_index])};
-    source[source_index].~value_type();
-  }
-
-  void move_single_pointer(node_pointer source, size_type source_index,
-                           node_pointer dest, size_type dest_index) {
-    ::new (static_cast<void *>(std::addressof(dest->pointers[dest_index])))
-        void_pointer{source->pointers[source_index]};
-    source->pointers[source_index].~void_pointer();
-  }
-
-  size_type move_single_segment(element_pointer source, size_type source_index,
-                                element_pointer dest, size_type dest_index) {
-    move_single_element(source, source_index, dest, dest_index);
+  // construct
+  size_type construct_segment(element_pointer pointer, size_type index,
+                              value_type &&value) {
+    element_traits::construct(get_element_allocator(),
+                              std::addressof(pointer[index]), std::move(value));
     return 1;
   }
 
-  size_type move_single_leaf(node_pointer source, size_type source_index,
+  size_type construct_leaf(node_pointer pointer, size_type index,
+                           std::size_t child_sz, void_pointer child_pointer) {
+    pointer->sizes[index] = child_sz;
+    ::new (static_cast<void *>(std::addressof(pointer->pointers[index]))) auto(
+        child_pointer);
+    return child_sz;
+  }
+
+  size_type construct_branch(node_pointer pointer, size_type index,
+                             std::size_t child_sz, void_pointer child_pointer) {
+    pointer->sizes[index] = child_sz;
+    auto child = static_traits::cast_node(child_pointer);
+    child->parent_pointer = pointer;
+    child->parent_index(index);
+    ::new (static_cast<void *>(std::addressof(pointer->pointers[index]))) auto(
+        child_pointer);
+    return child_sz;
+  }
+
+  // assign
+  size_type assign_segment(element_pointer pointer, size_type index,
+                           value_type &&value) {
+    pointer[index] = std::move(value);
+    return 1;
+  }
+
+  size_type assign_leaf(node_pointer pointer, size_type index,
+                        std::size_t child_sz, void_pointer child_pointer) {
+    pointer->sizes[index] = child_sz;
+    pointer->pointers[index] = child_pointer;
+    return child_sz;
+  }
+
+  size_type assign_branch(node_pointer pointer, size_type index,
+                          std::size_t child_sz, void_pointer child_pointer) {
+    pointer->sizes[index] = child_sz;
+    auto child = static_traits::cast_node(child_pointer);
+    child->parent_pointer = pointer;
+    child->parent_index(index);
+    pointer->pointers[index] = child_pointer;
+    return child_sz;
+  }
+
+  // move_assign
+  size_type move_assign_segment(element_pointer source, size_type source_index,
+                                element_pointer dest, size_type dest_index) {
+    assign_segment(dest, dest_index, std::move(source[source_index]));
+    return 1;
+  }
+
+  size_type move_assign_leaf(node_pointer source, size_type source_index,
                              node_pointer dest, size_type dest_index) {
-    auto sz = source->sizes[source_index];
-    dest->sizes[dest_index] = sz;
-    move_single_pointer(source, source_index, dest, dest_index);
-    return sz;
+    return assign_leaf(dest, dest_index, source->sizes[source_index],
+                       source->pointers[source_index]);
   }
 
-  size_type move_single_branch(node_pointer source, size_type source_index,
+  size_type move_assign_branch(node_pointer source, size_type source_index,
                                node_pointer dest, size_type dest_index) {
-    auto sz = source->sizes[source_index];
-    dest->sizes[dest_index] = sz;
-    auto child = static_traits::cast_node(source->pointers[source_index]);
-    child->parent_pointer = dest;
-    child->parent_index(dest_index);
-    move_single_pointer(source, source_index, dest, dest_index);
-    return sz;
+    return assign_branch(dest, dest_index, source->sizes[source_index],
+                         source->pointers[source_index]);
   }
 
-  // move_range
-  void move_range_segment(element_pointer source, size_type source_index,
-                          element_pointer dest, size_type dest_index,
-                          size_type count, std::true_type) {
+  // move
+  size_type move_segment(element_pointer source, size_type source_index,
+                         element_pointer dest, size_type dest_index) {
+    construct_segment(dest, dest_index, std::move(source[source_index]));
+    return 1;
+  }
+
+  size_type move_leaf(node_pointer source, size_type source_index,
+                      node_pointer dest, size_type dest_index) {
+    auto child_sz = source->sizes[source_index];
+    auto child_pointer = source->pointers[source_index];
+    construct_leaf(dest, dest_index, child_sz, child_pointer);
+    return child_sz;
+  }
+
+  size_type move_branch(node_pointer source, size_type source_index,
+                        node_pointer dest, size_type dest_index) {
+    auto child_sz = source->sizes[source_index];
+    auto child_pointer = source->pointers[source_index];
+    construct_branch(dest, dest_index, child_sz, child_pointer);
+    return child_sz;
+  }
+
+  // construct_range
+  void construct_range_segment(element_pointer source, size_type source_index,
+                               element_pointer dest, size_type dest_index,
+                               size_type count, std::true_type) {
     std::memcpy(std::addressof(dest[dest_index]),
                 std::addressof(source[source_index]), count * sizeof(T));
   }
 
-  void move_range_segment(element_pointer source, size_type source_index,
-                          element_pointer dest, size_type dest_index,
-                          size_type count, std::false_type) {
+  void construct_range_segment(element_pointer source, size_type source_index,
+                               element_pointer dest, size_type dest_index,
+                               size_type count, std::false_type) {
     auto from = source_index;
     auto last = source_index + count;
     auto to = dest_index;
 
     while (from != last) {
-      move_single_element(source, from, dest, to);
+      construct_segment(dest, to, std::move(source[from]));
+      destroy_segment(source, from);
       ++from;
       ++to;
     }
   }
 
-  size_type move_range_segment(element_pointer source, size_type source_index,
-                               element_pointer dest, size_type dest_index,
-                               size_type count) {
-    move_range_segment(
+  size_type construct_range_segment(element_pointer source,
+                                    size_type source_index,
+                                    element_pointer dest, size_type dest_index,
+                                    size_type count) {
+    construct_range_segment(
         source, source_index, dest, dest_index, count,
-        std::integral_constant<bool, std::is_trivially_copyable<T>::value>{});
+        std::integral_constant < bool,
+        std::is_trivially_copyable<T>::value &&std::is_same<
+            allocator_type, std::allocator<value_type>>::value > {});
     return count;
   }
 
-  size_type move_range_leaf(node_pointer source, size_type source_index,
-                            node_pointer dest, size_type dest_index,
-                            size_type count) {
+  size_type construct_range_leaf(node_pointer source, size_type source_index,
+                                 node_pointer dest, size_type dest_index,
+                                 size_type count) {
     size_type copy_size = 0;
     auto from = source_index;
     auto last = source_index + count;
     auto to = dest_index;
 
     while (from != last) {
-      auto sz = source->sizes[from];
-      dest->sizes[to] = sz;
-      move_single_pointer(source, from, dest, to);
-      copy_size += sz;
+      copy_size += move_assign_leaf(source, from, dest, to);
       ++from;
       ++to;
     }
@@ -1342,22 +1398,16 @@ class seq {
     return copy_size;
   }
 
-  size_type move_range_branch(node_pointer source, size_type source_index,
-                              node_pointer dest, size_type dest_index,
-                              size_type count) {
+  size_type construct_range_branch(node_pointer source, size_type source_index,
+                                   node_pointer dest, size_type dest_index,
+                                   size_type count) {
     size_type copy_size = 0;
     auto from = source_index;
     auto last = source_index + count;
     auto to = dest_index;
 
     while (from != last) {
-      auto sz = source->sizes[from];
-      dest->sizes[to] = sz;
-      auto child = static_traits::cast_node(source->pointers[from]);
-      child->parent_pointer = dest;
-      child->parent_index(to);
-      move_single_pointer(source, from, dest, to);
-      copy_size += sz;
+      copy_size += move_assign_branch(source, from, dest, to);
       ++from;
       ++to;
     }
@@ -1365,17 +1415,17 @@ class seq {
     return copy_size;
   }
 
-  // move_forward
-  void move_forward_segment(element_pointer pointer, size_type length,
-                            size_type index, size_type distance,
-                            std::true_type) {
+  // assign_forward
+  void assign_forward_segment(element_pointer pointer, size_type length,
+                              size_type index, size_type distance,
+                              std::true_type) {
     std::memmove(std::addressof(pointer[index + distance]),
                  std::addressof(pointer[index]), (length - index) * sizeof(T));
   }
 
-  void move_forward_segment(element_pointer pointer, size_type length,
-                            size_type index, size_type distance,
-                            std::false_type) {
+  void assign_forward_segment(element_pointer pointer, size_type length,
+                              size_type index, size_type distance,
+                              std::false_type) {
     auto first = index;
     auto from = length;
     auto to = length + distance;
@@ -1383,32 +1433,18 @@ class seq {
     while (first != from) {
       --from;
       --to;
-      move_single_element(pointer, from, pointer, to);
+      move_assign_segment(pointer, from, pointer, to);
     }
   }
 
-  void move_forward_segment(element_pointer pointer, size_type length,
-                            size_type index, size_type distance) {
-    move_forward_segment(
+  void assign_forward_segment(element_pointer pointer, size_type length,
+                              size_type index, size_type distance) {
+    assign_forward_segment(
         pointer, length, index, distance,
         std::integral_constant<bool, std::is_trivially_copyable<T>::value>{});
   }
 
-  void move_forward_leaf(node_pointer pointer, size_type length,
-                         size_type index, size_type distance) {
-    auto first = index;
-    auto from = length;
-    auto to = length + distance;
-
-    while (first != from) {
-      --from;
-      --to;
-      pointer->sizes[to] = pointer->sizes[from];
-      move_single_pointer(pointer, from, pointer, to);
-    }
-  }
-
-  void move_forward_branch(node_pointer pointer, size_type length,
+  void assign_forward_leaf(node_pointer pointer, size_type length,
                            size_type index, size_type distance) {
     auto first = index;
     auto from = length;
@@ -1417,92 +1453,77 @@ class seq {
     while (first != from) {
       --from;
       --to;
-      pointer->sizes[to] = pointer->sizes[from];
-      auto child = static_traits::cast_node(pointer->pointers[from]);
-      child->parent_index(to);
-      move_single_pointer(pointer, from, pointer, to);
+      move_assign_leaf(pointer, from, pointer, to);
     }
   }
 
-  // move_backward
-  void move_backward_segment(element_pointer pointer, size_type length,
-                             size_type index, size_type distance,
-                             std::true_type) {
+  void assign_forward_branch(node_pointer pointer, size_type length,
+                             size_type index, size_type distance) {
+    auto first = index;
+    auto from = length;
+    auto to = length + distance;
+
+    while (first != from) {
+      --from;
+      --to;
+      move_assign_branch(pointer, from, pointer, to);
+    }
+  }
+
+  // assign_backward
+  void assign_backward_segment(element_pointer pointer, size_type length,
+                               size_type index, size_type distance,
+                               std::true_type) {
     std::memmove(std::addressof(pointer[index]),
                  std::addressof(pointer[index + distance]),
                  (length - index) * sizeof(T));
   }
 
-  void move_backward_segment(element_pointer pointer, size_type length,
-                             size_type index, size_type distance,
-                             std::false_type) {
+  void assign_backward_segment(element_pointer pointer, size_type length,
+                               size_type index, size_type distance,
+                               std::false_type) {
     auto from = index + distance;
     auto to = index;
     auto last = length;
 
     while (to != last) {
-      move_single_element(pointer, from, pointer, to);
+      move_assign_segment(pointer, from, pointer, to);
       ++from;
       ++to;
     }
   }
 
-  void move_backward_segment(element_pointer pointer, size_type length,
-                             size_type index, size_type distance) {
-    move_backward_segment(
+  void assign_backward_segment(element_pointer pointer, size_type length,
+                               size_type index, size_type distance) {
+    assign_backward_segment(
         pointer, length, index, distance,
         std::integral_constant<bool, std::is_trivially_copyable<T>::value>{});
   }
 
-  void move_backward_leaf(node_pointer pointer, size_type length,
-                          size_type index, size_type distance) {
-    auto from = index + distance;
-    auto to = index;
-    auto last = length;
-
-    while (to != last) {
-      pointer->sizes[to] = pointer->sizes[from];
-      move_single_pointer(pointer, from, pointer, to);
-      ++from;
-      ++to;
-    }
-  }
-
-  void move_backward_branch(node_pointer pointer, size_type length,
+  void assign_backward_leaf(node_pointer pointer, size_type length,
                             size_type index, size_type distance) {
     auto from = index + distance;
     auto to = index;
     auto last = length;
 
     while (to != last) {
-      pointer->sizes[to] = pointer->sizes[from];
-      auto child = static_traits::cast_node(pointer->pointers[from]);
-      child->parent_index(to);
-      move_single_pointer(pointer, from, pointer, to);
+      move_assign_leaf(pointer, from, pointer, to);
       ++from;
       ++to;
     }
   }
 
-  // copy_single
-  size_type copy_single_leaf(node_pointer pointer, size_type index,
-                             element_pointer child_pointer,
-                             size_type child_size) {
-    pointer->sizes[index] = child_size;
-    ::new (static_cast<void *>(std::addressof(pointer->pointers[index])))
-        void_pointer{child_pointer};
-    return child_size;
-  }
+  void assign_backward_branch(node_pointer pointer, size_type length,
+                              size_type index, size_type distance) {
+    auto from = index + distance;
+    auto to = index;
+    auto last = length;
 
-  size_type copy_single_branch(node_pointer pointer, size_type index,
-                               node_pointer child_pointer,
-                               size_type child_size) {
-    child_pointer->parent_pointer = pointer;
-    child_pointer->parent_index(index);
-    pointer->sizes[index] = child_size;
-    ::new (static_cast<void *>(std::addressof(pointer->pointers[index])))
-        void_pointer{child_pointer};
-    return child_size;
+    while (to != last) {
+      move_assign_branch(pointer, from, pointer, to);
+      ++from;
+      ++to;
+    }
   }
 
   // update_sizes
@@ -1559,30 +1580,40 @@ class seq {
     }
   }
 
-  // reserve_single
-  void reserve_single_iterator(iterator_data &it) {
-    reserve_single_segment(it.entry);
+  //   insert_single
+  void insert_single_iterator(iterator_data &it, value_type value) {
+    insert_single_segment(it.entry, std::move(value));
   }
 
-  void reserve_single_segment(iterator_entry &entry) {
+  void insert_single_segment(iterator_entry &entry, value_type value) {
     auto pointer = entry.segment.pointer;
     auto index = entry.segment.index;
     auto length = entry.segment.length;
     auto parent_pointer = entry.leaf.pointer;
     auto parent_index = entry.leaf.index;
 
+    if (index != length && length != static_traits::segment_max()) {
+      move_segment(pointer, length - 1, pointer, length);
+      assign_forward_segment(pointer, length - 1, index, 1);
+      assign_segment(pointer, index, std::move(value));
+      ++entry.segment.length;
+      increment_sizes(parent_pointer, parent_index);
+      return;
+    }
+
     if (pointer == nullptr) {
       auto alloc = allocate_segment();
       get_root() = alloc;
       get_size() = 1;
       get_height() = 1;
+      construct_segment(alloc, 0, std::move(value));
       entry.segment.pointer = alloc;
       entry.segment.length = 1;
       return;
     }
 
     if (length != static_traits::segment_max()) {
-      move_forward_segment(pointer, length, index, 1);
+      construct_segment(pointer, index, std::move(value));
       ++entry.segment.length;
       increment_sizes(parent_pointer, parent_index);
       return;
@@ -1597,34 +1628,40 @@ class seq {
 
     if (index < pointer_length) {
       auto left_index = pointer_length - 1;
-      move_range_segment(pointer, left_index, alloc, 0, alloc_length);
-      move_forward_segment(pointer, left_index, index, 1);
+      move_segment(pointer, left_index, alloc, 0);
+      construct_range_segment(pointer, left_index + 1, alloc, 1,
+                              alloc_length - 1);
+      assign_forward_segment(pointer, left_index, index, 1);
+      assign_segment(pointer, index, std::move(value));
+
       entry.segment.length = pointer_length;
     } else {
       auto new_index = index - pointer_length;
       auto move_length = length - index;
-      move_range_segment(pointer, pointer_length, alloc, 0, new_index);
-      move_range_segment(pointer, index, alloc, new_index + 1, move_length);
+      construct_range_segment(pointer, pointer_length, alloc, 0, new_index);
+      construct_range_segment(pointer, index, alloc, new_index + 1,
+                              move_length);
+      construct_segment(alloc, new_index, std::move(value));
       entry.segment.length = alloc_length;
       entry.segment.pointer = alloc;
       entry.segment.index = new_index;
       ++entry.leaf.index;
     }
 
-    reserve_single_leaf(entry, pointer, parent_pointer, parent_index + 1,
-                        leaf_alloc, alloc, alloc_length);
+    insert_single_leaf(entry, pointer, parent_pointer, parent_index + 1,
+                       leaf_alloc, alloc, alloc_length);
   }
 
-  void reserve_single_leaf(iterator_entry &entry, element_pointer base,
-                           node_pointer pointer, size_type index,
-                           node_pointer alloc, element_pointer child_pointer,
-                           size_type child_size) {
+  void insert_single_leaf(iterator_entry &entry, element_pointer base,
+                          node_pointer pointer, size_type index,
+                          node_pointer alloc, element_pointer child_pointer,
+                          size_type child_size) {
     if (pointer == nullptr) {
       alloc->parent_pointer = nullptr;
       alloc->parent_index(0);
       alloc->length(2);
-      copy_single_leaf(alloc, 0, base, get_size() - child_size + 1);
-      copy_single_leaf(alloc, 1, child_pointer, child_size);
+      construct_leaf(alloc, 0, get_size() - child_size + 1, base);
+      construct_leaf(alloc, 1, child_size, child_pointer);
       get_root() = alloc;
       get_height() = 2;
       ++get_size();
@@ -1632,12 +1669,16 @@ class seq {
       return;
     }
 
+    auto length = pointer->length();
     pointer->sizes[index - 1] -= child_size - 1;
 
-    auto length = pointer->length();
     if (length != static_traits::base_max()) {
-      move_forward_leaf(pointer, length, index, 1);
-      copy_single_leaf(pointer, index, child_pointer, child_size);
+      if (index != length) {
+        move_leaf(pointer, length - 1, pointer, length);
+        assign_forward_leaf(pointer, length - 1, index, 1);
+        assign_leaf(pointer, index, child_size, child_pointer);
+      } else
+        construct_leaf(pointer, index, child_size, child_pointer);
       pointer->length(length + 1);
       increment_sizes(pointer->parent_pointer, pointer->parent_index());
       return;
@@ -1651,19 +1692,19 @@ class seq {
     size_type alloc_size = 0;
     if (index < pointer_length) {
       auto left_index = pointer_length - 1;
-      alloc_size +=
-          move_range_leaf(pointer, left_index, alloc, 0, alloc_length);
-      move_forward_leaf(pointer, left_index, index, 1);
-      copy_single_leaf(pointer, index, child_pointer, child_size);
+      alloc_size += move_leaf(pointer, left_index, alloc, 0);
+      alloc_size += construct_range_leaf(pointer, left_index + 1, alloc, 1,
+                                         alloc_length - 1);
+      assign_forward_leaf(pointer, left_index, index, 1);
+      assign_leaf(pointer, index, child_size, child_pointer);
     } else {
       auto new_index = index - pointer_length;
       auto move_length = length - index;
       alloc_size +=
-          move_range_leaf(pointer, pointer_length, alloc, 0, new_index);
-      alloc_size +=
-          move_range_leaf(pointer, index, alloc, new_index + 1, move_length);
-      alloc_size +=
-          copy_single_leaf(alloc, new_index, child_pointer, child_size);
+          construct_range_leaf(pointer, pointer_length, alloc, 0, new_index);
+      alloc_size += construct_range_leaf(pointer, index, alloc, new_index + 1,
+                                         move_length);
+      alloc_size += construct_leaf(alloc, new_index, child_size, child_pointer);
     }
 
     pointer->length(pointer_length);
@@ -1674,33 +1715,37 @@ class seq {
       entry.leaf.index -= pointer_length;
     }
 
-    reserve_single_branch(pointer, pointer->parent_pointer,
-                          pointer->parent_index() + 1, next_alloc, alloc,
-                          alloc_size);
+    insert_single_branch(pointer, pointer->parent_pointer,
+                         pointer->parent_index() + 1, next_alloc, alloc,
+                         alloc_size);
   }
 
-  void reserve_single_branch(node_pointer base, node_pointer pointer,
-                             size_type index, node_pointer alloc,
-                             node_pointer child_pointer, size_type child_size) {
+  void insert_single_branch(node_pointer base, node_pointer pointer,
+                            size_type index, node_pointer alloc,
+                            node_pointer child_pointer, size_type child_size) {
     while (true) {
       if (pointer == nullptr) {
         alloc->parent_pointer = nullptr;
         alloc->parent_index(0);
         alloc->length(2);
-        copy_single_branch(alloc, 0, base, get_size() - child_size + 1);
-        copy_single_branch(alloc, 1, child_pointer, child_size);
+        construct_branch(alloc, 0, get_size() - child_size + 1, base);
+        construct_branch(alloc, 1, child_size, child_pointer);
         get_root() = alloc;
         ++get_height();
         ++get_size();
         return;
       }
 
+      auto length = pointer->length();
       pointer->sizes[index - 1] -= child_size - 1;
 
-      auto length = pointer->length();
       if (length != static_traits::base_max()) {
-        move_forward_branch(pointer, length, index, 1);
-        copy_single_branch(pointer, index, child_pointer, child_size);
+        if (index != length) {
+          move_branch(pointer, length - 1, pointer, length);
+          assign_forward_branch(pointer, length - 1, index, 1);
+          assign_branch(pointer, index, child_size, child_pointer);
+        } else
+          construct_branch(pointer, index, child_size, child_pointer);
         pointer->length(length + 1);
         increment_sizes(pointer->parent_pointer, pointer->parent_index());
         return;
@@ -1714,19 +1759,20 @@ class seq {
       size_type alloc_size = 0;
       if (index < pointer_length) {
         auto left_index = pointer_length - 1;
-        alloc_size +=
-            move_range_branch(pointer, left_index, alloc, 0, alloc_length);
-        move_forward_branch(pointer, left_index, index, 1);
-        copy_single_branch(pointer, index, child_pointer, child_size);
+        alloc_size += move_branch(pointer, left_index, alloc, 0);
+        alloc_size += construct_range_branch(pointer, left_index + 1, alloc, 1,
+                                             alloc_length - 1);
+        assign_forward_branch(pointer, left_index, index, 1);
+        assign_branch(pointer, index, child_size, child_pointer);
       } else {
         auto new_index = index - pointer_length;
         auto move_length = length - index;
+        alloc_size += construct_range_branch(pointer, pointer_length, alloc, 0,
+                                             new_index);
+        alloc_size += construct_range_branch(pointer, index, alloc,
+                                             new_index + 1, move_length);
         alloc_size +=
-            move_range_branch(pointer, pointer_length, alloc, 0, new_index);
-        alloc_size += move_range_branch(pointer, index, alloc, new_index + 1,
-                                        move_length);
-        alloc_size +=
-            copy_single_branch(alloc, new_index, child_pointer, child_size);
+            construct_branch(alloc, new_index, child_size, child_pointer);
       }
 
       pointer->length(pointer_length);
@@ -1755,6 +1801,7 @@ class seq {
 
     if (length == 1 &&
         (static_traits::segment_min() != 1 || parent_pointer == nullptr)) {
+      destroy_segment(pointer, 0);
       deallocate_segment(pointer);
       get_root() = nullptr;
       get_size() = 0;
@@ -1766,7 +1813,8 @@ class seq {
     }
 
     if (length-- != static_traits::segment_min() || parent_pointer == nullptr) {
-      move_backward_segment(pointer, length, index, 1);
+      assign_backward_segment(pointer, length, index, 1);
+      destroy_segment(pointer, length);
       entry.segment.length = length;
       decrement_sizes(parent_pointer, parent_index);
       return;
@@ -1784,8 +1832,9 @@ class seq {
 
       if (prev_length != static_traits::segment_min()) {
         --prev_length;
-        move_forward_segment(pointer, index, 0, 1);
-        move_single_segment(prev_pointer, prev_length, pointer, 0);
+        assign_forward_segment(pointer, index, 0, 1);
+        move_assign_segment(prev_pointer, prev_length, pointer, 0);
+        destroy_segment(prev_pointer, prev_length);
         sizes[prev_index] = prev_length;
         ++entry.segment.index;
         decrement_sizes(parent_pointer->parent_pointer,
@@ -1793,9 +1842,11 @@ class seq {
         return;
       }
 
-      move_range_segment(pointer, 0, prev_pointer, prev_length, index);
-      move_range_segment(pointer, index + 1, prev_pointer, prev_length + index,
-                         length - index);
+      construct_range_segment(pointer, 0, prev_pointer, prev_length, index);
+      construct_range_segment(pointer, index + 1, prev_pointer,
+                              prev_length + index, length - index);
+      destroy_segment(pointer, index);
+      deallocate_segment(pointer);
       sizes[prev_index] = merge_size;
       erase_index = parent_index;
       entry.segment.pointer = prev_pointer;
@@ -1811,17 +1862,23 @@ class seq {
 
       if (next_length != static_traits::segment_min()) {
         --next_length;
-        move_backward_segment(pointer, length, index, 1);
-        move_single_segment(next_pointer, 0, pointer, length);
-        move_backward_segment(next_pointer, next_length, 0, 1);
+        assign_backward_segment(pointer, length, index, 1);
+        move_assign_segment(next_pointer, 0, pointer, length);
+        assign_backward_segment(next_pointer, next_length, 0, 1);
+        destroy_segment(next_pointer, next_length);
         sizes[next_index] = next_length;
         decrement_sizes(parent_pointer->parent_pointer,
                         parent_pointer->parent_index());
         return;
       }
 
-      move_backward_segment(pointer, length, index, 1);
-      move_range_segment(next_pointer, 0, pointer, length, next_length);
+      assign_backward_segment(pointer, length, index, 1);
+      move_assign_segment(next_pointer, 0, pointer, length);
+      destroy_segment(next_pointer, 0);
+      construct_range_segment(next_pointer, 1, pointer, length + 1,
+                              next_length - 1);
+      deallocate_segment(next_pointer);
+
       sizes[parent_index] = merge_size;
       erase_index = next_index;
       entry.segment.length = merge_size;
@@ -1832,9 +1889,6 @@ class seq {
 
   void erase_single_leaf(leaf_entry &entry, node_pointer pointer,
                          size_type index) {
-    deallocate_segment(static_traits::cast_segment(pointer->pointers[index]));
-    destroy_node(pointer, index);
-
     auto parent_pointer = pointer->parent_pointer;
     auto parent_index = pointer->parent_index();
     auto length = pointer->length();
@@ -1842,7 +1896,8 @@ class seq {
     if (length == 2 &&
         (static_traits::base_min() != 2 || parent_pointer == nullptr)) {
       auto other = pointer->pointers[index ^ 1];
-      destroy_node(pointer, index ^ 1);
+      destroy_node(pointer, 0);
+      destroy_node(pointer, 1);
       deallocate_node(pointer);
       get_root() = other;
       --get_size();
@@ -1853,7 +1908,8 @@ class seq {
     }
 
     if (length-- != static_traits::base_min() || parent_pointer == nullptr) {
-      move_backward_leaf(pointer, length, index, 1);
+      assign_backward_leaf(pointer, length, index, 1);
+      destroy_node(pointer, length);
       pointer->length(length);
       decrement_sizes(parent_pointer, parent_index);
       return;
@@ -1870,21 +1926,24 @@ class seq {
 
       if (prev_length != static_traits::base_min()) {
         --prev_length;
-        move_forward_leaf(pointer, index, 0, 1);
-        auto sz = move_single_leaf(prev_pointer, prev_length, pointer, 0);
+        assign_forward_leaf(pointer, index, 0, 1);
+        auto sz = move_assign_leaf(prev_pointer, prev_length, pointer, 0);
+        destroy_node(prev_pointer, prev_length);
         sizes[prev_index] -= sz;
         sizes[parent_index] += sz - 1;
         prev_pointer->length(prev_length);
         ++entry.index;
         decrement_sizes(parent_pointer->parent_pointer,
                         parent_pointer->parent_index());
-
         return;
       }
 
-      auto sz = move_range_leaf(pointer, 0, prev_pointer, prev_length, index);
-      sz += move_range_leaf(pointer, index + 1, prev_pointer,
-                            prev_length + index, length - index);
+      auto sz =
+          construct_range_leaf(pointer, 0, prev_pointer, prev_length, index);
+      sz += construct_range_leaf(pointer, index + 1, prev_pointer,
+                                 prev_length + index, length - index);
+      destroy_node(pointer, index);
+      deallocate_node(pointer);
       prev_pointer->length(prev_length + length);
       sizes[prev_index] += sz;
       erase_index = parent_index;
@@ -1899,20 +1958,24 @@ class seq {
 
       if (next_length != static_traits::base_min()) {
         --next_length;
-        move_backward_leaf(pointer, length, index, 1);
-        auto sz = move_single_leaf(next_pointer, 0, pointer, length);
-        move_backward_leaf(next_pointer, next_length, 0, 1);
+        assign_backward_leaf(pointer, length, index, 1);
+        auto sz = move_assign_leaf(next_pointer, 0, pointer, length);
+        assign_backward_leaf(next_pointer, next_length, 0, 1);
+        destroy_node(next_pointer, next_length);
         sizes[next_index] -= sz;
         sizes[parent_index] += sz - 1;
         next_pointer->length(next_length);
         decrement_sizes(parent_pointer->parent_pointer,
                         parent_pointer->parent_index());
-
         return;
       }
 
-      move_backward_leaf(pointer, length, index, 1);
-      auto sz = move_range_leaf(next_pointer, 0, pointer, length, next_length);
+      assign_backward_leaf(pointer, length, index, 1);
+      auto sz = move_assign_leaf(next_pointer, 0, pointer, length);
+      destroy_node(next_pointer, 0);
+      sz += construct_range_leaf(next_pointer, 1, pointer, length + 1,
+                                 next_length - 1);
+      deallocate_node(next_pointer);
       pointer->length(length + next_length);
       sizes[parent_index] += sz - 1;
       erase_index = next_index;
@@ -1923,9 +1986,6 @@ class seq {
 
   void erase_single_branch(node_pointer pointer, size_type index) {
     while (true) {
-      deallocate_node(static_traits::cast_node(pointer->pointers[index]));
-      destroy_node(pointer, index);
-
       auto parent_pointer = pointer->parent_pointer;
       auto parent_index = pointer->parent_index();
       auto length = pointer->length();
@@ -1933,19 +1993,20 @@ class seq {
       if (length == 2 &&
           (static_traits::base_min() != 2 || parent_pointer == nullptr)) {
         auto other = static_traits::cast_node(pointer->pointers[index ^ 1]);
-        destroy_node(pointer, index ^ 1);
+        destroy_node(pointer, 0);
+        destroy_node(pointer, 1);
         deallocate_node(pointer);
         get_root() = other;
         other->parent_pointer = nullptr;
         other->parent_index(0);
         --get_size();
         --get_height();
-
         return;
       }
 
       if (length-- != static_traits::base_min() || parent_pointer == nullptr) {
-        move_backward_branch(pointer, length, index, 1);
+        assign_backward_branch(pointer, length, index, 1);
+        destroy_node(pointer, length);
         pointer->length(length);
         decrement_sizes(parent_pointer, parent_index);
         return;
@@ -1962,21 +2023,23 @@ class seq {
 
         if (prev_length != static_traits::base_min()) {
           --prev_length;
-          move_forward_branch(pointer, index, 0, 1);
-          auto sz = move_single_branch(prev_pointer, prev_length, pointer, 0);
+          assign_forward_branch(pointer, index, 0, 1);
+          auto sz = move_assign_branch(prev_pointer, prev_length, pointer, 0);
+          destroy_node(prev_pointer, prev_length);
           sizes[prev_index] -= sz;
           sizes[parent_index] += sz - 1;
           prev_pointer->length(prev_length);
           decrement_sizes(parent_pointer->parent_pointer,
                           parent_pointer->parent_index());
-
           return;
         }
 
-        auto sz =
-            move_range_branch(pointer, 0, prev_pointer, prev_length, index);
-        sz += move_range_branch(pointer, index + 1, prev_pointer,
-                                prev_length + index, length - index);
+        auto sz = construct_range_branch(pointer, 0, prev_pointer, prev_length,
+                                         index);
+        sz += construct_range_branch(pointer, index + 1, prev_pointer,
+                                     prev_length + index, length - index);
+        destroy_node(pointer, index);
+        deallocate_node(pointer);
         prev_pointer->length(prev_length + length);
         sizes[prev_index] += sz;
         erase_index = parent_index;
@@ -1989,21 +2052,24 @@ class seq {
 
         if (next_length != static_traits::base_min()) {
           --next_length;
-          move_backward_branch(pointer, length, index, 1);
-          auto sz = move_single_branch(next_pointer, 0, pointer, length);
-          move_backward_branch(next_pointer, next_length, 0, 1);
+          assign_backward_branch(pointer, length, index, 1);
+          auto sz = move_assign_branch(next_pointer, 0, pointer, length);
+          assign_backward_branch(next_pointer, next_length, 0, 1);
+          destroy_node(next_pointer, next_length);
           sizes[next_index] -= sz;
           sizes[parent_index] += sz - 1;
           next_pointer->length(next_length);
           decrement_sizes(parent_pointer->parent_pointer,
                           parent_pointer->parent_index());
-
           return;
         }
 
-        move_backward_branch(pointer, length, index, 1);
-        auto sz =
-            move_range_branch(next_pointer, 0, pointer, length, next_length);
+        assign_backward_branch(pointer, length, index, 1);
+        auto sz = move_assign_branch(next_pointer, 0, pointer, length);
+        destroy_node(next_pointer, 0);
+        sz += construct_range_branch(next_pointer, 1, pointer, length + 1,
+                                     next_length - 1);
+        deallocate_node(next_pointer);
         pointer->length(length + next_length);
         sizes[parent_index] += sz - 1;
         erase_index = next_index;
@@ -2043,16 +2109,7 @@ class seq {
 
   template <class... Args>
   iterator_data emplace_single(iterator_data it, Args &&... args) {
-    reserve_single_iterator(it);
-    try {
-      element_traits::construct(get_element_allocator(),
-                                std::addressof(static_traits::dereference(it)),
-                                std::forward<Args>(args)...);
-    } catch (...) {
-      erase_single_iterator(it);
-      throw;
-    }
-
+    insert_single_iterator(it, value_type(std::forward<Args>(args)...));
     return it;
   }
 
@@ -2081,7 +2138,6 @@ class seq {
   }
 
   iterator_data erase_single(iterator_data it) {
-    destroy_segment(it.entry.segment.pointer, it.entry.segment.index);
     erase_single_iterator(it);
     if (it.entry.segment.index == it.entry.segment.length)
       static_traits::move_next_leaf(it.entry);
@@ -2246,7 +2302,8 @@ class seq {
   ///
   /// \par Complexity
   ///   Constant.
-  explicit seq(Allocator const &alloc) : size_pair_{alloc}, height_pair_{alloc} {}
+  explicit seq(Allocator const &alloc)
+      : size_pair_{alloc}, height_pair_{alloc} {}
 
   /// \par Effects
   ///   Constructs a count size sequence using the specified allocator, each
@@ -2488,6 +2545,24 @@ class seq {
   /// \par Exception safety
   ///   No-throw.
   allocator_type get_allocator() const noexcept {
+    return get_element_allocator();
+  }
+
+  /// \par Returns
+  ///   A reference to the allocator for the sequence.
+  ///
+  /// \par Complexity
+  ///   Constant.
+  ///
+  /// \par Iterator invalidation
+  ///   Iterators are not invalidated.
+  ///
+  /// \par Exception safety
+  ///   No-throw.
+  ///
+  /// \par Note
+  ///   Non-standard extension.
+  stored_allocator_type const &get_stored_allocator() const noexcept {
     return get_element_allocator();
   }
 

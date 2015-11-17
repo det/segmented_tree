@@ -388,10 +388,26 @@ BOOST_AUTO_TEST_CASE(test_erase) {
   seq<uint64_t> c1{0, 1, 2, 3, 4};
   c1.erase(c1.nth(3));
   check_contents(c1, {0, 1, 2, 4});
+  c1.erase(c1.nth(1));
+  check_contents(c1, {0, 2, 4});
+  c1.erase(c1.nth(2));
+  check_contents(c1, {0, 2});
+  c1.erase(c1.nth(0));
+  check_contents(c1, {2});
+  c1.erase(c1.nth(0));
+  check_contents(c1);
 
   seq<std::string> c2{"zero", "one", "two", "three", "four"};
   c2.erase(c2.nth(3));
   check_contents(c2, {"zero", "one", "two", "four"});
+  c2.erase(c2.nth(1));
+  check_contents(c2, {"zero", "two", "four"});
+  c2.erase(c2.nth(2));
+  check_contents(c2, {"zero", "two"});
+  c2.erase(c2.nth(0));
+  check_contents(c2, {"two"});
+  c2.erase(c2.nth(0));
+  check_contents(c2);
 }
 
 BOOST_AUTO_TEST_CASE(test_erase_range) {
@@ -754,7 +770,7 @@ class throwing_allocator {
   throwing_allocator(const throwing_allocator<U> &) {}
 
   T *allocate(std::size_t n) {
-    if (engine_() % 4 == 0) throw retry_exception{};
+    if (engine_() % 8 == 0) throw retry_exception{};
     if (n <= std::numeric_limits<std::size_t>::max() / sizeof(T)) {
       if (auto ptr = std::malloc(n * sizeof(T))) return static_cast<T *>(ptr);
     }
@@ -765,8 +781,13 @@ class throwing_allocator {
 
   template <typename U, typename... Args>
   void construct(U *p, Args &&... args) {
-    if (engine_() % 4 == 0) throw retry_exception{};
+    if (engine_() % 8 == 0) throw retry_exception{};
     new (p) U(std::forward<Args>(args)...);
+  }
+
+  template <typename U, typename... Args>
+  void construct(U *p, T &&value) {
+    new (p) U(std::move(value));
   }
 };
 

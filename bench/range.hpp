@@ -18,7 +18,7 @@ int bench_range(int argc, char **argv) {
   auto count = boost::lexical_cast<std::size_t>(argv[1]);
   auto size = boost::lexical_cast<std::size_t>(argv[2]);
   auto seed = boost::lexical_cast<std::uint32_t>(argv[3]);
-  auto checksum = boost::lexical_cast<std::size_t>(argv[4]);
+  auto checksum = boost::lexical_cast<std::uint64_t>(argv[4]);
 
   auto data = make_insertion_data_range<T>(count, size, seed);
   Container<T> container;

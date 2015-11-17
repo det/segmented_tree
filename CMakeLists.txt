@@ -5,10 +5,12 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set (CMAKE_CXX_FLAGS "-std=c++11 -Weverything -Wno-c++98-compat \
                         -Wno-c++98-compat-pedantic -Wno-padded \
                         -Wno-disabled-macro-expansion -Wno-global-constructors")
+  set (CMAKE_CXX_FLAGS_DEBUG "-O1 -g -fsanitize=address -fsanitize=undefined")
   set (CMAKE_CXX_FLAGS_RELEASE "-O3 -flto")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   set (CMAKE_CXX_FLAGS "-std=c++11 -Wpedantic -Wall -Wextra \
                         -Wno-missing-field-initializers")
+  set (CMAKE_CXX_FLAGS_DEBUG "-Og -g")
   set (CMAKE_CXX_FLAGS_RELEASE "-O2 -flto")
 endif ()
 

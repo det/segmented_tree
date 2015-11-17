@@ -17,7 +17,7 @@ int bench_single(int argc, char **argv) {
 
   auto count = boost::lexical_cast<std::size_t>(argv[1]);
   auto seed = boost::lexical_cast<std::uint32_t>(argv[2]);
-  auto checksum = boost::lexical_cast<std::size_t>(argv[3]);
+  auto checksum = boost::lexical_cast<std::uint64_t>(argv[3]);
 
   auto data = make_insertion_data_single<T>(count, seed);
   Container<T> container;
