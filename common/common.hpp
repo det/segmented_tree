@@ -9,7 +9,7 @@
 #include <boost/random/independent_bits.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/seed_seq.hpp>
-
+#include <random>
 
 template <typename T>
 struct insertion_data {
