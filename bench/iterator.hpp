@@ -1,12 +1,11 @@
 #ifndef BENCH_ITERATOR
 #define BENCH_ITERATOR
 
-#include "common.hpp"
-#include "../common/iterator.hpp"
-
 #include <stdexcept>
 #include <type_traits>
 #include <vector>
+#include "../common/iterator.hpp"
+#include "common.hpp"
 
 template <typename Container, typename T>
 void bench_iterator(Container const &container, std::vector<T> const &data) {

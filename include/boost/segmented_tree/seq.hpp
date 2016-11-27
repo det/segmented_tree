@@ -7,12 +7,13 @@
 
 #include "seq_fwd.hpp"
 
-#include <array>
 #include <algorithm>
+#include <array>
 #include <cstring>
+#include <functional>
 #include <limits>
-#include <utility>
 #include <type_traits>
+#include <utility>
 
 #ifdef BOOST_SEGMENTED_TREE_DEBUG
 #include <iostream>
@@ -3533,7 +3534,8 @@ class seq {
   ///   Basic.
   void splice(const_iterator pos, seq &other, const_iterator first,
               const_iterator last) {
-    insert(pos, std::make_move_iterator(first), std::make_move_iterator(last));
+    insert(pos, std::make_move_iterator(iterator{first.it_}),
+           std::make_move_iterator(iterator{last.it_}));
     other.erase(first, last);
   }
 

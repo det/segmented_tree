@@ -1,6 +1,5 @@
-#include "single.hpp"
-
 #include <deque>
+#include "single.hpp"
 
 template <typename T>
 using Container = std::deque<T>;

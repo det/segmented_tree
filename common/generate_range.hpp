@@ -1,10 +1,9 @@
 #ifndef BENCH_GENERATE_RANGE
 #define BENCH_GENERATE_RANGE
 
-#include "range.hpp"
-
-#include <iostream>
 #include <boost/lexical_cast.hpp>
+#include <iostream>
+#include "range.hpp"
 
 template <typename T>
 int generate_range(int argc, char **argv) {

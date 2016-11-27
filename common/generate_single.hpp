@@ -1,10 +1,9 @@
 #ifndef BENCH_GENERATE_SINGLE
 #define BENCH_GENERATE_SINGLE
 
-#include "single.hpp"
-
-#include <iostream>
 #include <boost/lexical_cast.hpp>
+#include <iostream>
+#include "single.hpp"
 
 template <typename T>
 int generate_single(int argc, char **argv) {

@@ -1,14 +1,12 @@
 #define BOOST_TEST_MODULE test_sequence
 
-#include <boost/test/unit_test.hpp>
 #include <boost/segmented_tree/seq.hpp>
-
-#include "../common/single.hpp"
-#include "../common/range.hpp"
-#include "../common/iterator.hpp"
-
+#include <boost/test/unit_test.hpp>
 #include <exception>
 #include <limits>
+#include "../common/iterator.hpp"
+#include "../common/range.hpp"
+#include "../common/single.hpp"
 
 template <typename T, typename Alloc = std::allocator<T>>
 using seq = boost::segmented_tree::seq<T, Alloc, TARGET_SIZE>;

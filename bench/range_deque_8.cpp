@@ -1,6 +1,5 @@
-#include "range.hpp"
-
 #include <deque>
+#include "range.hpp"
 
 template <typename T>
 using Container = std::deque<T>;

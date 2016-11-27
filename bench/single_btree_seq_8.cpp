@@ -1,5 +1,5 @@
-#include "single.hpp"
 #include "array/trunk/btree_seq.h"
+#include "single.hpp"
 
 template <typename T>
 using Container = btree_seq<T>;

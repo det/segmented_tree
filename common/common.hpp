@@ -1,15 +1,15 @@
 #ifndef COMMON_COMMON
 #define COMMON_COMMON
 
-#include <cstdint>
-#include <cstdlib>
-#include <type_traits>
-#include <vector>
 #include <boost/crc.hpp>
 #include <boost/random/independent_bits.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/seed_seq.hpp>
+#include <cstdint>
+#include <cstdlib>
 #include <random>
+#include <type_traits>
+#include <vector>
 
 template <typename T>
 struct insertion_data {

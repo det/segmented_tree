@@ -1,12 +1,11 @@
 #ifndef BENCH_SINGLE
 #define BENCH_SINGLE
 
-#include "iterator.hpp"
-#include "../common/single.hpp"
-
+#include <boost/lexical_cast.hpp>
 #include <cstdlib>
 #include <limits>
-#include <boost/lexical_cast.hpp>
+#include "../common/single.hpp"
+#include "iterator.hpp"
 
 template <template <typename T> class Container, typename T>
 int bench_single(int argc, char **argv) {

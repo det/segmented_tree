@@ -1,6 +1,5 @@
-#include "range.hpp"
-
 #include <vector>
+#include "range.hpp"
 
 template <typename T>
 using Container = std::vector<T>;
