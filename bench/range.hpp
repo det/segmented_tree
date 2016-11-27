@@ -1,15 +1,14 @@
 #ifndef BENCH_RANGE
 #define BENCH_RANGE
 
-#include "iterator.hpp"
-#include "../common/range.hpp"
-
+#include <boost/lexical_cast.hpp>
 #include <cstdlib>
 #include <limits>
-#include <boost/lexical_cast.hpp>
+#include "../common/range.hpp"
+#include "iterator.hpp"
 
 template <template <typename T> class Container, typename T>
-int bench_range(int argc, char **argv) {
+int bench_range(int argc, char** argv) {
   if (argc != 5) {
     std::cerr << "Usage: " << argv[0] << "<count> <size> <seed> <checksum>\n";
     return EXIT_FAILURE;

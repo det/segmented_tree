@@ -1,5 +1,5 @@
-#include "range.hpp"
 #include "boost/segmented_tree/seq.hpp"
+#include "range.hpp"
 
 template <typename T>
 using Container = boost::segmented_tree::seq<T>;

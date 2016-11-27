@@ -30,7 +30,7 @@ using std::swap;
 template <typename T>
 struct test {
   static bool const value =
-      noexcept(swap(std::declval<T &>(), std::declval<T &>()));
+      noexcept(swap(std::declval<T&>(), std::declval<T&>()));
 };
 }
 
@@ -44,7 +44,7 @@ struct is_alloc_move_construct_default {
  private:
   template <typename U>
   static auto test(U alloc)
-      -> decltype(alloc.construct(std::declval<T *>(), std::declval<T &&>()),
+      -> decltype(alloc.construct(std::declval<T*>(), std::declval<T&&>()),
                   std::false_type{});
   template <typename>
   static std::true_type test(...);
@@ -387,12 +387,12 @@ struct static_traits_t {
   }
 
   // move_next
-  static void move_next_iterator(iterator_data &it) {
+  static void move_next_iterator(iterator_data& it) {
     ++it.pos;
     move_next_segment(it.entry);
   }
 
-  static void move_next_segment(iterator_entry &entry) {
+  static void move_next_segment(iterator_entry& entry) {
     auto index = entry.segment.index;
     auto length = entry.segment.length;
 
@@ -405,7 +405,7 @@ struct static_traits_t {
     move_next_leaf(entry);
   }
 
-  static void move_next_leaf(iterator_entry &entry) {
+  static void move_next_leaf(iterator_entry& entry) {
     auto pointer = entry.leaf.pointer;
     auto index = entry.leaf.index;
 
@@ -426,7 +426,7 @@ struct static_traits_t {
     move_next_branch(entry, pointer->parent_pointer, pointer->parent_index());
   }
 
-  static void move_next_branch(iterator_entry &entry, node_pointer pointer,
+  static void move_next_branch(iterator_entry& entry, node_pointer pointer,
                                size_type index) {
     size_type child_ht = 2;
 
@@ -450,12 +450,12 @@ struct static_traits_t {
   }
 
   // move_prev
-  static void move_prev_iterator(iterator_data &it) {
+  static void move_prev_iterator(iterator_data& it) {
     --it.pos;
     move_prev_segment(it.entry);
   }
 
-  static void move_prev_segment(iterator_entry &entry) {
+  static void move_prev_segment(iterator_entry& entry) {
     auto index = entry.segment.index;
 
     if (index != 0) {
@@ -467,7 +467,7 @@ struct static_traits_t {
     move_prev_leaf(entry);
   }
 
-  static void move_prev_leaf(iterator_entry &entry) {
+  static void move_prev_leaf(iterator_entry& entry) {
     auto pointer = entry.leaf.pointer;
     auto index = entry.leaf.index;
 
@@ -482,7 +482,7 @@ struct static_traits_t {
     move_prev_branch(entry, pointer->parent_pointer, pointer->parent_index());
   }
 
-  static void move_prev_branch(iterator_entry &entry, node_pointer pointer,
+  static void move_prev_branch(iterator_entry& entry, node_pointer pointer,
                                size_type index) {
     size_type child_ht = 2;
 
@@ -500,7 +500,7 @@ struct static_traits_t {
   }
 
   // move_count
-  static void move_iterator_count(iterator_data &it, difference_type diff) {
+  static void move_iterator_count(iterator_data& it, difference_type diff) {
     auto size = static_cast<size_type>(diff);
     it.pos += size;
     if (diff > 0)
@@ -510,12 +510,12 @@ struct static_traits_t {
   }
 
   // move_next_count
-  static void move_next_iterator_count(iterator_data &it, size_type count) {
+  static void move_next_iterator_count(iterator_data& it, size_type count) {
     it.pos += count;
     move_next_segment_count(it.entry, count);
   }
 
-  static void move_next_segment_count(iterator_entry &entry, size_type count) {
+  static void move_next_segment_count(iterator_entry& entry, size_type count) {
     auto index = entry.segment.index;
     auto length = entry.segment.length;
 
@@ -528,7 +528,7 @@ struct static_traits_t {
     move_next_leaf_count(entry, index - length);
   }
 
-  static void move_next_leaf_count(iterator_entry &entry, size_type count) {
+  static void move_next_leaf_count(iterator_entry& entry, size_type count) {
     auto pointer = entry.leaf.pointer;
     auto index = entry.leaf.index;
 
@@ -556,7 +556,7 @@ struct static_traits_t {
                            pointer->parent_index(), count);
   }
 
-  static void move_next_branch_count(iterator_entry &entry, node_pointer base,
+  static void move_next_branch_count(iterator_entry& entry, node_pointer base,
                                      node_pointer pointer, size_type index,
                                      size_type count) {
     size_type child_ht = 2;
@@ -589,12 +589,12 @@ struct static_traits_t {
   }
 
   // move_prev_count
-  static void move_prev_iterator_count(iterator_data &it, size_type count) {
+  static void move_prev_iterator_count(iterator_data& it, size_type count) {
     it.pos -= count;
     move_prev_segment_count(it.entry, count);
   }
 
-  static void move_prev_segment_count(iterator_entry &entry, size_type count) {
+  static void move_prev_segment_count(iterator_entry& entry, size_type count) {
     auto index = entry.segment.index;
 
     if (index >= count) {
@@ -606,7 +606,7 @@ struct static_traits_t {
     move_prev_leaf_count(entry, count - index);
   }
 
-  static void move_prev_leaf_count(iterator_entry &entry, size_type count) {
+  static void move_prev_leaf_count(iterator_entry& entry, size_type count) {
     auto pointer = entry.leaf.pointer;
     auto index = entry.leaf.index;
 
@@ -628,7 +628,7 @@ struct static_traits_t {
                            pointer->parent_index(), count);
   }
 
-  static void move_prev_branch_count(iterator_entry &entry,
+  static void move_prev_branch_count(iterator_entry& entry,
                                      node_pointer pointer, size_type index,
                                      size_type count) {
     size_type child_ht = 2;
@@ -665,11 +665,11 @@ struct static_traits_t {
     return it.entry.segment.pointer + it.entry.segment.length;
   }
 
-  static value_type &dereference(iterator_data it) {
+  static value_type& dereference(iterator_data it) {
     return it.entry.segment.pointer[it.entry.segment.index];
   }
 
-  static value_type &dereference_count(iterator_data it, difference_type diff) {
+  static value_type& dereference_count(iterator_data it, difference_type diff) {
     move_iterator_count(it, diff);
     return it.entry.segment.pointer[it.entry.segment.index];
   }
@@ -679,22 +679,22 @@ struct static_traits_t {
                          : -static_cast<difference_type>(b.pos - a.pos);
   }
 
-  static void move_after_segment(iterator_data &it) {
+  static void move_after_segment(iterator_data& it) {
     it.pos += it.entry.segment.length - it.entry.segment.index;
     move_next_leaf(it.entry);
   }
 
-  static void move_after_segment_count(iterator_data &it, size_type count) {
+  static void move_after_segment_count(iterator_data& it, size_type count) {
     it.pos += it.entry.segment.length - it.entry.segment.index + count;
     move_next_leaf_count(it.entry, count);
   }
 
-  static void move_before_segment(iterator_data &it) {
+  static void move_before_segment(iterator_data& it) {
     it.pos -= it.entry.segment.index + 1;
     move_prev_leaf(it.entry);
   }
 
-  static void move_before_segment_count(iterator_data &it, size_type count) {
+  static void move_before_segment_count(iterator_data& it, size_type count) {
     it.pos -= it.entry.segment.index + 1 - count;
     move_prev_leaf_count(it.entry, count);
   }
@@ -746,14 +746,14 @@ class iterator_t {
   ///
   /// \par Complexity
   ///   Constant.
-  iterator_t(iterator_t const &other) = default;
+  iterator_t(iterator_t const& other) = default;
 
   /// \par Effects
   ///   Copy assigns from other.
   ///
   /// \par Complexity
   ///   Constant.
-  iterator_t &operator=(iterator_t const &other) = default;
+  iterator_t& operator=(iterator_t const& other) = default;
 
   /// \par Effects
   ///   Copy constructs a const iterator from non-const iterator other.
@@ -763,7 +763,7 @@ class iterator_t {
   template <typename P, typename R,
             typename = typename std::enable_if<
                 std::is_convertible<P, pointer>::value>::type>
-  iterator_t(iterator_t<static_traits, P, R> const &other) : it_(other.it_) {}
+  iterator_t(iterator_t<static_traits, P, R> const& other) : it_(other.it_) {}
 
   /// \par Returns
   ///   A pointer to the current element of the current segment of the iterator.
@@ -827,7 +827,7 @@ class iterator_t {
   ///
   /// \par Complexity
   ///   Constant amortized.
-  iterator_t &operator++() {
+  iterator_t& operator++() {
     static_traits::move_next_iterator(it_);
     return *this;
   }
@@ -840,7 +840,7 @@ class iterator_t {
   ///
   /// \par Complexity
   ///   Constant amortized.
-  iterator_t &operator--() {
+  iterator_t& operator--() {
     static_traits::move_prev_iterator(it_);
     return *this;
   }
@@ -875,7 +875,7 @@ class iterator_t {
   ///
   /// \par Complexity
   ///   Logarithmic amortized in the absolute value of diff.
-  iterator_t &operator+=(difference_type diff) {
+  iterator_t& operator+=(difference_type diff) {
     static_traits::move_iterator_count(it_, diff);
     return *this;
   }
@@ -888,7 +888,7 @@ class iterator_t {
   ///
   /// \par Complexity
   ///   Logarithmic amortized in the absolute value of diff.
-  iterator_t &operator-=(difference_type diff) {
+  iterator_t& operator-=(difference_type diff) {
     static_traits::move_iterator_count(it_, -diff);
     return *this;
   }
@@ -920,7 +920,7 @@ class iterator_t {
   ///
   /// \par Complexity
   ///   Constant.
-  difference_type operator-(iterator_t const &other) const {
+  difference_type operator-(iterator_t const& other) const {
     return static_traits::difference(it_, other.it_);
   }
 
@@ -935,7 +935,7 @@ class iterator_t {
   ///
   /// \par Note
   ///   Non-standard extension.
-  iterator_t &move_before_segment() {
+  iterator_t& move_before_segment() {
     static_traits::move_before_segment(it_);
     return *this;
   }
@@ -952,7 +952,7 @@ class iterator_t {
   ///
   /// \par Note
   ///   Non-standard extension.
-  iterator_t &move_before_segment(size_type count) {
+  iterator_t& move_before_segment(size_type count) {
     static_traits::move_before_segment_count(it_, count);
     return *this;
   }
@@ -968,7 +968,7 @@ class iterator_t {
   ///
   /// \par Note
   ///   Non-standard extension.
-  iterator_t &move_after_segment() {
+  iterator_t& move_after_segment() {
     static_traits::move_after_segment(it_);
     return *this;
   }
@@ -982,7 +982,7 @@ class iterator_t {
   ///
   /// \par Note
   ///   Non-standard extension.
-  iterator_t &move_after_segment(size_type count) {
+  iterator_t& move_after_segment(size_type count) {
     static_traits::move_after_segment_count(it_, count);
     return *this;
   }
@@ -1052,7 +1052,7 @@ class iterator_t {
   ///
   /// \par Complexity
   ///   Constant.
-  bool operator!=(iterator_t const &other) const {
+  bool operator!=(iterator_t const& other) const {
     return it_.pos != other.it_.pos;
   }
 
@@ -1061,7 +1061,7 @@ class iterator_t {
   ///
   /// \par Complexity
   ///   Constant.
-  bool operator==(iterator_t const &other) const {
+  bool operator==(iterator_t const& other) const {
     return it_.pos == other.it_.pos;
   }
 
@@ -1070,7 +1070,7 @@ class iterator_t {
   ///
   /// \par Complexity
   ///   Constant.
-  bool operator<(iterator_t const &other) const {
+  bool operator<(iterator_t const& other) const {
     return it_.pos < other.it_.pos;
   }
 
@@ -1079,7 +1079,7 @@ class iterator_t {
   ///
   /// \par Complexity
   ///   Constant.
-  bool operator>(iterator_t const &other) const {
+  bool operator>(iterator_t const& other) const {
     return it_.pos > other.it_.pos;
   }
 
@@ -1089,7 +1089,7 @@ class iterator_t {
   ///
   /// \par Complexity
   ///   Constant.
-  bool operator<=(iterator_t const &other) const {
+  bool operator<=(iterator_t const& other) const {
     return it_.pos <= other.it_.pos;
   }
 
@@ -1099,7 +1099,7 @@ class iterator_t {
   ///
   /// \par Complexity
   ///   Constant.
-  bool operator>=(iterator_t const &other) const {
+  bool operator>=(iterator_t const& other) const {
     return it_.pos >= other.it_.pos;
   }
 
@@ -1152,17 +1152,17 @@ class seq {
   /// The pointers difference type.
   using difference_type = typename element_traits::difference_type;
   /// The value reference type.
-  using reference = value_type &;
+  using reference = value_type&;
   /// The value const reference type.
-  using const_reference = value_type const &;
+  using const_reference = value_type const&;
   /// The pointer type.
   using pointer = typename element_traits::pointer;
   /// The const pointer type.
   using const_pointer = typename element_traits::const_pointer;
   /// The iterator type.
-  using iterator = iterator_t<static_traits, pointer, T &>;
+  using iterator = iterator_t<static_traits, pointer, T&>;
   /// The const iterator type.
-  using const_iterator = iterator_t<static_traits, const_pointer, T const &>;
+  using const_iterator = iterator_t<static_traits, const_pointer, T const&>;
   /// The reverse iterator type.
   using reverse_iterator = std::reverse_iterator<iterator>;
   /// The const reverse iterator.
@@ -1178,26 +1178,26 @@ class seq {
   struct size_pair : allocator_type {
     size_type sz;
     size_pair() = default;
-    size_pair(allocator_type const &alloc) : allocator_type{alloc}, sz{} {}
+    size_pair(allocator_type const& alloc) : allocator_type{alloc}, sz{} {}
   } size_pair_{};
 
   struct height_pair : node_allocator {
     size_type ht;
     height_pair() = default;
-    height_pair(allocator_type const &alloc) : node_allocator{alloc}, ht{} {}
+    height_pair(allocator_type const& alloc) : node_allocator{alloc}, ht{} {}
   } height_pair_{};
 
   // getters
-  void_pointer &get_root() { return root_; }
-  void_pointer const &get_root() const { return root_; }
-  size_type &get_size() { return size_pair_.sz; }
-  size_type const &get_size() const { return size_pair_.sz; }
-  size_type &get_height() { return height_pair_.ht; }
-  size_type const &get_height() const { return height_pair_.ht; }
-  allocator_type &get_element_allocator() { return size_pair_; }
-  allocator_type const &get_element_allocator() const { return size_pair_; }
-  node_allocator &get_node_allocator() { return height_pair_; }
-  node_allocator const &get_node_allocator() const { return height_pair_; }
+  void_pointer& get_root() { return root_; }
+  void_pointer const& get_root() const { return root_; }
+  size_type& get_size() { return size_pair_.sz; }
+  size_type const& get_size() const { return size_pair_.sz; }
+  size_type& get_height() { return height_pair_.ht; }
+  size_type const& get_height() const { return height_pair_.ht; }
+  allocator_type& get_element_allocator() { return size_pair_; }
+  allocator_type const& get_element_allocator() const { return size_pair_; }
+  node_allocator& get_node_allocator() { return height_pair_; }
+  node_allocator const& get_node_allocator() const { return height_pair_; }
 
   // allocate
   element_pointer allocate_segment() {
@@ -1271,7 +1271,7 @@ class seq {
 
   // construct
   size_type construct_segment(element_pointer pointer, size_type index,
-                              value_type &&value) {
+                              value_type&& value) {
     element_traits::construct(get_element_allocator(),
                               std::addressof(pointer[index]), std::move(value));
     return 1;
@@ -1280,7 +1280,7 @@ class seq {
   size_type construct_leaf(node_pointer pointer, size_type index,
                            std::size_t child_sz, void_pointer child_pointer) {
     pointer->sizes[index] = child_sz;
-    ::new (static_cast<void *>(std::addressof(pointer->pointers[index]))) auto(
+    ::new (static_cast<void*>(std::addressof(pointer->pointers[index]))) auto(
         child_pointer);
     return child_sz;
   }
@@ -1291,14 +1291,14 @@ class seq {
     auto child = static_traits::cast_node(child_pointer);
     child->parent_pointer = pointer;
     child->parent_index(index);
-    ::new (static_cast<void *>(std::addressof(pointer->pointers[index]))) auto(
+    ::new (static_cast<void*>(std::addressof(pointer->pointers[index]))) auto(
         child_pointer);
     return child_sz;
   }
 
   // assign
   size_type assign_segment(element_pointer pointer, size_type index,
-                           value_type &&value) {
+                           value_type&& value) {
     pointer[index] = std::move(value);
     return 1;
   }
@@ -1600,11 +1600,11 @@ class seq {
   }
 
   //   insert_single
-  void insert_single_iterator(iterator_data &it, value_type value) {
+  void insert_single_iterator(iterator_data& it, value_type value) {
     insert_single_segment(it.entry, std::move(value));
   }
 
-  void insert_single_segment(iterator_entry &entry, value_type value) {
+  void insert_single_segment(iterator_entry& entry, value_type value) {
     auto pointer = entry.segment.pointer;
     auto index = entry.segment.index;
     auto length = entry.segment.length;
@@ -1671,7 +1671,7 @@ class seq {
                        leaf_alloc, alloc, alloc_length);
   }
 
-  void insert_single_leaf(iterator_entry &entry, element_pointer base,
+  void insert_single_leaf(iterator_entry& entry, element_pointer base,
                           node_pointer pointer, size_type index,
                           node_pointer alloc, element_pointer child_pointer,
                           size_type child_size) {
@@ -1807,11 +1807,11 @@ class seq {
   }
 
   // erase_single
-  void erase_single_iterator(iterator_data &it) {
+  void erase_single_iterator(iterator_data& it) {
     erase_single_segment(it.entry);
   }
 
-  void erase_single_segment(iterator_entry &entry) {
+  void erase_single_segment(iterator_entry& entry) {
     auto pointer = entry.segment.pointer;
     auto index = entry.segment.index;
     auto length = entry.segment.length;
@@ -1906,7 +1906,7 @@ class seq {
     erase_single_leaf(entry.leaf, parent_pointer, erase_index);
   }
 
-  void erase_single_leaf(leaf_entry &entry, node_pointer pointer,
+  void erase_single_leaf(leaf_entry& entry, node_pointer pointer,
                          size_type index) {
     auto parent_pointer = pointer->parent_pointer;
     auto parent_index = pointer->parent_index();
@@ -2117,7 +2117,7 @@ class seq {
     return static_traits::find_end_root(get_root(), get_size(), get_height());
   }
 
-  void steal(seq &other) {
+  void steal(seq& other) {
     get_root() = other.get_root();
     get_height() = other.get_height();
     get_size() = other.get_size();
@@ -2127,14 +2127,14 @@ class seq {
   }
 
   template <class... Args>
-  iterator_data emplace_single(iterator_data it, Args &&... args) {
+  iterator_data emplace_single(iterator_data it, Args&&... args) {
     insert_single_iterator(it, value_type(std::forward<Args>(args)...));
     return it;
   }
 
   template <typename... Args>
   iterator_data emplace_count(iterator_data it, size_type count,
-                              Args &&... args) {
+                              Args&&... args) {
     for (size_type i = 0; i != count; ++i) {
       it = emplace_single(it, std::forward<Args>(args)...);
       static_traits::move_next_iterator(it);
@@ -2171,7 +2171,7 @@ class seq {
     return last;
   }
 
-  void assign_count(size_type count, T const &value) {
+  void assign_count(size_type count, T const& value) {
     auto first = find_first();
     auto last = find_end();
     while (true) {
@@ -2213,7 +2213,7 @@ class seq {
   }
 
   template <typename... Args>
-  void resize_count(size_type count, Args &&... args) {
+  void resize_count(size_type count, Args&&... args) {
     auto sz = size();
     if (sz == count) return;
 
@@ -2224,7 +2224,7 @@ class seq {
       emplace_count(last, count - sz, std::forward<Args>(args)...);
   }
 
-  void copy_assign_alloc(seq const &other) {
+  void copy_assign_alloc(seq const& other) {
     copy_assign_alloc(
         other,
         std::integral_constant<
@@ -2233,16 +2233,16 @@ class seq {
   }
 
   template <typename = void>
-  void copy_assign_alloc(seq const &other, std::true_type) {
+  void copy_assign_alloc(seq const& other, std::true_type) {
     if (get_element_allocator() != other.get_element_allocator()) clear();
     get_element_allocator() = other.get_element_allocator();
     get_node_allocator() = other.get_node_allocator();
   }
 
   template <typename = void>
-  void copy_assign_alloc(seq const &, std::false_type) {}
+  void copy_assign_alloc(seq const&, std::false_type) {}
 
-  void move_assign_alloc(seq &other) noexcept(
+  void move_assign_alloc(seq& other) noexcept(
       !element_traits::propagate_on_container_move_assignment::value ||
       std::is_nothrow_move_assignable<allocator_type>::value) {
     move_assign_alloc(
@@ -2253,18 +2253,18 @@ class seq {
   }
 
   template <typename = void>
-  void move_assign_alloc(seq &other, std::true_type) noexcept(
+  void move_assign_alloc(seq& other, std::true_type) noexcept(
       std::is_nothrow_move_assignable<allocator_type>::value) {
     get_element_allocator() = std::move(other.get_element_allocator());
     get_node_allocator() = std::move(other.get_node_allocator());
   }
 
   template <typename = void>
-  void move_assign_alloc(seq const &, std::false_type) noexcept {}
+  void move_assign_alloc(seq const&, std::false_type) noexcept {}
 
-  void move_assign(seq &other) noexcept(
-      element_traits::propagate_on_container_move_assignment::value
-          &&std::is_nothrow_move_assignable<allocator_type>::value) {
+  void move_assign(seq& other) noexcept(
+      element_traits::propagate_on_container_move_assignment::value&&
+          std::is_nothrow_move_assignable<allocator_type>::value) {
     move_assign(
         other,
         std::integral_constant<
@@ -2273,7 +2273,7 @@ class seq {
   }
 
   template <typename = void>
-  void move_assign(seq &other, std::false_type) {
+  void move_assign(seq& other, std::false_type) {
     if (get_element_allocator() != other.get_element_allocator()) {
       assign(std::make_move_iterator(other.begin()),
              std::make_move_iterator(other.end()));
@@ -2282,20 +2282,20 @@ class seq {
   }
 
   template <typename = void>
-  void move_assign(seq &other, std::true_type) {
+  void move_assign(seq& other, std::true_type) {
     purge();
     move_assign_alloc(other);
     steal(other);
   }
 
-  void swap_allocator(seq &other) {
+  void swap_allocator(seq& other) {
     swap_allocator(
         other, std::integral_constant<
                    bool, element_traits::propagate_on_container_swap::value>{});
   }
 
   template <typename = void>
-  void swap_allocator(seq &other, std::true_type) noexcept(
+  void swap_allocator(seq& other, std::true_type) noexcept(
       detail::is_nothrow_swappable<allocator_type>::value) {
     using std::swap;
     swap(get_element_allocator(), other.get_element_allocator());
@@ -2303,7 +2303,7 @@ class seq {
   }
 
   template <typename = void>
-  void swap_allocator(seq &, std::false_type) noexcept {}
+  void swap_allocator(seq&, std::false_type) noexcept {}
 #endif  // #ifndef BOOST_SEGMENTED_TREE_DOXYGEN_INVOKED
 
  public:
@@ -2321,7 +2321,7 @@ class seq {
   ///
   /// \par Complexity
   ///   Constant.
-  explicit seq(Allocator const &alloc)
+  explicit seq(Allocator const& alloc)
       : size_pair_{alloc}, height_pair_{alloc} {}
 
   /// \par Effects
@@ -2330,7 +2330,7 @@ class seq {
   ///
   /// \par Complexity
   ///   NlogN, where N is count.
-  seq(size_type count, T const &value, Allocator const &alloc = Allocator())
+  seq(size_type count, T const& value, Allocator const& alloc = Allocator())
       : seq{alloc} {
     emplace_count(find_end(), count, value);
   }
@@ -2341,7 +2341,7 @@ class seq {
   ///
   /// \par Complexity
   ///   NlogN, where N is count.
-  explicit seq(size_type count, Allocator const &alloc = Allocator())
+  explicit seq(size_type count, Allocator const& alloc = Allocator())
       : seq{alloc} {
     emplace_count(find_end(), count);
   }
@@ -2354,7 +2354,7 @@ class seq {
   ///   NlogN, where N is the size of the range.
   template <class InputIt,
             typename = typename std::iterator_traits<InputIt>::pointer>
-  seq(InputIt first, InputIt last, Allocator const &alloc = Allocator())
+  seq(InputIt first, InputIt last, Allocator const& alloc = Allocator())
       : seq{alloc} {
     emplace_range(find_end(), first, last);
   }
@@ -2364,7 +2364,7 @@ class seq {
   ///
   /// \par Complexity
   ///   NlogN, where N is other.size().
-  seq(seq const &other)
+  seq(seq const& other)
       : seq{element_traits::select_on_container_copy_construction(
             other.get_element_allocator())} {
     emplace_range(find_end(), other.begin(), other.end());
@@ -2375,7 +2375,7 @@ class seq {
   ///
   /// \par Complexity
   ///   NlogN, where N is other.size().
-  seq(seq const &other, Allocator const &alloc) : seq{alloc} {
+  seq(seq const& other, Allocator const& alloc) : seq{alloc} {
     emplace_range(find_end(), other.begin(), other.end());
   }
 
@@ -2384,7 +2384,7 @@ class seq {
   ///
   /// \par Complexity
   ///   Constant.
-  seq(seq &&other) noexcept(
+  seq(seq&& other) noexcept(
       std::is_nothrow_move_constructible<allocator_type>::value)
       : root_{other.root_},
         size_pair_{std::move(other.size_pair_)},
@@ -2400,7 +2400,7 @@ class seq {
   /// \par Complexity
   ///   Constant if alloc compares equal to other's allocator. NlogN, where N is
   ///   other.size() otherwise.
-  seq(seq &&other, Allocator const &alloc) : seq{alloc} {
+  seq(seq&& other, Allocator const& alloc) : seq{alloc} {
     if (get_element_allocator() == other.get_element_allocator())
       steal(other);
     else
@@ -2414,7 +2414,7 @@ class seq {
   ///
   /// \par Complexity
   ///   NlogN, where N is init.size().
-  seq(std::initializer_list<T> init, Allocator const &alloc = Allocator())
+  seq(std::initializer_list<T> init, Allocator const& alloc = Allocator())
       : seq{alloc} {
     emplace_range(find_end(), init.begin(), init.end());
   }
@@ -2442,7 +2442,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  seq &operator=(seq const &other) {
+  seq& operator=(seq const& other) {
     if (this != &other) {
       copy_assign_alloc(other);
       assign_range(other.begin(), other.end());
@@ -2472,9 +2472,9 @@ class seq {
   ///   No-throw if the allocator propagates on move assignment or the
   ///   sequence's allocator compares equal to other's allocator. Basic
   ///   otherwise.
-  seq &operator=(seq &&other) noexcept(
-      element_traits::propagate_on_container_move_assignment::value
-          &&std::is_nothrow_move_assignable<allocator_type>::value) {
+  seq& operator=(seq&& other) noexcept(
+      element_traits::propagate_on_container_move_assignment::value&&
+          std::is_nothrow_move_assignable<allocator_type>::value) {
     move_assign(other);
     return *this;
   }
@@ -2495,7 +2495,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  seq &operator=(std::initializer_list<T> ilist) {
+  seq& operator=(std::initializer_list<T> ilist) {
     assign_range(ilist.begin(), ilist.end());
     return *this;
   }
@@ -2513,7 +2513,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  void assign(size_type count, T const &value) { assign_count(count, value); }
+  void assign(size_type count, T const& value) { assign_count(count, value); }
 
   /// \par Effects
   ///   Assigns the sequence to the elements copy constructed from the range
@@ -2581,7 +2581,7 @@ class seq {
   ///
   /// \par Note
   ///   Non-standard extension.
-  stored_allocator_type const &get_stored_allocator() const noexcept {
+  stored_allocator_type const& get_stored_allocator() const noexcept {
     return get_element_allocator();
   }
 
@@ -3082,7 +3082,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  iterator insert(const_iterator pos, T const &value) {
+  iterator insert(const_iterator pos, T const& value) {
     return emplace_single(pos.it_, value);
   }
 
@@ -3100,7 +3100,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  iterator insert(const_iterator pos, T &&value) {
+  iterator insert(const_iterator pos, T&& value) {
     return emplace_single(pos.it_, std::move(value));
   }
 
@@ -3119,7 +3119,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  iterator insert(const_iterator pos, size_type count, T const &value) {
+  iterator insert(const_iterator pos, size_type count, T const& value) {
     return emplace_count(pos.it_, count, value);
   }
 
@@ -3182,7 +3182,7 @@ class seq {
   /// \par Exception safety
   ///   Strong.
   template <class... Args>
-  iterator emplace(const_iterator pos, Args &&... args) {
+  iterator emplace(const_iterator pos, Args&&... args) {
     return emplace_single(pos.it_, std::forward<Args>(args)...);
   }
 
@@ -3231,7 +3231,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  void push_back(T const &value) { emplace_back(value); }
+  void push_back(T const& value) { emplace_back(value); }
 
   /// \par Effects
   ///   Move constructs an element at end().
@@ -3244,7 +3244,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  void push_back(T &&value) { emplace_back(std::move(value)); }
+  void push_back(T&& value) { emplace_back(std::move(value)); }
 
   /// \par Effects
   ///   Forward constructs an element at end().
@@ -3258,7 +3258,7 @@ class seq {
   /// \par Exception safety
   ///   Strong.
   template <class... Args>
-  void emplace_back(Args &&... args) {
+  void emplace_back(Args&&... args) {
     emplace_single(find_end(), std::forward<Args>(args)...);
   }
 
@@ -3286,7 +3286,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  void push_front(const T &value) { emplace_front(value); }
+  void push_front(const T& value) { emplace_front(value); }
 
   /// \par Effects
   ///   Move constructs an element at begin().
@@ -3299,7 +3299,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  void push_front(T &&value) { emplace_front(std::move(value)); }
+  void push_front(T&& value) { emplace_front(std::move(value)); }
 
   /// \par Effects
   ///   Forward constructs an element at begin().
@@ -3313,7 +3313,7 @@ class seq {
   /// \par Exception safety
   ///   Strong.
   template <class... Args>
-  void emplace_front(Args &&... args) {
+  void emplace_front(Args&&... args) {
     emplace_single(find_first(), std::forward<Args>(args)...);
   }
 
@@ -3358,7 +3358,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  void resize(size_type count, value_type const &value) {
+  void resize(size_type count, value_type const& value) {
     resize_count(count, value);
   }
 
@@ -3376,7 +3376,7 @@ class seq {
   /// \par Exception safety
   ///   No-throw if the allocator propagates on swap or the allocator doesn't
   ///   throw on swap. Strong otherwise.
-  void swap(seq &other) noexcept(
+  void swap(seq& other) noexcept(
       !element_traits::propagate_on_container_swap::value ||
       detail::is_nothrow_swappable<allocator_type>::value) {
     using std::swap;
@@ -3399,7 +3399,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  void merge(seq &other) { merge(other, std::less<value_type>{}); }
+  void merge(seq& other) { merge(other, std::less<value_type>{}); }
 
   /// \par Effects
   ///   Transfers all elements in the sorted other into the sorted *this so that
@@ -3414,7 +3414,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  void merge(seq &&other) { merge(other); }
+  void merge(seq&& other) { merge(other); }
 
   /// \par Effects
   ///   Transfers all elements in the sorted other into the sorted *this so that
@@ -3431,7 +3431,7 @@ class seq {
   /// \par Exception safety
   ///   Basic.
   template <class Compare>
-  void merge(seq &other, Compare comp) {
+  void merge(seq& other, Compare comp) {
     auto sz = size();
     splice(end(), other, other.begin(), other.end());
     std::inplace_merge(begin(), nth(sz), end(), comp);
@@ -3452,7 +3452,7 @@ class seq {
   /// \par Exception safety
   ///   Basic.
   template <class Compare>
-  void merge(seq &&other, Compare comp) {
+  void merge(seq&& other, Compare comp) {
     merge(other, comp);
   }
 
@@ -3468,7 +3468,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  void splice(const_iterator pos, seq &other) {
+  void splice(const_iterator pos, seq& other) {
     insert(pos, std::make_move_iterator(other.begin()),
            std::make_move_iterator(other.end()));
     other.clear();
@@ -3486,7 +3486,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  void splice(const_iterator pos, seq &&other) { splice(pos, other); }
+  void splice(const_iterator pos, seq&& other) { splice(pos, other); }
 
   /// \par Effects
   ///   Transfers the element pointer to by it to the specified position.
@@ -3499,7 +3499,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  void splice(const_iterator pos, seq &other, const_iterator it) {
+  void splice(const_iterator pos, seq& other, const_iterator it) {
     insert(pos, std::move(*it));
     other.erase(it);
   }
@@ -3515,7 +3515,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  void splice(const_iterator pos, seq &&other, const_iterator it) {
+  void splice(const_iterator pos, seq&& other, const_iterator it) {
     splice(pos, other, it);
   }
 
@@ -3532,7 +3532,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  void splice(const_iterator pos, seq &other, const_iterator first,
+  void splice(const_iterator pos, seq& other, const_iterator first,
               const_iterator last) {
     insert(pos, std::make_move_iterator(iterator{first.it_}),
            std::make_move_iterator(iterator{last.it_}));
@@ -3552,7 +3552,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  void splice(const_iterator pos, seq &&other, const_iterator first,
+  void splice(const_iterator pos, seq&& other, const_iterator first,
               const_iterator last) {
     splice(pos, other, first, last);
   }
@@ -3568,7 +3568,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Basic.
-  void remove(const T &value) {
+  void remove(const T& value) {
     erase(std::remove(begin(), end(), value), end());
   }
 
@@ -3672,7 +3672,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  friend bool operator==(seq const &lhs, seq const &rhs) {
+  friend bool operator==(seq const& lhs, seq const& rhs) {
     return lhs.size() == rhs.size() &&
            std::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -3689,7 +3689,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  friend bool operator!=(seq const &lhs, seq const &rhs) {
+  friend bool operator!=(seq const& lhs, seq const& rhs) {
     return !(lhs == rhs);
   }
 
@@ -3705,7 +3705,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  friend bool operator<(seq const &lhs, seq const &rhs) {
+  friend bool operator<(seq const& lhs, seq const& rhs) {
     return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(),
                                         rhs.end());
   }
@@ -3722,7 +3722,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  friend bool operator<=(seq const &lhs, seq const &rhs) {
+  friend bool operator<=(seq const& lhs, seq const& rhs) {
     return !(rhs < lhs);
   }
 
@@ -3738,7 +3738,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  friend bool operator>(seq const &lhs, seq const &rhs) { return rhs < lhs; }
+  friend bool operator>(seq const& lhs, seq const& rhs) { return rhs < lhs; }
 
   /// \par Returns
   ///   True if the first sequence is lexicographically greater or equal to the
@@ -3752,7 +3752,7 @@ class seq {
   ///
   /// \par Exception safety
   ///   Strong.
-  friend bool operator>=(seq const &lhs, seq const &rhs) {
+  friend bool operator>=(seq const& lhs, seq const& rhs) {
     return !(lhs < rhs);
   }
 
@@ -3770,7 +3770,7 @@ class seq {
   /// \par Exception safety
   ///   No-throw if the allocator propagates on swap or the allocator doesn't
   ///   throw on swap. Strong otherwise.
-  friend void swap(seq &a, seq &b) noexcept(noexcept(a.swap(b))) { a.swap(b); }
+  friend void swap(seq& a, seq& b) noexcept(noexcept(a.swap(b))) { a.swap(b); }
 };
 }
 }

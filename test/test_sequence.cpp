@@ -21,40 +21,39 @@ class tagged_allocator {
   using value_type = T;
   tagged_allocator(unsigned tag = 0) : tag_{tag} {}
   template <class U>
-  tagged_allocator(tagged_allocator<U> const &other) : tag_{other.tag()} {}
+  tagged_allocator(tagged_allocator<U> const& other) : tag_{other.tag()} {}
 
-  T *allocate(std::size_t n) {
+  T* allocate(std::size_t n) {
     if (n <= std::numeric_limits<std::size_t>::max() / sizeof(T)) {
-      if (auto ptr = std::malloc(n * sizeof(T))) return static_cast<T *>(ptr);
+      if (auto ptr = std::malloc(n * sizeof(T))) return static_cast<T*>(ptr);
     }
     throw std::bad_alloc();
   }
 
-  void deallocate(T *ptr, std::size_t) { std::free(ptr); }
+  void deallocate(T* ptr, std::size_t) { std::free(ptr); }
 
   unsigned tag() const { return tag_; }
 };
 
 template <typename T, typename U>
-inline bool operator==(const tagged_allocator<T> &,
-                       const tagged_allocator<U> &) {
+inline bool operator==(const tagged_allocator<T>&, const tagged_allocator<U>&) {
   return true;
 }
 
 template <typename T, typename U>
-inline bool operator!=(const tagged_allocator<T> &a,
-                       const tagged_allocator<U> &b) {
+inline bool operator!=(const tagged_allocator<T>& a,
+                       const tagged_allocator<U>& b) {
   return !(a == b);
 }
 
 template <typename A, typename B>
-void check_contents(A const &a, std::initializer_list<B> b) {
+void check_contents(A const& a, std::initializer_list<B> b) {
   BOOST_CHECK(a.size() == b.size());
   BOOST_CHECK(std::equal(a.begin(), a.end(), b.begin()));
 }
 
 template <typename A>
-void check_contents(A const &a) {
+void check_contents(A const& a) {
   BOOST_CHECK(a.size() == 0);
   BOOST_CHECK(a.begin() == a.end());
 }
@@ -187,7 +186,7 @@ BOOST_AUTO_TEST_CASE(test_get_allocator) {
 }
 
 template <typename T>
-bool check_exception(T const &) {
+bool check_exception(T const&) {
   return true;
 }
 
@@ -197,7 +196,7 @@ BOOST_AUTO_TEST_CASE(test_at) {
   BOOST_CHECK_EXCEPTION(c1.at(1), std::out_of_range,
                         check_exception<std::out_of_range>);
 
-  auto const &view = c1;
+  auto const& view = c1;
   BOOST_CHECK(view.at(0) == 0);
   BOOST_CHECK_EXCEPTION(view.at(1), std::out_of_range,
                         check_exception<std::out_of_range>);
@@ -208,7 +207,7 @@ BOOST_AUTO_TEST_CASE(test_operator_index) {
   BOOST_CHECK(c1[0] == 0);
   BOOST_CHECK(c1[1] == 1);
 
-  auto const &view = c1;
+  auto const& view = c1;
   BOOST_CHECK(view[0] == 0);
   BOOST_CHECK(view[1] == 1);
 }
@@ -217,7 +216,7 @@ BOOST_AUTO_TEST_CASE(test_front) {
   seq<uint64_t> c1{0, 1};
   BOOST_CHECK(c1.front() == 0);
 
-  auto const &view = c1;
+  auto const& view = c1;
   BOOST_CHECK(view.front() == 0);
 }
 
@@ -225,7 +224,7 @@ BOOST_AUTO_TEST_CASE(test_back) {
   seq<uint64_t> c1{0, 1};
   BOOST_CHECK(c1.back() == 1);
 
-  auto const &view = c1;
+  auto const& view = c1;
   BOOST_CHECK(view.back() == 1);
 }
 
@@ -234,7 +233,7 @@ BOOST_AUTO_TEST_CASE(test_begin) {
   BOOST_CHECK(*c1.begin() == 0);
   BOOST_CHECK(*c1.begin() == 0);
 
-  auto const &view = c1;
+  auto const& view = c1;
   BOOST_CHECK(*view.begin() == 0);
   BOOST_CHECK(*view.begin() == 0);
 }
@@ -244,7 +243,7 @@ BOOST_AUTO_TEST_CASE(test_end) {
   BOOST_CHECK(*(c1.end() - 1) == 1);
   BOOST_CHECK(*(c1.end() - 1) == 1);
 
-  auto const &view = c1;
+  auto const& view = c1;
   BOOST_CHECK(*(view.end() - 1) == 1);
   BOOST_CHECK(*(view.end() - 1) == 1);
 }
@@ -254,7 +253,7 @@ BOOST_AUTO_TEST_CASE(test_rbegin) {
   BOOST_CHECK(*c1.rbegin() == 1);
   BOOST_CHECK(*c1.rbegin() == 1);
 
-  auto const &view = c1;
+  auto const& view = c1;
   BOOST_CHECK(*view.rbegin() == 1);
   BOOST_CHECK(*view.rbegin() == 1);
 }
@@ -264,7 +263,7 @@ BOOST_AUTO_TEST_CASE(test_rend) {
   BOOST_CHECK(*(c1.rend() - 1) == 0);
   BOOST_CHECK(*(c1.rend() - 1) == 0);
 
-  auto const &view = c1;
+  auto const& view = c1;
   BOOST_CHECK(*(view.rend() - 1) == 0);
   BOOST_CHECK(*(view.rend() - 1) == 0);
 }
@@ -274,7 +273,7 @@ BOOST_AUTO_TEST_CASE(test_penultimate) {
   BOOST_CHECK(*c1.penultimate() == 1);
   BOOST_CHECK(*c1.cpenultimate() == 1);
 
-  auto const &view = c1;
+  auto const& view = c1;
   BOOST_CHECK(*view.penultimate() == 1);
   BOOST_CHECK(*view.cpenultimate() == 1);
 }
@@ -284,7 +283,7 @@ BOOST_AUTO_TEST_CASE(test_nth) {
   BOOST_CHECK(*c1.nth(0) == 0);
   BOOST_CHECK(*c1.nth(1) == 1);
 
-  auto const &view = c1;
+  auto const& view = c1;
   BOOST_CHECK(*view.nth(0) == 0);
   BOOST_CHECK(*view.nth(1) == 1);
 }
@@ -295,7 +294,7 @@ BOOST_AUTO_TEST_CASE(test_index_of) {
   BOOST_CHECK(c1.index_of(c1.nth(1)) == 1);
   BOOST_CHECK(c1.index_of(c1.nth(2)) == 2);
 
-  auto const &view = c1;
+  auto const& view = c1;
   BOOST_CHECK(view.index_of(c1.nth(0)) == 0);
   BOOST_CHECK(view.index_of(c1.nth(1)) == 1);
   BOOST_CHECK(view.index_of(c1.nth(2)) == 2);
@@ -675,7 +674,7 @@ BOOST_AUTO_TEST_CASE(test_sort_predicate) {
 }
 
 template <typename Container, typename T>
-void test_iterator(Container const &container, std::vector<T> const &data) {
+void test_iterator(Container const& container, std::vector<T> const& data) {
   BOOST_CHECK(accumulate_forward(data) == accumulate_forward(container));
 
   BOOST_CHECK(accumulate_forward_by(data, 1) ==
@@ -765,44 +764,44 @@ class throwing_allocator {
 
   throwing_allocator() = default;
   template <class U>
-  throwing_allocator(const throwing_allocator<U> &) {}
+  throwing_allocator(const throwing_allocator<U>&) {}
 
-  T *allocate(std::size_t n) {
+  T* allocate(std::size_t n) {
     if (engine_() % 8 == 0) throw retry_exception{};
     if (n <= std::numeric_limits<std::size_t>::max() / sizeof(T)) {
-      if (auto ptr = std::malloc(n * sizeof(T))) return static_cast<T *>(ptr);
+      if (auto ptr = std::malloc(n * sizeof(T))) return static_cast<T*>(ptr);
     }
     throw std::bad_alloc();
   }
 
-  void deallocate(T *ptr, std::size_t) { std::free(ptr); }
+  void deallocate(T* ptr, std::size_t) { std::free(ptr); }
 
   template <typename U, typename... Args>
-  void construct(U *p, Args &&... args) {
+  void construct(U* p, Args&&... args) {
     if (engine_() % 8 == 0) throw retry_exception{};
     new (p) U(std::forward<Args>(args)...);
   }
 
   template <typename U, typename... Args>
-  void construct(U *p, T &&value) {
+  void construct(U* p, T&& value) {
     new (p) U(std::move(value));
   }
 };
 
 template <typename T, typename U>
-inline bool operator==(const throwing_allocator<T> &,
-                       const throwing_allocator<U> &) {
+inline bool operator==(const throwing_allocator<T>&,
+                       const throwing_allocator<U>&) {
   return true;
 }
 
 template <typename T, typename U>
-inline bool operator!=(const throwing_allocator<T> &a,
-                       const throwing_allocator<U> &b) {
+inline bool operator!=(const throwing_allocator<T>& a,
+                       const throwing_allocator<U>& b) {
   return !(a == b);
 }
 
 template <typename Container, typename T>
-void insert_single_retry(Container &container, insertion_data<T> const &data) {
+void insert_single_retry(Container& container, insertion_data<T> const& data) {
   auto count = data.indexes.size();
   reserve(container, count);
   for (std::size_t i = 0; i != count; ++i) {
@@ -810,7 +809,7 @@ void insert_single_retry(Container &container, insertion_data<T> const &data) {
       try {
         container.insert(nth(container, data.indexes[i]), data.ordered[i]);
         break;
-      } catch (retry_exception const &) {
+      } catch (retry_exception const&) {
       }
     }
   }

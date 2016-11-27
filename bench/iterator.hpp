@@ -8,7 +8,7 @@
 #include "common.hpp"
 
 template <typename Container, typename T>
-void bench_iterator(Container const &container, std::vector<T> const &data) {
+void bench_iterator(Container const& container, std::vector<T> const& data) {
   verify(accumulate_forward(data), bench("Accumulate forward", [&] {
            return accumulate_forward(container);
          }));

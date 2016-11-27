@@ -4,7 +4,7 @@
 #include "common.hpp"
 
 template <typename Container, typename T>
-void insert_range(Container &container, insertion_data<T> const &data) {
+void insert_range(Container& container, insertion_data<T> const& data) {
   auto count = data.indexes.size();
   auto size = data.ordered.size() / count;
   reserve(container, count);
@@ -18,7 +18,7 @@ void insert_range(Container &container, insertion_data<T> const &data) {
 }
 
 template <typename Container, typename T>
-void erase_range(Container &container, insertion_data<T> const &data) {
+void erase_range(Container& container, insertion_data<T> const& data) {
   auto count = data.indexes.size();
   auto size = data.ordered.size() / count;
 

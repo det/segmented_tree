@@ -6,7 +6,7 @@
 #include "single.hpp"
 
 template <typename T>
-int generate_single(int argc, char **argv) {
+int generate_single(int argc, char** argv) {
   if (argc != 2) {
     std::cerr << "Usage: " << argv[0] << " <count>\n";
     return EXIT_FAILURE;

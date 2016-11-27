@@ -13,9 +13,9 @@ class scope_guard {
   F f_;
 
  public:
-  scope_guard(F &&f) : active_{true}, f_(std::forward<F>(f)) {}
+  scope_guard(F&& f) : active_{true}, f_(std::forward<F>(f)) {}
 
-  scope_guard(scope_guard &&other)
+  scope_guard(scope_guard&& other)
       : active_{other.active_}, f_{std::move(other.f_)} {
     other.dismiss();
   }
@@ -28,12 +28,12 @@ class scope_guard {
 };
 
 template <typename F>
-scope_guard<F> make_scope_guard(F &&f) {
+scope_guard<F> make_scope_guard(F&& f) {
   return {std::forward<F>(f)};
 }
 
 template <typename F>
-auto bench(char const *description, F f) -> typename std::result_of<F()>::type {
+auto bench(char const* description, F f) -> typename std::result_of<F()>::type {
   using Clock = std::chrono::steady_clock;
   using Ns = std::chrono::nanoseconds;
   auto start = Clock::now();

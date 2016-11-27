@@ -4,7 +4,7 @@
 #include <cstdint>
 
 template <typename T>
-std::uint64_t accumulate_forward(T const &container) {
+std::uint64_t accumulate_forward(T const& container) {
   std::uint64_t accu = 0;
   auto first = container.begin();
   auto last = container.end();
@@ -18,7 +18,7 @@ std::uint64_t accumulate_forward(T const &container) {
 }
 
 template <typename T>
-std::uint64_t accumulate_forward_by(T const &container, std::size_t distance) {
+std::uint64_t accumulate_forward_by(T const& container, std::size_t distance) {
   std::uint64_t accu = 0;
   auto left = container.size();
   auto first = container.begin();
@@ -33,7 +33,7 @@ std::uint64_t accumulate_forward_by(T const &container, std::size_t distance) {
 }
 
 template <typename T>
-std::uint64_t accumulate_backward(T const &container) {
+std::uint64_t accumulate_backward(T const& container) {
   std::uint64_t accu = 0;
   auto first = container.begin();
   auto last = container.end();
@@ -46,7 +46,7 @@ std::uint64_t accumulate_backward(T const &container) {
 }
 
 template <typename T>
-std::uint64_t accumulate_backward_by(T const &container, std::size_t distance) {
+std::uint64_t accumulate_backward_by(T const& container, std::size_t distance) {
   std::uint64_t accu = 0;
   auto left = container.size();
   auto it = container.end();

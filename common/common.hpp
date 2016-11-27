@@ -21,7 +21,7 @@ template <typename T>
 struct has_nth {
  private:
   template <typename U>
-  static auto test(U *t) -> decltype(t->nth(0), std::true_type{});
+  static auto test(U* t) -> decltype(t->nth(0), std::true_type{});
   template <typename>
   static std::false_type test(...);
 
@@ -31,13 +31,13 @@ struct has_nth {
 
 template <typename T>
 typename std::enable_if<has_nth<T>::value, typename T::iterator>::type nth(
-    T &object, typename T::size_type pos) {
+    T& object, typename T::size_type pos) {
   return object.nth(pos);
 }
 
 template <typename T>
 typename std::enable_if<!has_nth<T>::value, typename T::iterator>::type nth(
-    T &object, typename T::size_type pos) {
+    T& object, typename T::size_type pos) {
   return object.begin() + static_cast<std::ptrdiff_t>(pos);
 }
 
@@ -45,7 +45,7 @@ template <typename T>
 struct has_reserve {
  private:
   template <typename U>
-  static auto test(U *t) -> decltype(t->reserve(0), std::true_type{});
+  static auto test(U* t) -> decltype(t->reserve(0), std::true_type{});
   template <typename>
   static std::false_type test(...);
 
@@ -55,16 +55,16 @@ struct has_reserve {
 
 template <typename T>
 typename std::enable_if<has_reserve<T>::value, void>::type reserve(
-    T &object, typename T::size_type n) {
+    T& object, typename T::size_type n) {
   return object.reserve(n);
 }
 
 template <typename T>
 typename std::enable_if<!has_reserve<T>::value, void>::type reserve(
-    T &, typename T::size_type) {}
+    T&, typename T::size_type) {}
 
 template <typename Rng, typename Result = typename Rng::result_type>
-Result bounded_rand(Rng &rng, Result upper_bound) {
+Result bounded_rand(Rng& rng, Result upper_bound) {
   Result threshold =
       (Rng::max() - Rng::min() + Result(1) - upper_bound) % upper_bound;
   while (true) {
@@ -74,7 +74,7 @@ Result bounded_rand(Rng &rng, Result upper_bound) {
 }
 
 template <typename Container>
-std::uint64_t make_checksum_unsigned(Container const &container) {
+std::uint64_t make_checksum_unsigned(Container const& container) {
   boost::crc_optimal<64, 0x42F0E1EBA9EA3693ULL> accu;
   accu.process_block(container.data(), container.data() + container.size());
   return accu.checksum();

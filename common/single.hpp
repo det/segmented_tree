@@ -4,7 +4,7 @@
 #include "common.hpp"
 
 template <typename Container, typename T>
-void insert_single(Container &container, insertion_data<T> const &data) {
+void insert_single(Container& container, insertion_data<T> const& data) {
   auto count = data.indexes.size();
   reserve(container, count);
   for (std::size_t i = 0; i != count; ++i) {
@@ -13,7 +13,7 @@ void insert_single(Container &container, insertion_data<T> const &data) {
 }
 
 template <typename Container, typename T>
-void erase_single(Container &container, insertion_data<T> const &data) {
+void erase_single(Container& container, insertion_data<T> const& data) {
   auto count = data.indexes.size();
   reserve(container, count);
   while (count != 1) {

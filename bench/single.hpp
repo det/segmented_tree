@@ -8,7 +8,7 @@
 #include "iterator.hpp"
 
 template <template <typename T> class Container, typename T>
-int bench_single(int argc, char **argv) {
+int bench_single(int argc, char** argv) {
   if (argc != 4) {
     std::cerr << "Usage: " << argv[0] << " <count> <seed> <checksum>\n";
     return EXIT_FAILURE;

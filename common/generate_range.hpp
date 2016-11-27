@@ -6,7 +6,7 @@
 #include "range.hpp"
 
 template <typename T>
-int generate_range(int argc, char **argv) {
+int generate_range(int argc, char** argv) {
   if (argc != 3) {
     std::cerr << "Usage: " << argv[0] << " <count> <size>\n";
     return EXIT_FAILURE;
